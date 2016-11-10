@@ -1,0 +1,19 @@
+{
+    "name": "duckduckgo suit",
+    "object_repository_path": "../object-repositories/duckduckgo-or/",
+    "test_path": "../tests/duckduckgo-tests/",
+    "tests": [
+        {
+            "file_name": "enter-world.json",
+            "arguments": [
+                "ahmet ozkesek"
+            ]
+        },
+        {
+            "file_name": "check-results.json",
+            "arguments": []
+        }
+
+    ]
+
+}
