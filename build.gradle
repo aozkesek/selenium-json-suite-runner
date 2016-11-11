@@ -7,22 +7,31 @@
  * user guide available at https://docs.gradle.org/3.2-rc-2/userguide/tutorial_java_projects.html
  */
 
-// Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply plugin: 'java-library-distribution'
 
-// In this section you declare where to find the dependencies of your project
-repositories {
-    // Use 'jcenter' for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+
+
+jar {
+	manifest {
+		attributes(
+			"Main-Class": "org.ao.JSONRunnerMain"
+		)
+	}
 }
 
-// In this section you declare the dependencies for your production and test code
+repositories {
+
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+}
+
 dependencies {
-    // The production code uses the SLF4J logging API at compile time
+
+	compile 'org.springframework.boot:spring-boot-starter:1.4.2.RELEASE'
     compile 'org.slf4j:slf4j-api:1.7.13'
 
-    // Use TestNG framework, also requires calling test.useTestNG() below
     testCompile 'org.testng:testng:6.9.13.8'
 }
 

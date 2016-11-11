@@ -10,8 +10,5 @@ import org.ao.JSONRunnerMain;
  * @author ahmetozkesek, @date 11/11/16 13:58
  */
 public class LibraryTest {
-    @Test public void someLibraryMethodReturnsTrue() {
-        JSONRunnerMain classUnderTest = new JSONRunnerMain();
-        assertTrue(classUnderTest.someLibraryMethod(), "someLibraryMethod should return 'true'");
-    }
+    
 }
