@@ -14,8 +14,6 @@ import org.springframework.context.annotation.PropertySources;
 		)
 public class JSONRunnerConfig {
 
-	@Bean("AppContext")
-	public ApplicationContext AppContext() {
-		return JSONRunnerMain.AppContext;
-	}
+
+	
 }

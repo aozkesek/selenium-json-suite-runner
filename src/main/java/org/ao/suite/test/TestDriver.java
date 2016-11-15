@@ -4,7 +4,6 @@ import java.util.LinkedHashMap;
 
 import org.springframework.stereotype.Component;
 
-@Component
 public class TestDriver {
 	
 	

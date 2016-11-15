@@ -26,9 +26,6 @@ public class SuiteDriver {
 	public String SuiteId;
 	
 	@Autowired
-	private ApplicationContext AppContext;
-	
-	@Autowired
 	private SuiteProperty suiteProp;
 	
 	private static Logger SuiteLogger = LoggerFactory.getLogger(SuiteDriver.class);
@@ -51,9 +48,12 @@ public class SuiteDriver {
 			
 			String pathName = normalizePath(suiteProp.testHome, suiteTestModel.getFileName());
 			
-			testDrivers.put(pathName, AppContext.getBean(TestDriver.class, pathName, suiteTestModel.getArguments()));
+			testDrivers.put(pathName, new TestDriver(pathName, suiteTestModel.getArguments()));
 			
 		}
+		
+		testDrivers.containsKey("");
+			
 	}
 	
 	private String normalizePath(String path, String name) {
