@@ -1,5 +1,8 @@
 package org.ao;
 
+import java.io.IOException;
+
+import org.ao.suite.SuiteDriver;
 import org.ao.suite.SuiteProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,13 @@ public class JSONRunnerMain {
 			AppLogger.debug("Parallel Mode is ON.");
 		}
 
+		SuiteDriver startUpSuite = AppContext.getBean(SuiteDriver.class);
+		try {
+			startUpSuite.Load(suiteProp.startUp);
+			AppLogger.debug(startUpSuite.toString());
+		} catch (IOException e) {
+			AppLogger.error(e.getMessage());
+		}
 	}
 
 }
