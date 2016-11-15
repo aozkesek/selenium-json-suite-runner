@@ -30,6 +30,8 @@ repositories {
 dependencies {
 
 	compile 'org.springframework.boot:spring-boot-starter:1.4.2.RELEASE'
+	compile 'com.fasterxml.jackson.core:jackson-core:2.8.4'
+	
     compile 'org.slf4j:slf4j-api:1.7.13'
 
     testCompile 'org.testng:testng:6.9.13.8'

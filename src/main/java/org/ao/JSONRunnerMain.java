@@ -21,6 +21,10 @@ public class JSONRunnerMain {
 		
 		if (suiteProp.isParallel) {
 			AppLogger.debug("Parallel Mode is ON.");
+			
+		} 
+		else {
+			
 		}
 
 	}
