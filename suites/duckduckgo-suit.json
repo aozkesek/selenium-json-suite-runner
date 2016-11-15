@@ -5,13 +5,15 @@
     "tests": [
         {
             "file_name": "enter-world.json",
-            "arguments": [
-                "ahmet ozkesek"
-            ]
+            "arguments": {
+                "username": "ahmet ozkesek",
+                "secret": "abcdefgh",
+                "pin": 1234567
+            }
         },
         {
             "file_name": "check-results.json",
-            "arguments": []
+            "arguments": {}
         }
 
     ]
