@@ -5,8 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.CharBuffer;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +30,12 @@ public class SuiteDriver {
 	
 	@Autowired
 	private SuiteProperty suiteProp;
+	@Autowired
+	private TestContainer testContainer;
 	
 	private static Logger SuiteLogger = LoggerFactory.getLogger(SuiteDriver.class);
 	private SuiteModel suiteModel;
-	private LinkedHashMap<String, TestDriver> testDrivers; 
+	private List<TestDriver> tests; 
 	
 	public void Load(String suitePathName) throws JsonParseException, IOException {
 		String pathName = normalizePath(suiteProp.home, suitePathName);
@@ -42,17 +47,20 @@ public class SuiteDriver {
 	}
 
 	private void loadTests() {
-		testDrivers = new LinkedHashMap<String, TestDriver>();
+		tests = new ArrayList<TestDriver>();
 		
 		for (SuiteTestModel suiteTestModel : suiteModel.getTests()) {
 			
 			String pathName = normalizePath(suiteProp.testHome, suiteTestModel.getFileName());
 			
-			testDrivers.put(pathName, new TestDriver(pathName, suiteTestModel.getArguments()));
+			if (!testContainer.containsKey(pathName))
+				testContainer.put(pathName, new TestDriver(pathName, suiteTestModel.getArguments()));
+			
+			tests.add(testContainer.get(pathName));
 			
 		}
 		
-		testDrivers.containsKey("");
+		
 			
 	}
 	
