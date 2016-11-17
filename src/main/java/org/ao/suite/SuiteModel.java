@@ -35,4 +35,18 @@ public class SuiteModel {
 		this.tests = tests;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("name=").append(name).append(", ");
+		sb.append("object_repository_path=").append(objectRepositoryPath).append(", ");
+		sb.append("test_path=").append(testPath).append(", ");
+		sb.append("tests=[");
+		for (SuiteTestModel m: tests)
+			sb.append(m.toString()).append(", ");
+		sb.append("]");
+		
+		return sb.toString();
+	}
 }

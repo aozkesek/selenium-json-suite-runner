@@ -27,4 +27,17 @@ public class SuiteTestModel {
 		this.arguments = arguments;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("file_name=").append(fileName).append(", ");
+		
+		sb.append("arguments={");
+		if (arguments != null)
+			arguments.forEach((k, v) -> sb.append(k).append("=").append(v).append(", "));
+		sb.append("}");
+		
+		return sb.toString();
+	}
 }

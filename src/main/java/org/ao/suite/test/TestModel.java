@@ -33,4 +33,25 @@ public class TestModel {
 		this.commands = commands;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("name=").append(name).append(", ");
+		
+		sb.append("arguments={");
+		if (arguments != null)
+			arguments.forEach((k, v) -> sb.append(k).append("=").append(v).append(", "));
+		
+		sb.append("}, vars={");
+		if (vars != null)
+			vars.forEach((k, v) -> sb.append(k).append("=").append(v).append(", "));
+		
+		sb.append("}, commands={");
+		for(CommandModel m: commands)
+			sb.append(m.toString()).append(" ; ");
+		sb.append("}");
+		
+		return sb.toString();
+	}
 }

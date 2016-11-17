@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -15,6 +16,9 @@ public class TestDriver {
 	
 	private String name;
 	private LinkedHashMap<String, Object> arguments;
+	private TestModel testModel;
+	
+	private static Logger TestLogger = LoggerFactory.getLogger(TestDriver.class);
 	
 	public TestDriver(String name, LinkedHashMap<String, Object> arguments) 
 			throws JsonParseException, JsonMappingException, IOException {
@@ -22,15 +26,27 @@ public class TestDriver {
 		this.name = name;
 		this.arguments = arguments;
 		
-		load();
+		loadTest();
+		matchArguments();
+		prepareVars();
+		
 	}
 	
-	private void load() 
+	private void loadTest() 
 			throws JsonParseException, JsonMappingException, IOException {
 		
-		new ObjectMapper().readValue(new File(this.name), TestModel.class);
+		testModel = new ObjectMapper().readValue(new File(this.name), TestModel.class);
+		TestLogger.debug("test = {}", testModel);
+		
+	}
+	
+	private void matchArguments() {
+		
 		
 		
 	}
 
+	private void prepareVars() {
+		
+	}
 }

@@ -46,6 +46,7 @@ public class SuiteDriver {
 		String pathName = normalizePath(suiteProp.home, suitePathName);
 		
 		suiteModel = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
+		SuiteLogger.debug("suite = {}", suiteModel);
 		
 		loadTests();
 
@@ -58,6 +59,8 @@ public class SuiteDriver {
 			
 			String pathName = normalizePath(suiteProp.testHome, suiteModel.getTestPath());
 			pathName = normalizePath(pathName, suiteTestModel.getFileName());
+			
+			SuiteLogger.debug("test is loading/getting from {}", pathName);
 			
 			if (!testContainer.containsKey(pathName))
 				testContainer.put(pathName, new TestDriver(pathName, suiteTestModel.getArguments()));
