@@ -40,6 +40,7 @@ public class SuiteDriver {
 	
 	public void RunTests() {
 		
+		tests.forEach((t) -> t.Run() );
 	}
 	
 	public void Load(String suitePathName) throws JsonParseException, IOException {
@@ -90,11 +91,5 @@ public class SuiteDriver {
 		return normalizedPath;
 	}
 	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder(suiteModel.toString());
-		
-		
-		return sb.toString();
-	}
+	
 }

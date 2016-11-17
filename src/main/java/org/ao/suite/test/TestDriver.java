@@ -27,8 +27,14 @@ public class TestDriver {
 		this.arguments = arguments;
 		
 		loadTest();
-		matchArguments();
-		prepareVars();
+		putArguments();
+		storeVars();
+		
+	}
+	
+	public void Run() {
+		
+		TestLogger.debug("{} is running now.", name);
 		
 	}
 	
@@ -40,13 +46,17 @@ public class TestDriver {
 		
 	}
 	
-	private void matchArguments() {
+	private void putArguments() {
 		
+		arguments.forEach((k, v) -> {
+			if (testModel.getArguments().containsKey(k))
+				testModel.getArguments().replace(k, v);
+		} );
 		
-		
+		TestLogger.debug("updated test arguments {}", testModel);
 	}
 
-	private void prepareVars() {
+	private void storeVars() {
 		
 	}
 }

@@ -6,9 +6,8 @@
         {
             "file_name": "enter-world.json",
             "arguments": {
-                "username": "ahmet ozkesek",
-                "secret": "abcdefgh",
-                "pin": 1234567
+                "baseUrl": "https://duckduckgo.com",
+                "queryWord": "ahmet ozkesek"
             }
         },
         {

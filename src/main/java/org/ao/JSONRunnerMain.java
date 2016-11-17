@@ -33,7 +33,9 @@ public class JSONRunnerMain {
 		SuiteDriver startUpSuite = AppContext.getBean(SuiteDriver.class);
 		try {
 			startUpSuite.Load(suiteProp.startUp);
-			AppLogger.debug(startUpSuite.toString());
+			AppLogger.debug("startup suite is loaded.");
+			startUpSuite.RunTests();
+
 		} catch (IOException e) {
 			AppLogger.error(e.getMessage());
 		}

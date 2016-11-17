@@ -2,6 +2,9 @@
     "name": "duckduckgo test enter word",
     
     "arguments": {
+    	"baseUrl": "",
+    	"queryWord": "",
+    	"resultPerPage": "10"
     },
 
     "vars": {},
