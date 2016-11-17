@@ -1,6 +1,7 @@
 {
     "name": "duckduckgo test check results",
-    "arguments": [],
+    "arguments": {},
+    "vars": {},
     "commands": [
         { "command": "store", "target": "http://duckduckgo.com", "value": "varBaseUrl" },
         { "command": "webopen", "target": "${varBaseUrl}" }

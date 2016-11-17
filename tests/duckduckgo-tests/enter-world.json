@@ -1,18 +1,15 @@
 {
     "name": "duckduckgo test enter word",
     
-    "arguments": [
-        "query_text"
-    ],
+    "arguments": {
+    },
 
-    "vars": [
-
-    ],
+    "vars": {},
 
     "commands": [
-        {},
-        {},
-        {}
+        { "command": "", "target": "", "value": "" },
+        { "command": "", "target": "", "value": "" },
+        { "command": "", "target": "", "value": "" }
 
     ]
 }

@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
@@ -37,6 +38,10 @@ public class SuiteDriver {
 	private SuiteModel suiteModel;
 	private List<TestDriver> tests; 
 	
+	public void RunTests() {
+		
+	}
+	
 	public void Load(String suitePathName) throws JsonParseException, IOException {
 		String pathName = normalizePath(suiteProp.home, suitePathName);
 		
@@ -46,12 +51,13 @@ public class SuiteDriver {
 
 	}
 
-	private void loadTests() {
+	private void loadTests() throws JsonParseException, JsonMappingException, IOException {
 		tests = new ArrayList<TestDriver>();
 		
 		for (SuiteTestModel suiteTestModel : suiteModel.getTests()) {
 			
-			String pathName = normalizePath(suiteProp.testHome, suiteTestModel.getFileName());
+			String pathName = normalizePath(suiteProp.testHome, suiteModel.getTestPath());
+			pathName = normalizePath(pathName, suiteTestModel.getFileName());
 			
 			if (!testContainer.containsKey(pathName))
 				testContainer.put(pathName, new TestDriver(pathName, suiteTestModel.getArguments()));
@@ -75,7 +81,7 @@ public class SuiteDriver {
 		else
 			normalizedPath = name;
 		
-		if (!normalizedPath.endsWith(".json"))
+		if (!normalizedPath.endsWith(".json") && !normalizedPath.endsWith("/"))
 			normalizedPath = normalizedPath.concat(".json");
 		
 		return normalizedPath;
