@@ -12,22 +12,37 @@ import org.springframework.stereotype.Component;
 public class TestContainer {
 
 	private static ConcurrentHashMap<String, TestDriver> testDrivers;
+	private static ConcurrentHashMap<String, Object> variables;
 	
 	@PostConstruct
 	public void init() {
 		testDrivers = new ConcurrentHashMap<String, TestDriver>();
+		variables = new ConcurrentHashMap<String, Object>();
 	}
 	
-	public void put(String key, TestDriver testDriver) {
+	public void putTestDriver(String key, TestDriver testDriver) {
 		testDrivers.put(key, testDriver);
 		
 	}
 	
-	public TestDriver get(String key) {
+	public TestDriver getTestDriver(String key) {
 		return testDrivers.get(key);
 	}
 	
-	public boolean containsKey(String key) {
+	public boolean containsTestDriverKey(String key) {
 		return testDrivers.containsKey(key);
+	}
+
+	public void putVariable(String key, Object object) {
+		variables.put(key, object);
+		
+	}
+	
+	public Object getVariable(String key) {
+		return variables.get(key);
+	}
+	
+	public boolean containsVariablesKey(String key) {
+		return variables.containsKey(key);
 	}
 }

@@ -63,10 +63,10 @@ public class SuiteDriver {
 			
 			SuiteLogger.debug("test is loading/getting from {}", pathName);
 			
-			if (!testContainer.containsKey(pathName))
-				testContainer.put(pathName, new TestDriver(pathName, suiteTestModel.getArguments()));
+			if (!testContainer.containsTestDriverKey(pathName))
+				testContainer.putTestDriver(pathName, new TestDriver(pathName, suiteTestModel.getArguments()));
 			
-			tests.add(testContainer.get(pathName));
+			tests.add(testContainer.getTestDriver(pathName));
 			
 		}
 		
