@@ -1,12 +1,8 @@
 package org.ao.suite;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -20,8 +16,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -92,7 +86,7 @@ public class SuiteDriver {
 			SuiteLogger.debug("test is loading/getting from {}", pathName);
 			
 			if (!testContainer.containsTestDriverKey(pathName))
-				testContainer.putTestDriver(pathName, new TestDriver(pathName, suiteTestModel.getArguments()));
+				testContainer.putTestDriver(pathName, new TestDriver(webDriver, pathName, suiteTestModel.getArguments()));
 			
 			tests.add(testContainer.getTestDriver(pathName));
 			

@@ -2,8 +2,11 @@ package org.ao.suite.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,20 +16,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestDriver {
 	
-	
+	private WebDriver webDriver;
 	private String name;
 	private LinkedHashMap<String, Object> arguments;
 	private TestModel testModel;
 	
+	private List<CommandDriver> commandDrivers;
+	
 	private static Logger TestLogger = LoggerFactory.getLogger(TestDriver.class);
 	
-	public TestDriver(String name, LinkedHashMap<String, Object> arguments) 
+	public TestDriver(WebDriver webDriver, String name, LinkedHashMap<String, Object> arguments) 
 			throws JsonParseException, JsonMappingException, IOException {
 		
+		this.webDriver = webDriver;
 		this.name = name;
 		this.arguments = arguments;
 		
 		loadTest();
+		prepareCommands();
 		putArguments();
 		storeVars();
 		
@@ -35,7 +42,16 @@ public class TestDriver {
 	public void Run() {
 		
 		TestLogger.debug("{} is running now.", name);
+		commandDrivers.forEach((cd) -> cd.execute() );
 		
+	}
+	
+	private void prepareCommands() {
+		this.commandDrivers = new ArrayList<CommandDriver>();
+		
+		for (CommandModel m: testModel.getCommands())
+			this.commandDrivers.add(new CommandDriver(webDriver, m));
+	
 	}
 	
 	private void loadTest() 

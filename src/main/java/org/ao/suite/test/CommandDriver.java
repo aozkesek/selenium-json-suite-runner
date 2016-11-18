@@ -1,43 +1,24 @@
 package org.ao.suite.test;
 
+import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CommandDriver {
 
-	private String name;
-	private String target;
-	private String value;
+	private CommandModel commandModel;
+	private WebDriver webDriver;
 	
-	private CommandDriver nextCommand;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getTarget() {
-		return target;
-	}
-
-	public void setTarget(String target) {
-		this.target = target;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public CommandDriver getNextCommand() {
-		return nextCommand;
-	}
-
-	public void setNextCommand(CommandDriver nextCommand) {
-		this.nextCommand = nextCommand;
+	private static Logger CommandLogger = LoggerFactory.getLogger(CommandDriver.class);
+	
+	public CommandDriver(WebDriver webDriver, CommandModel commandModel) {
+		this.commandModel = commandModel;
+		this.webDriver = webDriver;
 	}
 	
+	public void execute() {
+		
+		CommandLogger.debug("executing now: {}", commandModel);
+		
+	}
 }
