@@ -39,6 +39,11 @@ public class JSONRunnerMain {
 		} catch (IOException e) {
 			AppLogger.error(e.getMessage());
 		}
+		
+		int exitCode = SpringApplication.exit(AppContext);
+		if (exitCode != 0)
+			AppLogger.error("Application exit code is {}.", exitCode);
+		
 	}
 
 }

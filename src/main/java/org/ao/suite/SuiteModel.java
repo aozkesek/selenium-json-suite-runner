@@ -9,6 +9,8 @@ public class SuiteModel {
 	private String objectRepositoryPath;
 	@JsonProperty("test_path")
 	private String testPath;
+	@JsonProperty("test_url")
+	private String testUrl;
 	private SuiteTestModel[] tests;
 	public String getName() {
 		return name;
@@ -27,6 +29,12 @@ public class SuiteModel {
 	}
 	public void setTestPath(String testPath) {
 		this.testPath = testPath;
+	}
+	public String getTestUrl() {
+		return testUrl;
+	}
+	public void setTestUrl(String testUrl) {
+		this.testUrl = testUrl;
 	}
 	public SuiteTestModel[] getTests() {
 		return tests;

@@ -9,8 +9,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +35,8 @@ public class SuiteDriver {
 	
 	public String SuiteId;
 	
+	private WebDriver webDriver;
+	
 	@Autowired
 	private SuiteProperty suiteProp;
 	@Autowired
@@ -38,9 +46,27 @@ public class SuiteDriver {
 	private SuiteModel suiteModel;
 	private List<TestDriver> tests; 
 	
+	@PostConstruct
+	private void init() {
+		
+		if (suiteProp.webDriver.equals("firefox"))
+			webDriver = new FirefoxDriver();
+		else if (suiteProp.webDriver.equals("chrome"))
+			webDriver = new ChromeDriver();
+		
+	}
+	
+	@PreDestroy
+	public void destroy() {
+		webDriver.quit();
+		SuiteLogger.debug("WebDriver->quit called.");
+	}
+	
 	public void RunTests() {
 		
 		tests.forEach((t) -> t.Run() );
+		
+		webDriver.quit();
 	}
 	
 	public void Load(String suitePathName) throws JsonParseException, IOException {
@@ -48,6 +74,8 @@ public class SuiteDriver {
 		
 		suiteModel = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
 		SuiteLogger.debug("suite = {}", suiteModel);
+		
+		webDriver.get(suiteModel.getTestUrl());
 		
 		loadTests();
 
