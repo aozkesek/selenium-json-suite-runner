@@ -39,6 +39,7 @@ public class JSONRunnerMain {
 
 		} catch (IOException | CommandNotFoundException e) {
 			AppLogger.error("Program interrupted by;", e);
+			startUpSuite.destroy();
 		}
 		
 		int exitCode = SpringApplication.exit(AppContext);

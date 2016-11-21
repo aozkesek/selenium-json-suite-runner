@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.ao.suite.test.command.CommandDriver;
+import org.ao.suite.test.command.CommandDriverFactory;
 import org.ao.suite.test.command.CommandModel;
 import org.ao.suite.test.command.CommandNotFoundException;
+import org.ao.suite.test.command.ElementNotFoundException;
+import org.ao.suite.test.command.ICommandDriver;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ public class TestDriver {
 	private LinkedHashMap<String, Object> arguments;
 	private TestModel testModel;
 	
-	private List<CommandDriver> commandDrivers;
+	private List<ICommandDriver> commandDrivers;
 	
 	private static Logger TestLogger = LoggerFactory.getLogger(TestDriver.class);
 	
@@ -45,17 +47,17 @@ public class TestDriver {
 	public void Run() {
 		
 		TestLogger.debug("{} is running now.", name);
-		commandDrivers.forEach(
-				(cd) -> cd.execute() 
-				);
+		commandDrivers.forEach( (cd) -> cd.execute() );
 		
 	}
 	
 	private void prepareCommands() throws CommandNotFoundException {
-		this.commandDrivers = new ArrayList<CommandDriver>();
+		this.commandDrivers = new ArrayList<ICommandDriver>();
 		
 		for (CommandModel m: testModel.getCommands())
-			this.commandDrivers.add(new CommandDriver(webDriver, m));
+			this.commandDrivers.add(
+					CommandDriverFactory.getCommandDriver(webDriver, m)
+					);
 	
 	}
 	

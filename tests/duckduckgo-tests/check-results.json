@@ -3,8 +3,8 @@
     "arguments": {},
     "vars": {},
     "commands": [
-        { "command": "store", "target": "http://duckduckgo.com", "value": "varBaseUrl" },
-        { "command": "webopen", "target": "${varBaseUrl}" }
+        { "command": "click", "args": "http://duckduckgo.com", "value": "varBaseUrl" },
+        { "command": "click", "args": "${varBaseUrl}" }
     ]
 
 

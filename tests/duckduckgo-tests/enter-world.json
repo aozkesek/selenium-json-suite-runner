@@ -10,9 +10,8 @@
     "vars": {},
 
     "commands": [
-        { "command": "click", "target": "", "value": "" },
-        { "command": "submit", "target": "", "value": "" },
-        { "command": "sendKeys", "target": "", "value": "" }
+        { "command": "sendKeys", "args": "id=search_form_input_homepage", "value": "${queryWorld}" },
+        { "command": "click", "args": "id=search_button_homepage" }
 
     ]
 }
