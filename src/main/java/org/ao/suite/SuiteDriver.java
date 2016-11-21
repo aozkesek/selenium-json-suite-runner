@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.ao.suite.test.CommandDriver.CommandNotFoundException;
 import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
 import org.openqa.selenium.WebDriver;
@@ -63,19 +64,19 @@ public class SuiteDriver {
 		webDriver.quit();
 	}
 	
-	public void Load(String suitePathName) throws JsonParseException, IOException {
+	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
 		String pathName = normalizePath(suiteProp.home, suitePathName);
 		
 		suiteModel = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
 		SuiteLogger.debug("suite = {}", suiteModel);
 		
-		webDriver.get(suiteModel.getTestUrl());
-		
 		loadTests();
+		
+		webDriver.get(suiteModel.getTestUrl());
 
 	}
 
-	private void loadTests() throws JsonParseException, JsonMappingException, IOException {
+	private void loadTests() throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
 		tests = new ArrayList<TestDriver>();
 		
 		for (SuiteTestModel suiteTestModel : suiteModel.getTests()) {

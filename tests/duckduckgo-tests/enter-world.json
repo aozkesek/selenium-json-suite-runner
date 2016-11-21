@@ -10,9 +10,9 @@
     "vars": {},
 
     "commands": [
-        { "command": "", "target": "", "value": "" },
-        { "command": "", "target": "", "value": "" },
-        { "command": "", "target": "", "value": "" }
+        { "command": "click", "target": "", "value": "" },
+        { "command": "submit", "target": "", "value": "" },
+        { "command": "sendKeys", "target": "", "value": "" }
 
     ]
 }

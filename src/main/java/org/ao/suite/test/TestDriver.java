@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.ao.suite.test.CommandDriver.CommandNotFoundException;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class TestDriver {
 	private static Logger TestLogger = LoggerFactory.getLogger(TestDriver.class);
 	
 	public TestDriver(WebDriver webDriver, String name, LinkedHashMap<String, Object> arguments) 
-			throws JsonParseException, JsonMappingException, IOException {
+			throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
 		
 		this.webDriver = webDriver;
 		this.name = name;
@@ -46,7 +47,7 @@ public class TestDriver {
 		
 	}
 	
-	private void prepareCommands() {
+	private void prepareCommands() throws CommandNotFoundException {
 		this.commandDrivers = new ArrayList<CommandDriver>();
 		
 		for (CommandModel m: testModel.getCommands())
