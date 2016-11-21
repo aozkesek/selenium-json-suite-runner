@@ -1,4 +1,4 @@
-package org.ao.suite.test;
+package org.ao.suite.test.command;
 
 public class CommandModel {
 	

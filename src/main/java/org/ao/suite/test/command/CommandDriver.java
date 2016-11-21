@@ -1,22 +1,13 @@
-package org.ao.suite.test;
+package org.ao.suite.test.command;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.ao.suite.test.CommandDriver.CommandNotFoundException;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CommandDriver {
-
-	public class CommandNotFoundException extends Exception {
-		
-		public CommandNotFoundException(String message) {
-			super(message);
-		}
-		
-	}
 	
 	public static List<String> COMMANDS = Arrays.asList(
 			"click",
@@ -57,10 +48,11 @@ public class CommandDriver {
 	}
 	
 	private void isValidCommand() throws CommandNotFoundException {
-		if (COMMANDS.contains(commandModel.getCommand()))
-			return;
 		
-		throw new CommandNotFoundException(commandModel.toString());
+		if (!COMMANDS.contains(commandModel.getCommand()))		
+			throw new CommandNotFoundException(commandModel.toString());
+		
+		
 				
 	}
 }

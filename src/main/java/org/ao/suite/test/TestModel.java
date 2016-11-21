@@ -2,6 +2,8 @@ package org.ao.suite.test;
 
 import java.util.LinkedHashMap;
 
+import org.ao.suite.test.command.CommandModel;
+
 public class TestModel {
 
 	private String name;

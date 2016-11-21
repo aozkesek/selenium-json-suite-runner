@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.ao.suite.test.CommandDriver.CommandNotFoundException;
+import org.ao.suite.test.command.CommandDriver;
+import org.ao.suite.test.command.CommandModel;
+import org.ao.suite.test.command.CommandNotFoundException;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +45,9 @@ public class TestDriver {
 	public void Run() {
 		
 		TestLogger.debug("{} is running now.", name);
-		commandDrivers.forEach((cd) -> cd.execute() );
+		commandDrivers.forEach(
+				(cd) -> cd.execute() 
+				);
 		
 	}
 	

@@ -8,9 +8,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.ao.suite.test.CommandDriver.CommandNotFoundException;
 import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
+import org.ao.suite.test.command.CommandNotFoundException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -59,7 +59,11 @@ public class SuiteDriver {
 	
 	public void RunTests() {
 		
-		tests.forEach((t) -> t.Run() );
+		webDriver.get(suiteModel.getTestUrl());
+		
+		tests.forEach(
+				(t) -> t.Run() 
+				);
 		
 		webDriver.quit();
 	}
@@ -71,8 +75,6 @@ public class SuiteDriver {
 		SuiteLogger.debug("suite = {}", suiteModel);
 		
 		loadTests();
-		
-		webDriver.get(suiteModel.getTestUrl());
 
 	}
 
