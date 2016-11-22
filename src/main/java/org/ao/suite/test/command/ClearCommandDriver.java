@@ -5,11 +5,12 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ClickCommandDriver extends AbstractCommandDriver {
+public class ClearCommandDriver extends AbstractCommandDriver {
 
-	public ClickCommandDriver(WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
+	public ClearCommandDriver(WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
 		super(webDriver, commandModel);
-		logger = LoggerFactory.getLogger(ClickCommandDriver.class);
+		logger = LoggerFactory.getLogger(ClearCommandDriver.class);
+		
 	}
 
 	@Override

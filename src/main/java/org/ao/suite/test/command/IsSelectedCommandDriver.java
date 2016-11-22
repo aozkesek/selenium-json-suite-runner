@@ -3,13 +3,17 @@ package org.ao.suite.test.command;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class ClickCommandDriver extends AbstractCommandDriver {
+public class IsSelectedCommandDriver extends AbstractCommandDriver {
 
-	public ClickCommandDriver(WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
+	public IsSelectedCommandDriver(WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
 		super(webDriver, commandModel);
-		logger = LoggerFactory.getLogger(ClickCommandDriver.class);
+	}
+
+	@Override
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

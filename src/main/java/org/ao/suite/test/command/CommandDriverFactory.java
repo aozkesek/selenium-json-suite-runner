@@ -8,18 +8,18 @@ public class CommandDriverFactory {
 	
 	public static HashMap<String, Class<?>> COMMANDS = new HashMap<String, Class<?>>() {{
 		put("click", ClickCommandDriver.class);
-		put("submit", ClickCommandDriver.class);
-		put("sendKeys", ClickCommandDriver.class);
-		put("isEnabled", ClickCommandDriver.class);
-		put("isDisplayed", ClickCommandDriver.class);
-		put("isSelected", ClickCommandDriver.class);
-		put("clear", ClickCommandDriver.class);
-		put("getTagName", ClickCommandDriver.class);
-		put("getAttribute", ClickCommandDriver.class);
-		put("getText", ClickCommandDriver.class);
-		put("getCssValue", ClickCommandDriver.class);
-		put("findElement", ClickCommandDriver.class);
-		put("findElements", ClickCommandDriver.class);
+		put("submit", SubmitCommandDriver.class);
+		put("sendKeys", SendKeysCommandDriver.class);
+		put("isEnabled", IsEnabledCommandDriver.class);
+		put("isDisplayed", IsDisplayedCommandDriver.class);
+		put("isSelected", IsSelectedCommandDriver.class);
+		put("clear", ClearCommandDriver.class);
+		put("getTagName", GetTagNameCommandDriver.class);
+		put("getAttribute", GetAttributeCommandDriver.class);
+		put("getText", GetTextCommandDriver.class);
+		put("getCssValue", GetCssValueCommandDriver.class);
+		put("findElement", FindElementCommandDriver.class);
+		put("findElements", FindElementsCommandDriver.class);
 		
 	}};
 	
