@@ -9,7 +9,6 @@ import java.util.List;
 import org.ao.suite.test.command.CommandDriverFactory;
 import org.ao.suite.test.command.CommandModel;
 import org.ao.suite.test.command.CommandNotFoundException;
-import org.ao.suite.test.command.ElementNotFoundException;
 import org.ao.suite.test.command.ICommandDriver;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -25,14 +24,16 @@ public class TestDriver {
 	private String name;
 	private LinkedHashMap<String, Object> arguments;
 	private TestModel testModel;
+	private TestContainer testContainer;
 	
 	private List<ICommandDriver> commandDrivers;
 	
 	private static Logger TestLogger = LoggerFactory.getLogger(TestDriver.class);
 	
-	public TestDriver(WebDriver webDriver, String name, LinkedHashMap<String, Object> arguments) 
+	public TestDriver(TestContainer testContainer, WebDriver webDriver, String name, LinkedHashMap<String, Object> arguments) 
 			throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
 		
+		this.testContainer = testContainer;
 		this.webDriver = webDriver;
 		this.name = name;
 		this.arguments = arguments;

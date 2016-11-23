@@ -1,13 +1,14 @@
 package org.ao.suite.test.command;
 
+import org.ao.suite.test.TestContainer;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 
 public class IsEnabledCommandDriver extends AbstractCommandDriver {
 
-	public IsEnabledCommandDriver(WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(webDriver, commandModel);
+	public IsEnabledCommandDriver(TestContainer testContainer, WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
+		super(testContainer, webDriver, commandModel);
 	}
 
 	@Override
