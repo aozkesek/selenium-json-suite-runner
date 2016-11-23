@@ -1,6 +1,8 @@
 package org.ao.suite.test.command;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.ao.suite.test.TestContainer;
 import org.openqa.selenium.By;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractCommandDriver implements ICommandDriver {
 	
 	protected Logger logger = LoggerFactory.getLogger(AbstractCommandDriver.class);
+	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z][A-Z,a-z,0-9,.,_,\\[,\\]]+\\}");
 	
 	protected CommandModel commandModel;
 	protected WebDriver webDriver;
@@ -70,15 +73,26 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 	}
 	
+	public static boolean isVariable(String input) {
+		Matcher matcher = VariablePattern.matcher(input);
+		return matcher.matches();
+	}
+	
+	protected String replaceVariables(String input) {
+		Matcher matcher = VariablePattern.matcher(input);
+		
+		//temporarily return the original value,
+		//TO-DO: do put the real value of the variable(s)
+		return input;
+	}
+	
 	protected By parseArguments() {
 		
 		String args = commandModel.getArgs();
 		
-		/* first: check here whether argument is variable or not
-		 *   if variable: get current value from the variable container
-		 */
-		
-		
+		if (isVariable(args))
+			args = replaceVariables(args);
+				
 		if (args.startsWith("id="))
 			return new ById(args.substring(3));
 		else if (args.startsWith("name="))

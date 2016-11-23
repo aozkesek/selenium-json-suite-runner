@@ -57,7 +57,7 @@ public class TestDriver {
 		
 		for (CommandModel m: testModel.getCommands())
 			this.commandDrivers.add(
-					CommandDriverFactory.getCommandDriver(webDriver, m)
+					CommandDriverFactory.getCommandDriver(testContainer, webDriver, m)
 					);
 	
 	}
