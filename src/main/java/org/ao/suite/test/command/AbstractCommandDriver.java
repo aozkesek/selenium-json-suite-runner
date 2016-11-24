@@ -73,13 +73,18 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 	}
 	
-	public static boolean isVariable(String input) {
+	public static boolean containsVariable(String input) {
 		Matcher matcher = VariablePattern.matcher(input);
 		return matcher.matches();
 	}
 	
 	protected String replaceVariables(String input) {
 		Matcher matcher = VariablePattern.matcher(input);
+		while (matcher.find()) {
+			input = input.substring(0, matcher.start()) 
+					+ testContainer.getVariable(input.substring(matcher.start() + 2, matcher.end() - 1))
+					+ input.substring(matcher.end());
+		}
 		
 		//temporarily return the original value,
 		//TO-DO: do put the real value of the variable(s)
@@ -90,7 +95,7 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 		String args = commandModel.getArgs();
 		
-		if (isVariable(args))
+		if (containsVariable(args))
 			args = replaceVariables(args);
 				
 		if (args.startsWith("id="))

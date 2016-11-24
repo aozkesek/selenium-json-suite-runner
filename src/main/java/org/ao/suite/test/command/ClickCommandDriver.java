@@ -17,6 +17,7 @@ public class ClickCommandDriver extends AbstractCommandDriver {
 		
 		WebElement webElement = findElement();
 		
+		webElement.click();
 	}
 
 }

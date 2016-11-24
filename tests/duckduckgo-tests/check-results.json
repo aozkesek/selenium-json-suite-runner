@@ -3,7 +3,7 @@
     "arguments": {},
     "vars": {},
     "commands": [
-        { "command": "click", "args": "http://duckduckgo.com", "value": "varBaseUrl" },
+        
         { "command": "click", "args": "${varBaseUrl}" }
     ]
 

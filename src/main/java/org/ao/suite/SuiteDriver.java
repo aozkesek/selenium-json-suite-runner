@@ -61,9 +61,14 @@ public class SuiteDriver {
 		
 		webDriver.get(suiteModel.getTestUrl());
 		
-		tests.forEach(
-				(t) -> t.Run() 
-				);
+		try {
+			tests.forEach(
+					(t) -> t.Run() 
+					);
+		}
+		catch(Exception e) {
+			SuiteLogger.error("interrupted by ", e);
+		}
 		
 		webDriver.quit();
 	}

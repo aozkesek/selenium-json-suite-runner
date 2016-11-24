@@ -22,6 +22,8 @@ public class SubmitCommandDriver extends AbstractCommandDriver {
 		
 		WebElement webElement = findElement();
 		
+		webElement.submit();
+		
 	}
 
 }
