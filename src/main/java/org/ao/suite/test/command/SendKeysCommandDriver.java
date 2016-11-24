@@ -15,13 +15,11 @@ public class SendKeysCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {
 		
+		super.execute();
+		
 		WebElement webElement = findElement();
 		
-		String value = commandModel.getValue();
-		if (containsVariable(value))
-			value = replaceVariables(value);
-		
-		webElement.sendKeys(commandModel.getValue());
+		webElement.sendKeys(this.commandModel.getValue());
 	}
 
 }

@@ -22,17 +22,28 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractCommandDriver implements ICommandDriver {
 	
 	protected Logger logger = LoggerFactory.getLogger(AbstractCommandDriver.class);
-	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z][A-Z,a-z,0-9,.,_,\\[,\\]]+\\}");
+	protected static Pattern VariablePattern = Pattern.compile("/\\$\\{[A-Z,a-z][A-Z,a-z,0-9,.,_,\\[,\\]]+\\}/g");
 	
 	protected CommandModel commandModel;
+	private CommandModel orgCommandModel;
 	protected WebDriver webDriver;
 	protected TestContainer testContainer;	
 	
 	public AbstractCommandDriver(TestContainer testContainer, WebDriver webDriver, CommandModel commandModel) {
 		this.testContainer = testContainer;
 		this.commandModel = commandModel;
+		this.orgCommandModel = commandModel;
 		this.webDriver = webDriver;
 
+	}
+	
+	@Override
+	public void execute() throws ElementNotFoundException {
+		// put back the original model with include variable name
+		// so if the test that contain this needed to run again,
+		// command driver re-calculate the variables  
+		commandModel = orgCommandModel;
+		
 	}
 	
 	protected Logger getLogger() {
@@ -49,6 +60,9 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 			
 		WebElement webElement = webDriver.findElement(by);
 		
+		if (containsVariable(commandModel.getValue())) 
+			commandModel.setValue(replaceVariables(commandModel.getValue()));
+		
 		return webElement;
 		
 	}
@@ -62,7 +76,10 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 			throw new ElementNotFoundException(commandModel.getArgs());
 			
 		List<WebElement> webElements = webDriver.findElements(by);
-		
+
+		if (containsVariable(commandModel.getValue())) 
+			commandModel.setValue(replaceVariables(commandModel.getValue()));
+
 		return webElements;
 		
 	}
@@ -73,21 +90,36 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 	}
 	
-	public static boolean containsVariable(String input) {
+	public boolean containsVariable(String input) {
+		
+		if (input == null)
+			return false;
+		
+		logger.debug("checking for variable: {}", input);
+		
 		Matcher matcher = VariablePattern.matcher(input);
 		return matcher.matches();
 	}
 	
 	protected String replaceVariables(String input) {
+		if (input == null)
+			return null;
+		
 		Matcher matcher = VariablePattern.matcher(input);
+		
 		while (matcher.find()) {
-			input = input.substring(0, matcher.start()) 
-					+ testContainer.getVariable(input.substring(matcher.start() + 2, matcher.end() - 1))
-					+ input.substring(matcher.end());
+			String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
+			Object varValue = testContainer.getVariable(varName);
+			int start = matcher.start();
+			int end = matcher.end();
+			
+			input = input.substring(0, start > 0 ? start - 1 : 0) 
+					+ varValue.toString() 
+					+ input.substring(end < input.length() ? end + 1 : input.length());
+			
 		}
 		
-		//temporarily return the original value,
-		//TO-DO: do put the real value of the variable(s)
+		logger.debug("replaced by variable: {}", input);
 		return input;
 	}
 	
@@ -95,8 +127,10 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 		String args = commandModel.getArgs();
 		
-		if (containsVariable(args))
+		if (containsVariable(args)) {
 			args = replaceVariables(args);
+			commandModel.setArgs(args);
+		}
 				
 		if (args.startsWith("id="))
 			return new ById(args.substring(3));

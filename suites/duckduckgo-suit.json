@@ -7,14 +7,15 @@
         {
             "file_name": "enter-world.json",
             "arguments": {
-                "baseUrl": "https://duckduckgo.com",
                 "queryWord": "ahmet ozkesek",
                 "abcdef": ""
             }
         },
         {
             "file_name": "check-results.json",
-            "arguments": {}
+            "arguments": {
+            	"searchFormInput": "search_form_input"
+            }
         }
 
     ]

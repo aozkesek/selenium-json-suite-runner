@@ -1,10 +1,13 @@
 {
     "name": "duckduckgo test check results",
-    "arguments": {},
+    "arguments": {
+    	"searchFormInput": ""
+    },
     "vars": {},
     "commands": [
         
-        { "command": "click", "args": "${varBaseUrl}" }
+        { "command": "sendKeys", "args": "id=${searchFormInput}", "value": "merve ozkesek" },
+        { "command": "submit", "args": "id=${searchFormInput}" }
     ]
 
 

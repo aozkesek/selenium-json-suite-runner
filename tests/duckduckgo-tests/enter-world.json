@@ -2,7 +2,6 @@
     "name": "duckduckgo test enter word",
     
     "arguments": {
-    	"baseUrl": "",
     	"queryWord": "",
     	"resultPerPage": "10"
     },
@@ -10,7 +9,7 @@
     "vars": {},
 
     "commands": [
-        { "command": "sendKeys", "args": "id=search_form_input_homepage", "value": "${queryWorld}" },
+        { "command": "sendKeys", "args": "id=search_form_input_homepage", "value": "${queryWord}" },
         { "command": "click", "args": "id=search_button_homepage" }
 
     ]

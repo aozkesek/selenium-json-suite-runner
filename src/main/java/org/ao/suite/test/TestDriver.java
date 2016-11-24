@@ -48,6 +48,7 @@ public class TestDriver {
 	public void Run() {
 		
 		TestLogger.debug("{} is running now.", name);
+		
 		commandDrivers.forEach( (cd) -> cd.execute() );
 		
 	}
@@ -83,6 +84,11 @@ public class TestDriver {
 	}
 
 	private void storeVars() {
+		
+		testModel.getArguments().forEach((k,v) -> {
+			TestLogger.debug("put into the container {}={}", k, v);
+			testContainer.putVariable(k, v);
+		});
 		
 	}
 }
