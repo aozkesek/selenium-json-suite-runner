@@ -10,14 +10,13 @@ public class ClearCommandDriver extends AbstractCommandDriver {
 	public ClearCommandDriver(TestContainer testContainer, WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
 		super(testContainer, webDriver, commandModel);
 		logger = LoggerFactory.getLogger(ClearCommandDriver.class);
-		
 	}
 
 	@Override
 	public void execute() throws ElementNotFoundException {
-		
+		super.execute();
 		WebElement webElement = findElement();
-		
+		webElement.clear();
 	}
 
 }

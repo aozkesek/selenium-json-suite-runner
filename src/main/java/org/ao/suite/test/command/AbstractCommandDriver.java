@@ -19,6 +19,8 @@ import org.openqa.selenium.By.ByTagName;
 import org.openqa.selenium.By.ByXPath;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +62,13 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		By by = parseArguments();
 		if (by == null)
 			throw new ElementNotFoundException(commandModel.getArgs());
+		
+		new WebDriverWait(webDriver, 10000).until(
+				new ExpectedCondition<WebElement>() {
+					public WebElement apply(WebDriver d) {
+						return d.findElement(by);
+					}
+				});
 			
 		WebElement webElement = webDriver.findElement(by);
 		
@@ -78,6 +87,13 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		if (by == null)
 			throw new ElementNotFoundException(commandModel.getArgs());
 			
+		new WebDriverWait(webDriver, 10000).until(
+				new ExpectedCondition<List<WebElement>>() {
+					public List<WebElement> apply(WebDriver d) {
+						return d.findElements(by);
+					}
+				});
+		
 		List<WebElement> webElements = webDriver.findElements(by);
 
 		if (containsVariable(commandModel.getValue())) 

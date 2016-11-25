@@ -14,9 +14,8 @@ public class ClickCommandDriver extends AbstractCommandDriver {
 
 	@Override
 	public void execute() throws ElementNotFoundException {
-		
+		super.execute();
 		WebElement webElement = findElement();
-		
 		webElement.click();
 	}
 

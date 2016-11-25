@@ -14,7 +14,7 @@ public class GetAttributeCommandDriver extends AbstractCommandDriver {
 
 	@Override
 	public void execute() throws ElementNotFoundException {
-		
+		super.execute();
 		WebElement webElement = findElement();
 		
 	}

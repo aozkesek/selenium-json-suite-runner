@@ -5,7 +5,7 @@
     },
     "vars": {},
     "commands": [
-        
+        { "command": "clear", "args": "id=${searchFormInput}" },
         { "command": "sendKeys", "args": "id=${searchFormInput}", "value": "merve ozkesek" },
         { "command": "submit", "args": "id=${searchFormInput}" }
     ]
