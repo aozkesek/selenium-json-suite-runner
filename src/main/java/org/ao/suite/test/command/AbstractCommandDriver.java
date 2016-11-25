@@ -1,6 +1,9 @@
 package org.ao.suite.test.command;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractCommandDriver implements ICommandDriver {
 	
 	protected Logger logger = LoggerFactory.getLogger(AbstractCommandDriver.class);
-	protected static Pattern VariablePattern = Pattern.compile("/\\$\\{[A-Z,a-z][A-Z,a-z,0-9,.,_,\\[,\\]]+\\}/g");
+	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_,\\[,\\]]+\\}");
 	
 	protected CommandModel commandModel;
 	private CommandModel orgCommandModel;
@@ -98,7 +101,7 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		logger.debug("checking for variable: {}", input);
 		
 		Matcher matcher = VariablePattern.matcher(input);
-		return matcher.matches();
+		return matcher.find(0);
 	}
 	
 	protected String replaceVariables(String input) {
@@ -106,18 +109,23 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 			return null;
 		
 		Matcher matcher = VariablePattern.matcher(input);
+		boolean isFound = matcher.find(0);
 		
-		while (matcher.find()) {
+		if (!isFound)
+			return input;
+		
+		HashMap<String, String> kvPairs = new HashMap<String, String>();
+		
+		while (isFound) {
 			String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
 			Object varValue = testContainer.getVariable(varName);
-			int start = matcher.start();
-			int end = matcher.end();
-			
-			input = input.substring(0, start > 0 ? start - 1 : 0) 
-					+ varValue.toString() 
-					+ input.substring(end < input.length() ? end + 1 : input.length());
-			
+			kvPairs.put(varName, varValue.toString());
+			logger.debug("{} will replace by {}", varName, varValue);
+			isFound = matcher.find();
 		}
+		
+		for (Entry<String, String> pair: kvPairs.entrySet())
+			input = input.replaceAll("\\$\\{" + pair.getKey() + "\\}", pair.getValue());	
 		
 		logger.debug("replaced by variable: {}", input);
 		return input;
