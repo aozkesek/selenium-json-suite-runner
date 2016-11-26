@@ -15,8 +15,10 @@ public class GetTextCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {
 		super.execute();
+		logger.debug("executing {}", commandModel);
 		WebElement webElement = findElement();
-		
+		commandModel.setValue(webElement.getText());
+		logger.debug("executed {}", commandModel);
 	}
 
 }

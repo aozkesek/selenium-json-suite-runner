@@ -16,8 +16,10 @@ public class GetTagNameCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {
 		super.execute();
+		logger.debug("executing {}", commandModel);
 		WebElement webElement = findElement();
-		
+		commandModel.setValue(webElement.getTagName());
+		logger.debug("executed {}", commandModel);
 	}
 
 }

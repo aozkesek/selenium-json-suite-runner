@@ -15,8 +15,10 @@ public class IsSelectedCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {
 		super.execute();
+		logger.debug("executing {}", commandModel);
 		WebElement webElement = findElement();
 		commandModel.setValue(String.valueOf(webElement.isSelected()));
+		logger.debug("executed {}", commandModel);
 	}
 
 }

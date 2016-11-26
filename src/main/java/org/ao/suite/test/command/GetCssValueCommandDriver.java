@@ -15,8 +15,14 @@ public class GetCssValueCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {
 		super.execute();
-		WebElement webElement = findElement();
+		logger.debug("executing {}", commandModel);
 		
+		if (!commandModel.getArgs().contains(","))
+			throw new CommandInvalidArgumentException(commandModel.getArgs());
+		
+		WebElement webElement = findElement();
+		commandModel.setValue(webElement.getCssValue(commandModel.getArgs().split(",")[1]));
+		logger.debug("executed {}", commandModel);
 	}
 
 }

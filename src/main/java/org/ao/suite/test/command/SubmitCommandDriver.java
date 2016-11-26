@@ -14,13 +14,11 @@ public class SubmitCommandDriver extends AbstractCommandDriver {
 
 	@Override
 	public void execute() throws ElementNotFoundException {
-		
 		super.execute();
-		
+		logger.debug("executing {}", commandModel);
 		WebElement webElement = findElement();
-		
 		webElement.submit();
-		
+		logger.debug("executed {}", commandModel);
 	}
 
 }

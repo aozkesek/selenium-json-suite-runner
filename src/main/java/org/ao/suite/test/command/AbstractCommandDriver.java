@@ -52,7 +52,7 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 		getLogger().debug("find element for {}", commandModel);
 		
-		By by = parseArguments();
+		By by = getBy();
 		if (by == null)
 			throw new ElementNotFoundException(commandModel.getArgs());
 		
@@ -76,7 +76,7 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 		getLogger().debug("find element for {}", commandModel);
 		
-		By by = parseArguments();
+		By by = getBy();
 		if (by == null)
 			throw new ElementNotFoundException(commandModel.getArgs());
 			
@@ -102,9 +102,12 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 	}
 	
-	protected By parseArguments() {
+	protected By getBy() {
 		
 		String args = commandModel.getArgs();
+		
+		if (args.contains(","))
+			args = args.split(",")[0];
 		
 		if (testContainer.containsVariable(args)) {
 			args = testContainer.replaceVariables(args);

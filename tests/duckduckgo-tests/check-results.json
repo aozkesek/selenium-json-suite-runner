@@ -5,6 +5,7 @@
     },
     "vars": {},
     "commands": [
+        { "command": "getAttribute", "args": "${searchFormInput},name" },
         { "command": "clear", "args": "${searchFormInput}" },
         { "command": "sendKeys", "args": "${searchFormInput}", "value": "merve ozkesek" },
         { "command": "submit", "args": "${searchFormInput}" }
