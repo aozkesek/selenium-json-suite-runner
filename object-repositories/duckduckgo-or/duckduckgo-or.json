@@ -1,7 +1,10 @@
 {
-    "base_url": "https://duckduckgo.com",
-    "query_string": "ahmet ozkesek",
-    "query_main_form_input_id": "id=",
-    "query_form_input_id": "id=" 
+	"includes": [
+	],
+    "objects": {
+	    "query_string": "ahmet ozkesek",
+	    "search_form_input_homepage": "id=search_form_input_homepage",
+	    "search_form_input": "id=search_form_input" 
+    }
 }
     

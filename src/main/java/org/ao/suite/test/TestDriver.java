@@ -74,11 +74,17 @@ public class TestDriver {
 	private void putArguments() {
 		
 		arguments.forEach((k, v) -> {
-			if (testModel.getArguments().containsKey(k))
-				testModel.getArguments().replace(k, v);
+			
+			if (testModel.getArguments().containsKey(k)) {
+				if (testContainer.containsVariable(v.toString()))
+					testModel.getArguments().replace(k, testContainer.replaceVariables(v.toString()));
+				else
+					testModel.getArguments().replace(k, v);
+			}
 			else
 				TestLogger.error("Invalid argument {} is ignoring for test {}", k, testModel);
-		} );
+		
+		});
 		
 		TestLogger.debug("updated test arguments {}", testModel);
 	}

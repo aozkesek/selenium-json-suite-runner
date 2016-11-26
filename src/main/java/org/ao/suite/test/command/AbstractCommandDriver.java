@@ -1,12 +1,6 @@
 package org.ao.suite.test.command;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.ao.suite.test.TestContainer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.ByClassName;
@@ -27,7 +21,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractCommandDriver implements ICommandDriver {
 	
 	protected Logger logger = LoggerFactory.getLogger(AbstractCommandDriver.class);
-	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_,\\[,\\]]+\\}");
 	
 	protected CommandModel commandModel;
 	private CommandModel orgCommandModel;
@@ -72,8 +65,8 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 			
 		WebElement webElement = webDriver.findElement(by);
 		
-		if (containsVariable(commandModel.getValue())) 
-			commandModel.setValue(replaceVariables(commandModel.getValue()));
+		if (testContainer.containsVariable(commandModel.getValue())) 
+			commandModel.setValue(testContainer.replaceVariables(commandModel.getValue()));
 		
 		return webElement;
 		
@@ -96,8 +89,8 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 		List<WebElement> webElements = webDriver.findElements(by);
 
-		if (containsVariable(commandModel.getValue())) 
-			commandModel.setValue(replaceVariables(commandModel.getValue()));
+		if (testContainer.containsVariable(commandModel.getValue())) 
+			commandModel.setValue(testContainer.replaceVariables(commandModel.getValue()));
 
 		return webElements;
 		
@@ -109,50 +102,12 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 	}
 	
-	public boolean containsVariable(String input) {
-		
-		if (input == null)
-			return false;
-		
-		logger.debug("checking for variable: {}", input);
-		
-		Matcher matcher = VariablePattern.matcher(input);
-		return matcher.find(0);
-	}
-	
-	protected String replaceVariables(String input) {
-		if (input == null)
-			return null;
-		
-		Matcher matcher = VariablePattern.matcher(input);
-		boolean isFound = matcher.find(0);
-		
-		if (!isFound)
-			return input;
-		
-		HashMap<String, String> kvPairs = new HashMap<String, String>();
-		
-		while (isFound) {
-			String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
-			Object varValue = testContainer.getVariable(varName);
-			kvPairs.put(varName, varValue.toString());
-			logger.debug("{} will replace by {}", varName, varValue);
-			isFound = matcher.find();
-		}
-		
-		for (Entry<String, String> pair: kvPairs.entrySet())
-			input = input.replaceAll("\\$\\{" + pair.getKey() + "\\}", pair.getValue());	
-		
-		logger.debug("replaced by variable: {}", input);
-		return input;
-	}
-	
 	protected By parseArguments() {
 		
 		String args = commandModel.getArgs();
 		
-		if (containsVariable(args)) {
-			args = replaceVariables(args);
+		if (testContainer.containsVariable(args)) {
+			args = testContainer.replaceVariables(args);
 			commandModel.setArgs(args);
 		}
 				

@@ -1,20 +1,20 @@
 {
     "name": "duckduckgo suit",
-    "object_repository_path": "../object-repositories/duckduckgo-or/",
+    "object_repository": "duckduckgo-or/duckduckgo-or.json",
     "test_path": "duckduckgo-tests/",
     "test_url": "https://duckduckgo.com/",
     "tests": [
         {
             "file_name": "enter-world.json",
             "arguments": {
-                "queryWord": "ahmet ozkesek",
+                "queryWord": "${query_string}",
                 "abcdef": ""
             }
         },
         {
             "file_name": "check-results.json",
             "arguments": {
-            	"searchFormInput": "search_form_input"
+            	"searchFormInput": "${search_form_input}"
             }
         }
 

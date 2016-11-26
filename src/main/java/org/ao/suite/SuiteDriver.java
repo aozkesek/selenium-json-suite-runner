@@ -38,7 +38,8 @@ public class SuiteDriver {
 	private TestContainer testContainer;
 	
 	private static Logger SuiteLogger = LoggerFactory.getLogger(SuiteDriver.class);
-	private SuiteModel suiteModel;
+	private SuiteModel suite;
+	private ObjectRepositoryModel objectRepository;
 	private List<TestDriver> tests; 
 	
 	@PostConstruct
@@ -59,7 +60,7 @@ public class SuiteDriver {
 	
 	public void RunTests() {
 		
-		webDriver.get(suiteModel.getTestUrl());
+		webDriver.get(suite.getTestUrl());
 		
 		try {
 			tests.forEach(
@@ -76,19 +77,30 @@ public class SuiteDriver {
 	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
 		String pathName = normalizePath(suiteProp.home, suitePathName);
 		
-		suiteModel = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
-		SuiteLogger.debug("suite = {}", suiteModel);
+		suite = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
+		SuiteLogger.debug("suite = {}", suite);
+		
+		loadObjectRepository();
 		
 		loadTests();
 
 	}
 
+	private void loadObjectRepository() throws JsonParseException, JsonMappingException, IOException {
+		String pathName = normalizePath(suiteProp.objectRepositoryHome, suite.getObjectRepository());
+		
+		objectRepository = new ObjectMapper().readValue(new File(pathName), ObjectRepositoryModel.class);
+		SuiteLogger.debug("objects = {}", objectRepository);
+		
+		objectRepository.getObjects().forEach((k,v) -> testContainer.putVariable(k, v));
+	}
+	
 	private void loadTests() throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
 		tests = new ArrayList<TestDriver>();
 		
-		for (SuiteTestModel suiteTestModel : suiteModel.getTests()) {
+		for (SuiteTestModel suiteTestModel : suite.getTests()) {
 			
-			String pathName = normalizePath(suiteProp.testHome, suiteModel.getTestPath());
+			String pathName = normalizePath(suiteProp.testHome, suite.getTestPath());
 			pathName = normalizePath(pathName, suiteTestModel.getFileName());
 			
 			SuiteLogger.debug("test is loading/getting from {}", pathName);
