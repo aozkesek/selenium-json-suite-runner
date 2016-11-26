@@ -1,8 +1,6 @@
 package org.ao;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.SuiteProperty;
