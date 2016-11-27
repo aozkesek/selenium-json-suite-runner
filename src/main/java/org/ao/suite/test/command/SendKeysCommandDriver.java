@@ -15,10 +15,10 @@ public class SendKeysCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {	
 		super.execute();
-		logger.debug("executing {}", commandModel);
+		logger.debug("executing {} - {} - {}", getCommand(), getArgs(), getValue());
 		WebElement webElement = findElement();
-		webElement.sendKeys(this.commandModel.getValue());
-		logger.debug("executed {}", commandModel);
+		webElement.sendKeys(getValue());
+		logger.debug("executed {} - {}", getCommand(), getArgs());
 	}
 
 }

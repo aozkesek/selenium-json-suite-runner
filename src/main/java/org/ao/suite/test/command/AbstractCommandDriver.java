@@ -23,30 +23,42 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 	
 	protected Logger logger = LoggerFactory.getLogger(AbstractCommandDriver.class);
 	
-	protected CommandModel commandModel;
-	private CommandModel orgCommandModel;
+	private CommandModel commandModel;
 	protected WebDriver webDriver;
 	protected ObjectContainer objectContainer;	
 	
 	public AbstractCommandDriver(ObjectContainer objectContainer, WebDriver webDriver, CommandModel commandModel) {
 		this.objectContainer = objectContainer;
 		this.commandModel = commandModel;
-		this.orgCommandModel = commandModel;
 		this.webDriver = webDriver;
 
 	}
 	
 	@Override
 	public void execute() throws ElementNotFoundException {
-		// put back the original model with include variable name
-		// so if the test that contain this needed to run again,
-		// command driver re-calculate the variables  
-		commandModel = orgCommandModel;
 		
 	}
 	
 	protected Logger getLogger() {
 		return logger;
+	}
+	
+	protected String getCommand() {
+		return commandModel.getCommand();
+	}
+	
+	protected String getArgs() {
+		String args = commandModel.getArgs();
+		if (objectContainer.containsVariable(args))
+			args = objectContainer.replaceVariables(args);
+		return args;
+	}
+	
+	protected String getValue() {
+		String value = commandModel.getValue();
+		if (objectContainer.containsVariable(value))
+			value = objectContainer.replaceVariables(value);
+		return value;
 	}
 	
 	protected WebElement findElement() throws ElementNotFoundException {
@@ -65,9 +77,6 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 				});
 			
 		WebElement webElement = webDriver.findElement(by);
-		
-		if (objectContainer.containsVariable(commandModel.getValue())) 
-			commandModel.setValue(objectContainer.replaceVariables(commandModel.getValue()));
 		
 		return webElement;
 		
@@ -90,34 +99,27 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 		List<WebElement> webElements = webDriver.findElements(by);
 
-		if (objectContainer.containsVariable(commandModel.getValue())) 
-			commandModel.setValue(objectContainer.replaceVariables(commandModel.getValue()));
-
 		return webElements;
 		
 	}
 	
 	protected void storeValue(Object value) {
+		//to-do: check value if it is variable or not, then update/replace 
 		
+		//for a while put directly 
+		commandModel.setValue(String.valueOf(value));
 		
+		//to-do: update the variable value in the object container
 		
 	}
 	
 	protected By getBy() {
 		
-		String args = commandModel.getArgs();
-		String remainArgs = "";
+		String args = getArgs();
 		
-		if (args.contains(",")) {
+		if (args.contains(","))
 			args = args.split(",")[0];
-			remainArgs = commandModel.getArgs().substring(args.length());
-		}
-		
-		if (objectContainer.containsVariable(args)) {
-			args = objectContainer.replaceVariables(args);
-			commandModel.setArgs(args + remainArgs);
-		}
-				
+					
 		if (args.startsWith("id="))
 			return new ById(args.substring(3));
 		else if (args.startsWith("name="))

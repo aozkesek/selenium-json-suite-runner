@@ -15,10 +15,10 @@ public class ClickCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {
 		super.execute();
-		logger.debug("executing {}", commandModel);
+		logger.debug("executing {} - {}", getCommand(), getArgs());
 		WebElement webElement = findElement();
 		webElement.click();
-		logger.debug("executed {}", commandModel);
+		logger.debug("executed {} - {}", getCommand(), getArgs());
 	}
 
 }

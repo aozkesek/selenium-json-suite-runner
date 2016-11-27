@@ -15,14 +15,15 @@ public class GetAttributeCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {
 		super.execute();
-		logger.debug("executing {}", commandModel);
+		String args = getArgs();
+		logger.debug("executing {} - {}", getCommand(), args);
 		
-		if (!commandModel.getArgs().contains(","))
-			throw new CommandInvalidArgumentException(commandModel.getArgs());
+		if (!args.contains(","))
+			throw new CommandInvalidArgumentException(args);
 		
 		WebElement webElement = findElement();
-		commandModel.setValue(webElement.getAttribute(commandModel.getArgs().split(",")[1]));
-		logger.debug("executed {}", commandModel);
+		storeValue(webElement.getAttribute(args.split(",")[1]));
+		logger.debug("executed {} - {} - {}", getCommand(), args, getValue());
 	}
 
 }

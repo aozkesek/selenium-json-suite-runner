@@ -15,10 +15,10 @@ public class IsDisplayedCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute() throws ElementNotFoundException {
 		super.execute();
-		logger.debug("executing {}", commandModel);
+		logger.debug("executing {} - {}", getCommand(), getArgs());
 		WebElement webElement = findElement();
-		commandModel.setValue(String.valueOf(webElement.isDisplayed()));
-		logger.debug("executed {}", commandModel);
+		//commandModel.setValue(String.valueOf(webElement.isDisplayed()));
+		logger.debug("executed {} - {} - {}", getCommand(), getArgs(), getValue());
 	}
 
 }
