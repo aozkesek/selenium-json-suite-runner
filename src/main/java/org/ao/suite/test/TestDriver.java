@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.ao.suite.ObjectContainer;
+import org.ao.suite.TestContainer;
 import org.ao.suite.test.command.CommandDriverFactory;
 import org.ao.suite.test.command.CommandModel;
 import org.ao.suite.test.command.CommandNotFoundException;
@@ -24,16 +26,16 @@ public class TestDriver {
 	private String name;
 	private LinkedHashMap<String, Object> arguments;
 	private TestModel testModel;
-	private TestContainer testContainer;
+	private ObjectContainer objectContainer;
 	
 	private List<ICommandDriver> commandDrivers;
 	
 	private static Logger TestLogger = LoggerFactory.getLogger(TestDriver.class);
 	
-	public TestDriver(TestContainer testContainer, WebDriver webDriver, String name, LinkedHashMap<String, Object> arguments) 
+	public TestDriver(ObjectContainer objectContainer, WebDriver webDriver, String name, LinkedHashMap<String, Object> arguments) 
 			throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
 		
-		this.testContainer = testContainer;
+		this.objectContainer = objectContainer;
 		this.webDriver = webDriver;
 		this.name = name;
 		this.arguments = arguments;
@@ -58,7 +60,7 @@ public class TestDriver {
 		
 		for (CommandModel m: testModel.getCommands())
 			this.commandDrivers.add(
-					CommandDriverFactory.getCommandDriver(testContainer, webDriver, m)
+					CommandDriverFactory.getCommandDriver(objectContainer, webDriver, m)
 					);
 	
 	}
@@ -76,8 +78,8 @@ public class TestDriver {
 		arguments.forEach((k, v) -> {
 			
 			if (testModel.getArguments().containsKey(k)) {
-				if (testContainer.containsVariable(v.toString()))
-					testModel.getArguments().replace(k, testContainer.replaceVariables(v.toString()));
+				if (objectContainer.containsVariable(v.toString()))
+					testModel.getArguments().replace(k, objectContainer.replaceVariables(v.toString()));
 				else
 					testModel.getArguments().replace(k, v);
 			}
@@ -93,7 +95,7 @@ public class TestDriver {
 		
 		testModel.getArguments().forEach((k,v) -> {
 			TestLogger.debug("put into the container {}={}", k, v);
-			testContainer.putVariable(k, v);
+			objectContainer.putVariable(k, v);
 		});
 		
 	}

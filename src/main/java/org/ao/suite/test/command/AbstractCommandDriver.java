@@ -1,7 +1,8 @@
 package org.ao.suite.test.command;
 
 import java.util.List;
-import org.ao.suite.test.TestContainer;
+
+import org.ao.suite.ObjectContainer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.ByClassName;
 import org.openqa.selenium.By.ByCssSelector;
@@ -25,10 +26,10 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 	protected CommandModel commandModel;
 	private CommandModel orgCommandModel;
 	protected WebDriver webDriver;
-	protected TestContainer testContainer;	
+	protected ObjectContainer objectContainer;	
 	
-	public AbstractCommandDriver(TestContainer testContainer, WebDriver webDriver, CommandModel commandModel) {
-		this.testContainer = testContainer;
+	public AbstractCommandDriver(ObjectContainer objectContainer, WebDriver webDriver, CommandModel commandModel) {
+		this.objectContainer = objectContainer;
 		this.commandModel = commandModel;
 		this.orgCommandModel = commandModel;
 		this.webDriver = webDriver;
@@ -65,8 +66,8 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 			
 		WebElement webElement = webDriver.findElement(by);
 		
-		if (testContainer.containsVariable(commandModel.getValue())) 
-			commandModel.setValue(testContainer.replaceVariables(commandModel.getValue()));
+		if (objectContainer.containsVariable(commandModel.getValue())) 
+			commandModel.setValue(objectContainer.replaceVariables(commandModel.getValue()));
 		
 		return webElement;
 		
@@ -89,8 +90,8 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 		List<WebElement> webElements = webDriver.findElements(by);
 
-		if (testContainer.containsVariable(commandModel.getValue())) 
-			commandModel.setValue(testContainer.replaceVariables(commandModel.getValue()));
+		if (objectContainer.containsVariable(commandModel.getValue())) 
+			commandModel.setValue(objectContainer.replaceVariables(commandModel.getValue()));
 
 		return webElements;
 		
@@ -105,13 +106,16 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 	protected By getBy() {
 		
 		String args = commandModel.getArgs();
+		String remainArgs = "";
 		
-		if (args.contains(","))
+		if (args.contains(",")) {
 			args = args.split(",")[0];
+			remainArgs = commandModel.getArgs().substring(args.length());
+		}
 		
-		if (testContainer.containsVariable(args)) {
-			args = testContainer.replaceVariables(args);
-			commandModel.setArgs(args);
+		if (objectContainer.containsVariable(args)) {
+			args = objectContainer.replaceVariables(args);
+			commandModel.setArgs(args + remainArgs);
 		}
 				
 		if (args.startsWith("id="))

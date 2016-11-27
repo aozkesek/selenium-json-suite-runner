@@ -2,7 +2,7 @@ package org.ao.suite;
 
 import java.util.LinkedHashMap;
 
-public class ObjectRepositoryModel {
+public class ObjectModel {
 	private String[] includes;
 	private LinkedHashMap<String, Object> objects;
 

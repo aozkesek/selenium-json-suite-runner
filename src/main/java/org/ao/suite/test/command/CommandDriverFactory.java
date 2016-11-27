@@ -3,7 +3,7 @@ package org.ao.suite.test.command;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import org.ao.suite.test.TestContainer;
+import org.ao.suite.ObjectContainer;
 import org.openqa.selenium.WebDriver;
 
 public class CommandDriverFactory {
@@ -25,7 +25,7 @@ public class CommandDriverFactory {
 		
 	}};
 		
-	public static ICommandDriver getCommandDriver(TestContainer testContainer, WebDriver webDriver, CommandModel commandModel) 
+	public static ICommandDriver getCommandDriver(ObjectContainer objectContainer, WebDriver webDriver, CommandModel commandModel) 
 			throws CommandNotFoundException {
 		
 		if (!COMMANDS.containsKey(commandModel.getCommand()))		
@@ -36,8 +36,8 @@ public class CommandDriverFactory {
 		try {
 			cd = (ICommandDriver) COMMANDS
 					.get(commandModel.getCommand())
-					.getConstructor(TestContainer.class, WebDriver.class, CommandModel.class)
-					.newInstance(testContainer, webDriver, commandModel);
+					.getConstructor(ObjectContainer.class, WebDriver.class, CommandModel.class)
+					.newInstance(objectContainer, webDriver, commandModel);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			

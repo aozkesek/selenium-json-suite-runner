@@ -8,7 +8,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
 import org.ao.suite.test.command.CommandNotFoundException;
 import org.openqa.selenium.WebDriver;
@@ -31,16 +30,19 @@ public class SuiteDriver {
 	public String SuiteId;
 	
 	private WebDriver webDriver;
+	private SuiteModel suite;
+	private ObjectModel object;
+	private List<TestDriver> tests; 
 	
 	@Autowired
 	private SuiteProperty suiteProp;
 	@Autowired
 	private TestContainer testContainer;
+	@Autowired
+	private ObjectContainer objectContainer;
+	
 	
 	private static Logger SuiteLogger = LoggerFactory.getLogger(SuiteDriver.class);
-	private SuiteModel suite;
-	private ObjectRepositoryModel objectRepository;
-	private List<TestDriver> tests; 
 	
 	@PostConstruct
 	private void init() {
@@ -75,22 +77,27 @@ public class SuiteDriver {
 	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
 		String pathName = normalizePath(suiteProp.home, suitePathName);
 		
-		suite = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
-		SuiteLogger.debug("suite = {}", suite);
+		SuiteLogger.debug("suit is loading {}", suitePathName);
+		suite = new ObjectMapper().
+						readValue(new File(pathName), SuiteModel.class);
+		SuiteLogger.debug("suite has loaded as {}", suite);
 		
-		loadObjectRepository();
+		loadObjects();
 		
 		loadTests();
 
 	}
 
-	private void loadObjectRepository() throws JsonParseException, JsonMappingException, IOException {
+	private void loadObjects() throws JsonParseException, JsonMappingException, IOException {
 		String pathName = normalizePath(suiteProp.objectRepositoryHome, suite.getObjectRepository());
 		
-		objectRepository = new ObjectMapper().readValue(new File(pathName), ObjectRepositoryModel.class);
-		SuiteLogger.debug("objects = {}", objectRepository);
+		SuiteLogger.debug("object is loading {}", pathName);
+		object = new ObjectMapper().
+						readValue(new File(pathName), ObjectModel.class);
+		SuiteLogger.debug("object has loaded as {}", object);
 		
-		objectRepository.getObjects().forEach((k,v) -> testContainer.putVariable(k, v));
+		object.getObjects().
+			forEach((k,v) -> objectContainer.putVariable(k, v));
 	}
 	
 	private void loadTests() throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
@@ -105,7 +112,7 @@ public class SuiteDriver {
 			
 			if (!testContainer.containsTestDriverKey(pathName))
 				testContainer.putTestDriver(pathName, 
-						new TestDriver(testContainer, webDriver, pathName, suiteTestModel.getArguments()));
+						new TestDriver(objectContainer, webDriver, pathName, suiteTestModel.getArguments()));
 			
 			tests.add(testContainer.getTestDriver(pathName));
 			
