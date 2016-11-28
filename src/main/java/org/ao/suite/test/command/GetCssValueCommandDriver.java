@@ -1,14 +1,13 @@
 package org.ao.suite.test.command;
 
-import org.ao.suite.ObjectContainer;
-import org.openqa.selenium.WebDriver;
+import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 
 public class GetCssValueCommandDriver extends AbstractCommandDriver {
 
-	public GetCssValueCommandDriver(ObjectContainer objectContainer, WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(objectContainer, webDriver, commandModel);
+	public GetCssValueCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
+		super(suiteDriver, commandModel);
 		logger = LoggerFactory.getLogger(GetCssValueCommandDriver.class);
 	}
 

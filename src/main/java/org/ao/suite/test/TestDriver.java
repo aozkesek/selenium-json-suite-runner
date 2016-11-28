@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.ao.suite.ObjectContainer;
-import org.ao.suite.TestContainer;
+import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.CommandDriverFactory;
 import org.ao.suite.test.command.CommandModel;
 import org.ao.suite.test.command.CommandNotFoundException;
@@ -22,21 +22,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestDriver {
 	
-	private WebDriver webDriver;
+	private SuiteDriver suiteDriver;
 	private String name;
 	private LinkedHashMap<String, Object> arguments;
 	private TestModel testModel;
-	private ObjectContainer objectContainer;
 	
 	private List<ICommandDriver> commandDrivers;
 	
 	private static Logger TestLogger = LoggerFactory.getLogger(TestDriver.class);
 	
-	public TestDriver(ObjectContainer objectContainer, WebDriver webDriver, String name, LinkedHashMap<String, Object> arguments) 
+	public TestDriver(SuiteDriver suiteDriver, String name, LinkedHashMap<String, Object> arguments) 
 			throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
 		
-		this.objectContainer = objectContainer;
-		this.webDriver = webDriver;
+		this.suiteDriver = suiteDriver;
 		this.name = name;
 		this.arguments = arguments;
 		
@@ -60,7 +58,7 @@ public class TestDriver {
 		
 		for (CommandModel m: testModel.getCommands())
 			this.commandDrivers.add(
-					CommandDriverFactory.getCommandDriver(objectContainer, webDriver, m)
+					CommandDriverFactory.getCommandDriver(suiteDriver, m)
 					);
 	
 	}
@@ -78,8 +76,8 @@ public class TestDriver {
 		arguments.forEach((k, v) -> {
 			
 			if (testModel.getArguments().containsKey(k)) {
-				if (objectContainer.containsVariable(v.toString()))
-					testModel.getArguments().replace(k, objectContainer.replaceVariables(v.toString()));
+				if (suiteDriver.getObjectContainer().containsVariable(v.toString()))
+					testModel.getArguments().replace(k, suiteDriver.getObjectContainer().replaceVariables(v.toString()));
 				else
 					testModel.getArguments().replace(k, v);
 			}
@@ -95,7 +93,7 @@ public class TestDriver {
 		
 		testModel.getArguments().forEach((k,v) -> {
 			TestLogger.debug("put into the container {}={}", k, v);
-			objectContainer.putVariable(k, v);
+			suiteDriver.getObjectContainer().putVariable(k, v);
 		});
 		
 	}

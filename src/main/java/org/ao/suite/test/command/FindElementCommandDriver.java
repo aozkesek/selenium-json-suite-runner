@@ -1,14 +1,13 @@
 package org.ao.suite.test.command;
 
-import org.ao.suite.ObjectContainer;
-import org.openqa.selenium.WebDriver;
+import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 
 public class FindElementCommandDriver extends AbstractCommandDriver {
 
-	public FindElementCommandDriver(ObjectContainer objectContainer, WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(objectContainer, webDriver, commandModel);
+	public FindElementCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
+		super(suiteDriver, commandModel);
 		logger = LoggerFactory.getLogger(FindElementCommandDriver.class);
 	}
 

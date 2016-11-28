@@ -2,7 +2,7 @@ package org.ao.suite.test.command;
 
 import java.util.List;
 
-import org.ao.suite.ObjectContainer;
+import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.ByClassName;
 import org.openqa.selenium.By.ByCssSelector;
@@ -24,14 +24,11 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 	protected Logger logger = LoggerFactory.getLogger(AbstractCommandDriver.class);
 	
 	private CommandModel commandModel;
-	protected WebDriver webDriver;
-	protected ObjectContainer objectContainer;	
+	protected SuiteDriver suiteDriver;
 	
-	public AbstractCommandDriver(ObjectContainer objectContainer, WebDriver webDriver, CommandModel commandModel) {
-		this.objectContainer = objectContainer;
+	public AbstractCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) {
 		this.commandModel = commandModel;
-		this.webDriver = webDriver;
-
+		this.suiteDriver = suiteDriver;
 	}
 	
 	@Override
@@ -49,15 +46,15 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 	
 	protected String getArgs() {
 		String args = commandModel.getArgs();
-		if (objectContainer.containsVariable(args))
-			args = objectContainer.replaceVariables(args);
+		if (suiteDriver.getObjectContainer().containsVariable(args))
+			args = suiteDriver.getObjectContainer().replaceVariables(args);
 		return args;
 	}
 	
 	protected String getValue() {
 		String value = commandModel.getValue();
-		if (objectContainer.containsVariable(value))
-			value = objectContainer.replaceVariables(value);
+		if (suiteDriver.getObjectContainer().containsVariable(value))
+			value = suiteDriver.getObjectContainer().replaceVariables(value);
 		return value;
 	}
 	
@@ -69,14 +66,14 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		if (by == null)
 			throw new ElementNotFoundException(commandModel.getArgs());
 		
-		new WebDriverWait(webDriver, 10000).until(
+		new WebDriverWait(suiteDriver.getWebDriver(), 10000).until(
 				new ExpectedCondition<WebElement>() {
 					public WebElement apply(WebDriver d) {
 						return d.findElement(by);
 					}
 				});
 			
-		WebElement webElement = webDriver.findElement(by);
+		WebElement webElement = suiteDriver.getWebDriver().findElement(by);
 		
 		return webElement;
 		
@@ -90,14 +87,14 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		if (by == null)
 			throw new ElementNotFoundException(commandModel.getArgs());
 			
-		new WebDriverWait(webDriver, 10000).until(
+		new WebDriverWait(suiteDriver.getWebDriver(), 10000).until(
 				new ExpectedCondition<List<WebElement>>() {
 					public List<WebElement> apply(WebDriver d) {
 						return d.findElements(by);
 					}
 				});
 		
-		List<WebElement> webElements = webDriver.findElements(by);
+		List<WebElement> webElements = suiteDriver.getWebDriver().findElements(by);
 
 		return webElements;
 		

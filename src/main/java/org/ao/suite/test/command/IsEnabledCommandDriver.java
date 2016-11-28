@@ -1,14 +1,13 @@
 package org.ao.suite.test.command;
 
-import org.ao.suite.ObjectContainer;
-import org.openqa.selenium.WebDriver;
+import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 
 public class IsEnabledCommandDriver extends AbstractCommandDriver {
 
-	public IsEnabledCommandDriver(ObjectContainer objectContainer, WebDriver webDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(objectContainer, webDriver, commandModel);
+	public IsEnabledCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
+		super(suiteDriver, commandModel);
 		logger = LoggerFactory.getLogger(IsEnabledCommandDriver.class);
 	}
 
@@ -17,7 +16,7 @@ public class IsEnabledCommandDriver extends AbstractCommandDriver {
 		super.execute();
 		logger.debug("executing {} - {}", getCommand(), getArgs());
 		WebElement webElement = findElement();
-		//commandModel.setValue(String.valueOf(webElement.isEnabled()));
+		storeValue(String.valueOf(webElement.isEnabled()));
 		logger.debug("executied {} - {} - {}", getCommand(), getArgs(), getValue());
 	}
 

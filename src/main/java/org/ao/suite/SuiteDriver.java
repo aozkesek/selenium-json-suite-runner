@@ -60,6 +60,14 @@ public class SuiteDriver {
 		SuiteLogger.debug("WebDriver->quit called.");
 	}
 	
+	public WebDriver getWebDriver() {
+		return this.webDriver;
+	}
+	
+	public ObjectContainer getObjectContainer() {
+		return this.objectContainer;
+	}
+	
 	public void RunTests() {
 		
 		webDriver.get(suite.getTestUrl());
@@ -112,7 +120,7 @@ public class SuiteDriver {
 			
 			if (!testContainer.containsTestDriverKey(pathName))
 				testContainer.putTestDriver(pathName, 
-						new TestDriver(objectContainer, webDriver, pathName, suiteTestModel.getArguments()));
+						new TestDriver(this, pathName, suiteTestModel.getArguments()));
 			
 			tests.add(testContainer.getTestDriver(pathName));
 			
