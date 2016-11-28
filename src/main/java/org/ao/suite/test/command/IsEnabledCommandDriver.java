@@ -13,7 +13,6 @@ public class IsEnabledCommandDriver extends AbstractCommandDriver {
 
 	@Override
 	public void execute() throws ElementNotFoundException {
-		super.execute();
 		logger.debug("executing {} - {}", getCommand(), getArgs());
 		WebElement webElement = findElement();
 		storeValue(String.valueOf(webElement.isEnabled()));

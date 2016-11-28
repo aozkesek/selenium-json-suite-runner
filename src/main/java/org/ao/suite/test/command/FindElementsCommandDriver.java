@@ -15,7 +15,6 @@ public class FindElementsCommandDriver extends AbstractCommandDriver {
 
 	@Override
 	public void execute() throws ElementNotFoundException {
-		super.execute();
 		logger.debug("executing {} - {}", getCommand(), getArgs());
 		List<WebElement> webElements = findElements();
 		storeValue(webElements);

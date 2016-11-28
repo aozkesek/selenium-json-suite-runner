@@ -13,7 +13,6 @@ public class ClickCommandDriver extends AbstractCommandDriver {
 
 	@Override
 	public void execute() throws ElementNotFoundException {
-		super.execute();
 		logger.debug("executing {} - {}", getCommand(), getArgs());
 		WebElement webElement = findElement();
 		webElement.click();

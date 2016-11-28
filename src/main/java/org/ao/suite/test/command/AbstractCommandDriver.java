@@ -31,11 +31,6 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		this.suiteDriver = suiteDriver;
 	}
 	
-	@Override
-	public void execute() throws ElementNotFoundException {
-		
-	}
-	
 	protected Logger getLogger() {
 		return logger;
 	}
@@ -101,12 +96,16 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 	}
 	
 	protected void storeValue(Object value) {
-		//to-do: check value if it is variable or not, then update/replace 
 		
-		//for a while put directly 
+		if (suiteDriver.getObjectContainer().containsVariable(commandModel.getValue())) {
+			String varName = suiteDriver.getObjectContainer().
+								getVariableName(commandModel.getValue());
+			suiteDriver.getObjectContainer().
+				putVariable(varName, value);
+			return;
+		}
+		
 		commandModel.setValue(String.valueOf(value));
-		
-		//to-do: update the variable value in the object container
 		
 	}
 	

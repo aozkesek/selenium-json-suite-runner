@@ -36,6 +36,16 @@ public class ObjectContainer {
 		return variables.containsKey(key);
 	}
 	
+	public String getVariableName(String input) {
+		if (input == null)
+			return null;
+		Matcher matcher = VariablePattern.matcher(input);
+		if (!matcher.find(0)) 
+			return null;
+			
+		return input.substring(matcher.start() + 2, matcher.end() - 1);
+	}
+	
 	public boolean containsVariable(String input) {
 		
 		if (input == null)
