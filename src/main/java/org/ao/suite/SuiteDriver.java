@@ -97,7 +97,7 @@ public class SuiteDriver {
 	}
 
 	private void loadObjects() throws JsonParseException, JsonMappingException, IOException {
-		String pathName = normalizePath(suiteProp.objectRepositoryHome, suite.getObjectRepository());
+		String pathName = normalizePath(suiteProp.objectsHome, suite.getObjectRepository());
 		
 		SuiteLogger.debug("object is loading {}", pathName);
 		object = new ObjectMapper().
@@ -125,8 +125,6 @@ public class SuiteDriver {
 			tests.add(testContainer.getTestDriver(pathName));
 			
 		}
-		
-		
 			
 	}
 	

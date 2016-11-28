@@ -20,8 +20,8 @@ public class SuiteProperty {
 	@Value("${suite.test.home}")
 	public String testHome;
 	
-	@Value("${suite.objectrepository.home}")
-	public String objectRepositoryHome;
+	@Value("${suite.objects.home}")
+	public String objectsHome;
 	
 	@Value("${suite.webdriver}")
 	public String webDriver;
