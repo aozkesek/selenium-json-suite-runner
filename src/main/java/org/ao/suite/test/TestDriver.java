@@ -2,10 +2,8 @@ package org.ao.suite.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
-
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.CommandDriverFactory;
 import org.ao.suite.test.command.CommandModel;
@@ -25,9 +23,9 @@ public class TestDriver {
 	private LinkedHashMap<String, Object> arguments;
 	private TestModel testModel;
 	
-	private List<ICommandDriver> commandDrivers;
+	private LinkedHashMap<CommandModel, ICommandDriver> commandDrivers;
 	
-	private static Logger TestLogger = LoggerFactory.getLogger(TestDriver.class);
+	private static Logger logger = LoggerFactory.getLogger(TestDriver.class);
 	
 	public TestDriver(SuiteDriver suiteDriver, String name, LinkedHashMap<String, Object> arguments) 
 			throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
@@ -45,18 +43,18 @@ public class TestDriver {
 	
 	public void Run() {
 		
-		TestLogger.debug("{} is running now.", name);
+		logger.debug("{} is running now.", name);
 		
-		commandDrivers.forEach( (cd) -> cd.execute() );
+		commandDrivers.forEach( (cm, cd) -> cd.execute(cm, suiteDriver) );
 		
 	}
 	
 	private void prepareCommands() throws CommandNotFoundException {
-		this.commandDrivers = new ArrayList<ICommandDriver>();
+		this.commandDrivers = new LinkedHashMap<CommandModel, ICommandDriver>();
 		
 		for (CommandModel m: testModel.getCommands())
-			this.commandDrivers.add(
-					CommandDriverFactory.getCommandDriver(suiteDriver, m)
+			this.commandDrivers.put(
+					m, CommandDriverFactory.getCommandDriver(m)
 					);
 	
 	}
@@ -65,7 +63,7 @@ public class TestDriver {
 			throws JsonParseException, JsonMappingException, IOException {
 		
 		testModel = new ObjectMapper().readValue(new File(this.name), TestModel.class);
-		TestLogger.debug("test = {}", testModel);
+		logger.debug("test = {}", testModel);
 		
 	}
 	
@@ -75,22 +73,24 @@ public class TestDriver {
 			
 			if (testModel.getArguments().containsKey(k)) {
 				if (suiteDriver.getObjectContainer().containsVariable(v.toString()))
-					testModel.getArguments().replace(k, suiteDriver.getObjectContainer().replaceVariables(v.toString()));
+					testModel.getArguments().
+						replace(k, suiteDriver.getObjectContainer().replaceVariables(v.toString()));
 				else
-					testModel.getArguments().replace(k, v);
+					testModel.getArguments().
+						replace(k, v);
 			}
 			else
-				TestLogger.error("Invalid argument {} is ignoring for test {}", k, testModel);
+				logger.error("Invalid argument {} is ignoring for test {}", k, testModel);
 		
 		});
 		
-		TestLogger.debug("updated test arguments {}", testModel);
+		logger.debug("updated test arguments {}", testModel);
 	}
 
 	private void storeVars() {
 		
 		testModel.getArguments().forEach((k,v) -> {
-			TestLogger.debug("put into the container {}={}", k, v);
+			logger.debug("put into the container {}={}", k, v);
 			suiteDriver.getObjectContainer().putVariable(k, v);
 		});
 		

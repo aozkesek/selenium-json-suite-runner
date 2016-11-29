@@ -5,21 +5,22 @@ import java.util.List;
 import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component("findElements")
 public class FindElementsCommandDriver extends AbstractCommandDriver {
 
-	public FindElementsCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(suiteDriver, commandModel);
-		logger = LoggerFactory.getLogger(FindElementsCommandDriver.class);
+	public FindElementsCommandDriver() {
+		super(LoggerFactory.getLogger(FindElementsCommandDriver.class));
 	}
-
+	
 	@Override
-	public void execute() throws ElementNotFoundException {
-		logger.debug("executing {} - {}", getCommand(), getArgs());
-		List<WebElement> webElements = findElements();
-		storeValue(webElements);
-		logger.debug("executed {} - {} - {}", getCommand(), getArgs(), getValue());
+	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
+			throws ElementNotFoundException {
 		
+		List<WebElement> webElements = findElements(commandModel.getArgs(), suiteDriver);
+		commandModel.setValue(webElements);
+			
 	}
 
 }

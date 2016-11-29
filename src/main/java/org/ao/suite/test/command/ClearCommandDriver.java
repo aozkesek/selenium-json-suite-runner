@@ -3,20 +3,22 @@ package org.ao.suite.test.command;
 import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component("clear")
 public class ClearCommandDriver extends AbstractCommandDriver {
 
-	public ClearCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(suiteDriver, commandModel);
-		logger = LoggerFactory.getLogger(ClearCommandDriver.class);
+	public ClearCommandDriver() {
+		super(LoggerFactory.getLogger(ClearCommandDriver.class));
 	}
-
+	
 	@Override
-	public void execute() throws ElementNotFoundException {
-		logger.debug("executing {} - {}", getCommand(), getArgs());
-		WebElement webElement = findElement();
+	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
+			throws ElementNotFoundException {
+		
+		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
 		webElement.clear();
-		logger.debug("executed {} - {}", getCommand(), getArgs());
+		
 	}
 
 }

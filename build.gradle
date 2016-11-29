@@ -30,6 +30,9 @@ repositories {
 dependencies {
 
 	compile 'org.springframework.boot:spring-boot-starter:1.4.2.RELEASE'
+	compile 'org.springframework:spring-aop:4.3.4.RELEASE'
+	compile 'org.springframework:spring-aspects:4.3.4.RELEASE'
+	
 	compile 'com.fasterxml.jackson.core:jackson-core:2.8.4'
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
 	compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'

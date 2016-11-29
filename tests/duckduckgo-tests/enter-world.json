@@ -9,6 +9,8 @@
     "vars": {},
 
     "commands": [
+        { "command": "isEnabled", "args": "${search_form_input_homepage}", "value": "${isSearchFormEnabled}" },
+        { "command": "isDisplayed", "args": "${search_form_input_homepage}", "value": "${isSearchFormDisplayed}" },    
         { "command": "sendKeys", "args": "${search_form_input_homepage}", "value": "${queryWord}" },
         { "command": "submit", "args": "${search_form_input_homepage}" }
 

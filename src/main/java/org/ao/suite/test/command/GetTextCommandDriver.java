@@ -3,20 +3,22 @@ package org.ao.suite.test.command;
 import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component("getText")
 public class GetTextCommandDriver extends AbstractCommandDriver {
-
-	public GetTextCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(suiteDriver, commandModel);
-		logger = LoggerFactory.getLogger(GetTextCommandDriver.class);
+	
+	public GetTextCommandDriver() {
+		super(LoggerFactory.getLogger(GetTextCommandDriver.class));
 	}
-
+	
 	@Override
-	public void execute() throws ElementNotFoundException {
-		logger.debug("executing {} - {}", getCommand(), getArgs());
-		WebElement webElement = findElement();
-		storeValue(webElement.getText());
-		logger.debug("executed {} - {} - {}", getCommand(), getArgs(), getValue());
+	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
+			throws ElementNotFoundException {
+		
+		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
+		commandModel.setValue(webElement.getText());
+		
 	}
 
 }

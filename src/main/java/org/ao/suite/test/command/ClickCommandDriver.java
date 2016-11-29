@@ -3,20 +3,22 @@ package org.ao.suite.test.command;
 import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component("click")
 public class ClickCommandDriver extends AbstractCommandDriver {
-
-	public ClickCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(suiteDriver, commandModel);
-		logger = LoggerFactory.getLogger(ClickCommandDriver.class);
+	
+	public ClickCommandDriver() {
+		super(LoggerFactory.getLogger(ClickCommandDriver.class));
 	}
-
+	
 	@Override
-	public void execute() throws ElementNotFoundException {
-		logger.debug("executing {} - {}", getCommand(), getArgs());
-		WebElement webElement = findElement();
+	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
+			throws ElementNotFoundException {
+		
+		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
 		webElement.click();
-		logger.debug("executed {} - {}", getCommand(), getArgs());
+		
 	}
 
 }

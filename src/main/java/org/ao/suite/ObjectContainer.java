@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,7 @@ public class ObjectContainer {
 	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_,\\[,\\]]+\\}");
 	
 	private static ConcurrentHashMap<String, Object> variables;
+	private static Logger logger = LoggerFactory.getLogger(ObjectContainer.class);
 	
 	@PostConstruct
 	public void init() {
@@ -24,8 +27,9 @@ public class ObjectContainer {
 	}
 	
 	public void putVariable(String key, Object object) {
-		variables.put(key, object);
 		
+		variables.put(key, object);
+		logger.debug("put this {} = {}", key, object);
 	}
 	
 	public Object getVariable(String key) {
@@ -71,7 +75,7 @@ public class ObjectContainer {
 		while (isFound) {
 			String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
 			Object varValue = getVariable(varName);
-			kvPairs.put(varName, varValue.toString());
+			kvPairs.put(varName, String.valueOf(varValue));
 			isFound = matcher.find();
 		}
 		

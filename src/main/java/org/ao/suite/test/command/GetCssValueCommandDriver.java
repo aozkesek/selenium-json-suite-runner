@@ -3,25 +3,25 @@ package org.ao.suite.test.command;
 import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component("getCssValue")
 public class GetCssValueCommandDriver extends AbstractCommandDriver {
 
-	public GetCssValueCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(suiteDriver, commandModel);
-		logger = LoggerFactory.getLogger(GetCssValueCommandDriver.class);
+	public GetCssValueCommandDriver() {
+		super(LoggerFactory.getLogger(GetCssValueCommandDriver.class));
 	}
-
+	
 	@Override
-	public void execute() throws ElementNotFoundException {
-		String args = getArgs();
-		logger.debug("executing {} - {}", getCommand(), args);
+	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
+			throws ElementNotFoundException {
 		
-		if (!args.contains(","))
-			throw new CommandInvalidArgumentException(args);
+		if (!commandModel.getArgs().contains(","))
+			throw new CommandInvalidArgumentException(commandModel.getArgs());
 		
-		WebElement webElement = findElement();
-		storeValue(webElement.getCssValue(args.split(",")[1]));
-		logger.debug("executed {} - {} - {}", getCommand(), args, getValue());
+		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
+		commandModel.setValue(webElement.getCssValue(commandModel.getArgs().split(",")[1]));
+		
 	}
 
 }

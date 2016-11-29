@@ -45,7 +45,7 @@ public class SuiteDriver {
 	private static Logger SuiteLogger = LoggerFactory.getLogger(SuiteDriver.class);
 	
 	@PostConstruct
-	private void init() {
+	public void init() {
 		
 		if (suiteProp.webDriver.equals("firefox"))
 			webDriver = new FirefoxDriver();

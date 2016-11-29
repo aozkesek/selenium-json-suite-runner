@@ -1,7 +1,9 @@
 package org.ao.suite.test.command;
 
+import org.ao.suite.SuiteDriver;
+
 public interface ICommandDriver {
 	
-	void execute() throws ElementNotFoundException;
+	void execute(CommandModel commandModel, SuiteDriver suiteDriver) throws ElementNotFoundException;
 
 }

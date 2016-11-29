@@ -2,6 +2,7 @@ package org.ao.suite.test.command;
 
 import java.util.List;
 
+import org.ao.suite.ObjectContainer;
 import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.ByClassName;
@@ -18,48 +19,48 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractCommandDriver implements ICommandDriver {
 	
-	protected Logger logger = LoggerFactory.getLogger(AbstractCommandDriver.class);
+	@Autowired
+	protected ObjectContainer objectContainer;
 	
-	private CommandModel commandModel;
-	protected SuiteDriver suiteDriver;
+	protected Logger logger;
 	
-	public AbstractCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) {
-		this.commandModel = commandModel;
-		this.suiteDriver = suiteDriver;
+	public AbstractCommandDriver() {
+		this(LoggerFactory.getLogger(AbstractCommandDriver.class));
 	}
 	
-	protected Logger getLogger() {
-		return logger;
+	public AbstractCommandDriver(Logger logger) {
+		this.logger = logger;
 	}
 	
-	protected String getCommand() {
+	protected String getCommand(CommandModel commandModel) {
 		return commandModel.getCommand();
 	}
 	
-	protected String getArgs() {
+	protected String getArgs(CommandModel commandModel) {
 		String args = commandModel.getArgs();
-		if (suiteDriver.getObjectContainer().containsVariable(args))
-			args = suiteDriver.getObjectContainer().replaceVariables(args);
+		if (objectContainer.containsVariable(args))
+			args = objectContainer.replaceVariables(args);
 		return args;
 	}
 	
-	protected String getValue() {
-		String value = commandModel.getValue();
-		if (suiteDriver.getObjectContainer().containsVariable(value))
-			value = suiteDriver.getObjectContainer().replaceVariables(value);
+	protected String getValue(CommandModel commandModel) {
+		String value = String.valueOf(commandModel.getValue());
+		if (objectContainer.containsVariable(value))
+			value = objectContainer.replaceVariables(value);
 		return value;
 	}
 	
-	protected WebElement findElement() throws ElementNotFoundException {
+	protected WebElement findElement(String args, SuiteDriver suiteDriver) throws ElementNotFoundException {
 		
-		getLogger().debug("find element for {}", commandModel);
+		logger.debug("find element for {}", args);
 		
-		By by = getBy();
+		By by = getBy(args);
 		if (by == null)
-			throw new ElementNotFoundException(commandModel.getArgs());
+			throw new ElementNotFoundException(args);
 		
 		new WebDriverWait(suiteDriver.getWebDriver(), 10000).until(
 				new ExpectedCondition<WebElement>() {
@@ -74,13 +75,13 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 	}
 	
-	protected List<WebElement> findElements() throws ElementNotFoundException {
+	protected List<WebElement> findElements(String args, SuiteDriver suiteDriver) throws ElementNotFoundException {
 		
-		getLogger().debug("find element for {}", commandModel);
+		logger.debug("find element for {}", args);
 		
-		By by = getBy();
+		By by = getBy(args);
 		if (by == null)
-			throw new ElementNotFoundException(commandModel.getArgs());
+			throw new ElementNotFoundException(args);
 			
 		new WebDriverWait(suiteDriver.getWebDriver(), 10000).until(
 				new ExpectedCondition<List<WebElement>>() {
@@ -95,45 +96,31 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		
 	}
 	
-	protected void storeValue(Object value) {
+	private By getBy(String args) {
 		
-		if (suiteDriver.getObjectContainer().containsVariable(commandModel.getValue())) {
-			String varName = suiteDriver.getObjectContainer().
-								getVariableName(commandModel.getValue());
-			suiteDriver.getObjectContainer().
-				putVariable(varName, value);
-			return;
-		}
+		String element = args;
 		
-		commandModel.setValue(String.valueOf(value));
-		
-	}
-	
-	protected By getBy() {
-		
-		String args = getArgs();
-		
-		if (args.contains(","))
-			args = args.split(",")[0];
+		if (element.contains(","))
+			element = element.split(",")[0];
 					
-		if (args.startsWith("id="))
-			return new ById(args.substring(3));
-		else if (args.startsWith("name="))
-			return new ByName(args.substring(5));
-		else if (args.startsWith("className="))
-			return new ByClassName(args.substring(10));
-		else if (args.startsWith("cssSelector="))
-			return new ByCssSelector(args.substring(10));
-		else if (args.startsWith("tagName="))
-			return new ByTagName(args.substring(8));
-		else if (args.startsWith("xPath="))
-			return new ByXPath(args.substring(6));
-		else if (args.startsWith("//"))
-			return new ByXPath(args);
-		else if (args.startsWith("linkText="))
-			return new ByLinkText(args.substring(9));
-		else if (args.startsWith("partialLinkText="))
-			return new ByPartialLinkText(args.substring(16));
+		if (element.startsWith("id="))
+			return new ById(element.substring(3));
+		else if (element.startsWith("name="))
+			return new ByName(element.substring(5));
+		else if (element.startsWith("className="))
+			return new ByClassName(element.substring(10));
+		else if (element.startsWith("cssSelector="))
+			return new ByCssSelector(element.substring(10));
+		else if (element.startsWith("tagName="))
+			return new ByTagName(element.substring(8));
+		else if (element.startsWith("xPath="))
+			return new ByXPath(element.substring(6));
+		else if (element.startsWith("//"))
+			return new ByXPath(element);
+		else if (element.startsWith("linkText="))
+			return new ByLinkText(element.substring(9));
+		else if (element.startsWith("partialLinkText="))
+			return new ByPartialLinkText(element.substring(16));
 		
 		return null;
 		

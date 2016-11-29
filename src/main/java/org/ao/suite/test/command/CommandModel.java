@@ -4,7 +4,7 @@ public class CommandModel {
 	
 	private String command;
 	private String args;
-	private String value;
+	private Object value;
 	public String getCommand() {
 		return command;
 	}
@@ -17,10 +17,10 @@ public class CommandModel {
 	public void setArgs(String args) {
 		this.args = args;
 	}
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
-	public void setValue(String value) {
+	public void setValue(Object value) {
 		this.value = value;
 	}
 	

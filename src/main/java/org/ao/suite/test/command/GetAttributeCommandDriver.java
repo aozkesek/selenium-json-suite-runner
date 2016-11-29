@@ -3,25 +3,24 @@ package org.ao.suite.test.command;
 import org.ao.suite.SuiteDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component("getAttribute")
 public class GetAttributeCommandDriver extends AbstractCommandDriver {
-
-	public GetAttributeCommandDriver(SuiteDriver suiteDriver, CommandModel commandModel) throws CommandNotFoundException {
-		super(suiteDriver, commandModel);
-		logger = LoggerFactory.getLogger(GetAttributeCommandDriver.class);
+	
+	public GetAttributeCommandDriver() {
+		super(LoggerFactory.getLogger(GetAttributeCommandDriver.class));
 	}
-
+	
 	@Override
-	public void execute() throws ElementNotFoundException {
-		String args = getArgs();
-		logger.debug("executing {} - {}", getCommand(), args);
+	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
+			throws ElementNotFoundException {
 		
-		if (!args.contains(","))
-			throw new CommandInvalidArgumentException(args);
+		if (!commandModel.getArgs().contains(","))
+			throw new CommandInvalidArgumentException(commandModel.getArgs());
 		
-		WebElement webElement = findElement();
-		storeValue(webElement.getAttribute(args.split(",")[1]));
-		logger.debug("executed {} - {} - {}", getCommand(), args, getValue());
+		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
+		commandModel.setValue(webElement.getAttribute(commandModel.getArgs().split(",")[1]));
 	}
 
 }
