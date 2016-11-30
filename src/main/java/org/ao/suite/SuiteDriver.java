@@ -41,8 +41,7 @@ public class SuiteDriver {
 	@Autowired
 	private ObjectContainer objectContainer;
 	
-	
-	private static Logger SuiteLogger = LoggerFactory.getLogger(SuiteDriver.class);
+	private static Logger logger = LoggerFactory.getLogger(SuiteDriver.class);
 	
 	@PostConstruct
 	public void init() {
@@ -57,7 +56,7 @@ public class SuiteDriver {
 	@PreDestroy
 	public void destroy() {
 		webDriver.quit();
-		SuiteLogger.debug("WebDriver->quit called.");
+		logger.debug("WebDriver->quit called.");
 	}
 	
 	public WebDriver getWebDriver() {
@@ -76,7 +75,7 @@ public class SuiteDriver {
 			tests.forEach((t) -> t.Run());
 		}
 		catch(Exception e) {
-			SuiteLogger.error("interrupted by ", e);
+			logger.error("interrupted by ", e);
 		}
 		
 		webDriver.quit();
@@ -85,10 +84,10 @@ public class SuiteDriver {
 	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
 		String pathName = getFullPathName(suiteProp.home, suitePathName);
 		
-		SuiteLogger.debug("suit is loading {}", suitePathName);
+		logger.debug("suit is loading {}", suitePathName);
 		suite = new ObjectMapper().
 						readValue(new File(pathName), SuiteModel.class);
-		SuiteLogger.debug("suite has loaded as {}", suite);
+		logger.debug("suite has loaded as {}", suite);
 		
 		loadObjects();
 		
@@ -99,10 +98,10 @@ public class SuiteDriver {
 	private void loadObjects() throws JsonParseException, JsonMappingException, IOException {
 		String pathName = getFullPathName(suiteProp.objectsHome, suite.getObjectRepository());
 		
-		SuiteLogger.debug("object is loading {}", pathName);
+		logger.debug("object is loading {}", pathName);
 		object = new ObjectMapper().
 						readValue(new File(pathName), ObjectModel.class);
-		SuiteLogger.debug("object has loaded as {}", object);
+		logger.debug("object has loaded as {}", object);
 		
 		object.getObjects().
 			forEach((k,v) -> objectContainer.putVariable(k, v));
@@ -116,7 +115,7 @@ public class SuiteDriver {
 			String pathName = getFullPathName(suiteProp.testHome, suite.getTestPath());
 			pathName = getFullPathName(pathName, suiteTestModel.getFileName());
 			
-			SuiteLogger.debug("test is loading/getting from {}", pathName);
+			logger.debug("test is loading/getting from {}", pathName);
 			
 			if (!testContainer.containsTestDriverKey(pathName))
 				testContainer.putTestDriver(pathName, 

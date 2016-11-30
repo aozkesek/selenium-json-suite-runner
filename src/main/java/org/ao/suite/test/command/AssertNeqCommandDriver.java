@@ -24,9 +24,7 @@ public class AssertNeqCommandDriver extends AbstractCommandDriver {
 		String expected = args.split(",")[1];
 		
 		if (!actual.equals(expected))
-			return;
-		
-		throw new AssertEqException(actual + " equal to " + expected);
+			throw new AssertNeqException(actual + " not equal to " + expected);
 		
 	}
 
