@@ -19,7 +19,13 @@ public class CommandDriverAspect {
 		
 		acd.logger.debug("AROUND-ASPECT: executing {}", commandModel);
 		
-		CommandModel repCommandModel = commandModel;
+		CommandModel repCommandModel = new CommandModel(){
+			{ 
+				setCommand(commandModel.getCommand());
+				setArgs(commandModel.getArgs());
+				setValue(commandModel.getValue());
+				}
+			};
 		if (commandModel.getArgs() != null)
 			repCommandModel.setArgs(acd.getArgs(commandModel));
 		if (commandModel.getValue() != null)
