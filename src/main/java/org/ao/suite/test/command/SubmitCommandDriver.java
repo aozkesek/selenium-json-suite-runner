@@ -13,7 +13,8 @@ public class SubmitCommandDriver extends AbstractCommandDriver {
 	}
 	
 	@Override
-	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) throws ElementNotFoundException {
+	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
+			throws RuntimeException {
 		String command = getCommand(commandModel);
 		String args = getArgs(commandModel);
 		

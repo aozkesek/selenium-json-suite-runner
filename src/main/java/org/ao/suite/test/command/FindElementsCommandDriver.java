@@ -16,7 +16,7 @@ public class FindElementsCommandDriver extends AbstractCommandDriver {
 	
 	@Override
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
-			throws ElementNotFoundException {
+			throws RuntimeException {
 		
 		List<WebElement> webElements = findElements(commandModel.getArgs(), suiteDriver);
 		commandModel.setValue(webElements);

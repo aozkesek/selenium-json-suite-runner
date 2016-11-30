@@ -14,7 +14,7 @@ public class IsEnabledCommandDriver extends AbstractCommandDriver {
 	
 	@Override
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
-			throws ElementNotFoundException {
+			throws RuntimeException {
 		
 		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
 		commandModel.setValue(webElement.isEnabled());

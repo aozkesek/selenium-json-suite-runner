@@ -83,7 +83,7 @@ public class SuiteDriver {
 	}
 	
 	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
-		String pathName = normalizePath(suiteProp.home, suitePathName);
+		String pathName = getFullPathName(suiteProp.home, suitePathName);
 		
 		SuiteLogger.debug("suit is loading {}", suitePathName);
 		suite = new ObjectMapper().
@@ -97,7 +97,7 @@ public class SuiteDriver {
 	}
 
 	private void loadObjects() throws JsonParseException, JsonMappingException, IOException {
-		String pathName = normalizePath(suiteProp.objectsHome, suite.getObjectRepository());
+		String pathName = getFullPathName(suiteProp.objectsHome, suite.getObjectRepository());
 		
 		SuiteLogger.debug("object is loading {}", pathName);
 		object = new ObjectMapper().
@@ -113,8 +113,8 @@ public class SuiteDriver {
 		
 		for (SuiteTestModel suiteTestModel : suite.getTests()) {
 			
-			String pathName = normalizePath(suiteProp.testHome, suite.getTestPath());
-			pathName = normalizePath(pathName, suiteTestModel.getFileName());
+			String pathName = getFullPathName(suiteProp.testHome, suite.getTestPath());
+			pathName = getFullPathName(pathName, suiteTestModel.getFileName());
 			
 			SuiteLogger.debug("test is loading/getting from {}", pathName);
 			
@@ -128,7 +128,7 @@ public class SuiteDriver {
 			
 	}
 	
-	private String normalizePath(String path, String name) {
+	private String getFullPathName(String path, String name) {
 		String normalizedPath;
 		if (path.length() > 0) {
 			if (path.endsWith("/"))

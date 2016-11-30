@@ -14,7 +14,7 @@ public class GetAttributeCommandDriver extends AbstractCommandDriver {
 	
 	@Override
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
-			throws ElementNotFoundException {
+			throws RuntimeException {
 		
 		if (!commandModel.getArgs().contains(","))
 			throw new CommandInvalidArgumentException(commandModel.getArgs());

@@ -35,6 +35,8 @@ public class CommandDriverAspect {
 		
 		Object returnObject = pjp.proceed(new Object[]{repCommandModel, suiteDriver});
 		
+		acd.logger.debug("AROUND-ASPECT: returned {}", repCommandModel);
+		
 		if (commandModel.getValue() != null) {
 			String value = commandModel.getValue().toString();
 			if (suiteDriver.getObjectContainer().containsVariable(value)) {
@@ -43,7 +45,6 @@ public class CommandDriverAspect {
 			}
 		}
 		
-		acd.logger.debug("AROUND-ASPECT: returned {}", repCommandModel);
 		acd.logger.debug("AROUND-ASPECT: executed {}", commandModel);
 		
 		return returnObject;
