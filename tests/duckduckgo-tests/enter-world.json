@@ -14,7 +14,8 @@
         { "command": "sendKeys", "args": "${search_form_input_homepage}", "value": "${queryWord}" },
         { "command": "submit", "args": "${search_form_input_homepage}" },
         { "command": "assertEq", "args": "${search_form_input_homepage},search_form_input_homepage" },
-        { "command": "assertNeq", "args": "${search_form_input_homepage},id=search_form_input_homepage" }
-
+        { "command": "assertNeq", "args": "${search_form_input_homepage},id=search_form_input_homepage" },
+        { "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage" },
+		{ "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage", "value": "info" }
     ]
 }

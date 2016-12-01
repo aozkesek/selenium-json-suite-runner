@@ -15,12 +15,13 @@ public class LogCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		String level = commandModel.getArgs() == null ? "debug" : commandModel.getArgs().toLowerCase();
+		String level = String.valueOf(commandModel.getValue()) == null 
+				? "debug" : String.valueOf(commandModel.getValue()).toLowerCase();
 		
 		if (level.equals("info") )
-			logger.info("LOG-> {}", commandModel.getValue());
+			logger.info("\nLOG-> {}\n", commandModel.getArgs());
 		else
-			logger.debug("LOG-> {}", commandModel.getValue());
+			logger.debug("\nLOG-> {}\n", commandModel.getArgs());
 	
 	}
 
