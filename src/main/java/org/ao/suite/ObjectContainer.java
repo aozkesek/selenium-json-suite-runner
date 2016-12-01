@@ -47,7 +47,11 @@ public class ObjectContainer {
 		if (!matcher.find(0)) 
 			return null;
 			
-		return input.substring(matcher.start() + 2, matcher.end() - 1);
+		// before return the extracted ${}, 
+		// do take care array and index notation -> [index_of_array]
+		String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
+		
+		return varName;
 	}
 	
 	public boolean containsVariable(String input) {
