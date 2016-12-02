@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("singleton")
 public class ObjectContainer {
-	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_,\\[,\\]]+\\}");
+	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_]+\\}");
 	
 	private static ConcurrentHashMap<String, Object> variables;
 	private static Logger logger = LoggerFactory.getLogger(ObjectContainer.class);
