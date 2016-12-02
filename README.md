@@ -4,7 +4,7 @@ Runs Selenium suite &amp; tests from json formatted files
 ## Purpose 
 
 This project gives ability to the user who do not know programming language  
-automate test every web based user interfaces without coding and compiling  
+to automate test every web based user interfaces without coding and compiling  
 java source code.
 
 ## Using 
