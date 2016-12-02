@@ -7,14 +7,14 @@
         {
             "file_name": "enter-world.json",
             "arguments": {
-                "queryWord": "${query_string}",
+                "queryWordEnter": "${query_string}",
                 "abcdef": ""
             }
         },
         {
             "file_name": "world-end.json",
             "arguments": {
-            	"queryWord": "merve ozkesek"
+            	"queryWordEnd": "merve ozkesek"
             }
         }
 

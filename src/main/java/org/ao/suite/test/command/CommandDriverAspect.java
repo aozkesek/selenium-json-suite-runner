@@ -41,7 +41,10 @@ public class CommandDriverAspect {
 			String value = commandModel.getValue().toString();
 			if (suiteDriver.getObjectContainer().containsVariable(value)) {
 				String varName = suiteDriver.getObjectContainer().getVariableName(value);
-				suiteDriver.getObjectContainer().putVariable(varName, repCommandModel.getValue());
+				// value can only a variable name if we want to save the returned value
+				if (value.equals("${" + varName + "}")) { 
+					suiteDriver.getObjectContainer().putVariable(varName, repCommandModel.getValue());	
+				}
 			}
 		}
 		

@@ -2,23 +2,24 @@
     "name": "duckduckgo test world end ",
     
     "arguments": {
-    	"queryWord": "",
+    	"queryWordEnd": "",
     	"resultPerPage": "10"
     },
 
     "vars": {},
 
     "commands": [
-        { "command": "isEnabled", "args": "${search_form_input_homepage}", "value": "${isSearchFormEnabled}" },
-        { "command": "isDisplayed", "args": "${search_form_input_homepage}", "value": "${isSearchFormDisplayed}" },    
-        { "command": "sendKeys", "args": "${search_form_input_homepage}", "value": "${queryWord}" },
-        { "command": "submit", "args": "${search_form_input_homepage}" },
-        { "command": "assertEq", "args": "${search_form_input_homepage},search_form_input_homepage" },
-        { "command": "assertNeq", "args": "${search_form_input_homepage},id=search_form_input_homepage" },
-        { "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage" },
-		{ "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage", "value": "info" },
-		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" },
+        { "command": "isEnabled", "args": "${search_form_input}", "value": "${isSearchFormEnabled}" },
+        { "command": "isDisplayed", "args": "${search_form_input}", "value": "${isSearchFormDisplayed}" },    
+        { "command": "clear", "args": "${search_form_input}" },
+        { "command": "sendKeys", "args": "${search_form_input}", "value": "${queryWordEnd}" },
+        { "command": "submit", "args": "${search_form_input}" },
+        { "command": "assertEq", "args": "${search_form_input_homepage},search_form_input" },
+        { "command": "assertNeq", "args": "${search_form_input},id=search_form_input" },
+        { "command": "log", "args": "${search_form_input},id=search_form_input" },
+		{ "command": "log", "args": "${search_form_input},id=search_form_input", "value": "info" },
+		{ "command": "set", "args": "${search_form_input} is the value to set", "value": "${setvaluevariable}" },
 		
-		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInput:=${search_form_input}" }
+		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInputCheck:=${search_form_input}" }
     ]
 }
