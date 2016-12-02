@@ -1,9 +1,8 @@
-package org.ao.suite;
+package org.ao.suite.test;
 
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 
-import org.ao.suite.test.TestDriver;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
