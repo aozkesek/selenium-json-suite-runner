@@ -12,7 +12,7 @@ java source code.
 User must know JSON file and format to write suite and test.  
 
 User also should know Selenium Browser Automation.  Please refer this link  
-[link][http://docs.seleniumhq.org] for more information.
+[link](http://docs.seleniumhq.org) for more information.
 
 ### Suites
 
