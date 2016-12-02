@@ -14,6 +14,21 @@ User must know JSON file and format to write suite and test.
 User also should know Selenium Browser Automation.  Please refer this link  
 [SeleniumHQ](http://docs.seleniumhq.org) for more information.
 
+### Objects
+
+duckduckgo-objects.json
+---
+{  
+	"includes": [  
+	],  
+    "objects": {  
+	    "query_string": "ahmet ozkesek",  
+	    "search_form_input_homepage": "id=search_form_input_homepage",  
+	    "search_form_input": "id=search_form_input"   
+    }  
+}  
+    
+
 ### Suites
 
 duckduckgo-suite.json
