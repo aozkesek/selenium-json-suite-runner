@@ -16,7 +16,10 @@ User also should know Selenium Browser Automation.  Please refer this link
 
 ### Objects
 
-duckduckgo-objects.json
+Hold predefined variables can be used within the suite and test.  
+
+
+### duckduckgo-objects.json
 ---
 {  
 	"includes": [  
@@ -31,7 +34,7 @@ duckduckgo-objects.json
 
 ### Suites
 
-duckduckgo-suite.json
+### duckduckgo-suite.json
 ---
 {  
     "name": "duckduckgo suit",  
@@ -57,7 +60,7 @@ duckduckgo-suite.json
 
 ### Tests
 
-enter-world.json
+### enter-world.json
 ---
 {  
     "name": "duckduckgo test enter world",  
@@ -79,7 +82,7 @@ enter-world.json
     ]  
 }  
 
-check-result.json
+### check-result.json
 ---
 {  
     "name": "duckduckgo test check results",  
@@ -95,3 +98,4 @@ check-result.json
         { "command": "submit", "args": "${searchFormInput}" }  
     ]  
 }  
+
