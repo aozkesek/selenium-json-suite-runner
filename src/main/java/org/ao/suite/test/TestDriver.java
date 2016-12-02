@@ -2,7 +2,6 @@ package org.ao.suite.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.CommandDriverFactory;
@@ -41,7 +40,7 @@ public class TestDriver {
 		
 	}
 	
-	public void Run() {
+	public void run() {
 		
 		logger.debug("{} is running now.", name);
 		

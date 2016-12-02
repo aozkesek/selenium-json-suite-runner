@@ -12,9 +12,9 @@
             }
         },
         {
-            "file_name": "check-results.json",
+            "file_name": "world-end.json",
             "arguments": {
-            	"searchFormInput": "${search_form_input}"
+            	"queryWord": "merve ozkesek"
             }
         }
 

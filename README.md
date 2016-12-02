@@ -16,9 +16,19 @@ User also should know Selenium Browser Automation.  Please refer this link
 
 ### Objects
 
-Hold predefined variables can be used within the suite and test.  
+Holds predefined variables can be used within the suite and test.  
 
-
+{  
+	"includes": [  
+	],  
+    "objects": {  
+	    "query_string": "ahmet ozkesek",  
+	    "search_form_input_homepage": "id=search_form_input_homepage",  
+	    "search_form_input": "id=search_form_input"  
+    }  
+}    
+    
+    
 ### duckduckgo-objects.json
 ---
 {  

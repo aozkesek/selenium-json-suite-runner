@@ -3,6 +3,7 @@ package org.ao.suite;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -73,7 +74,7 @@ public class SuiteDriver {
 		webDriver.get(suite.getTestUrl());
 		
 		try {
-			tests.forEach((t) -> t.Run());
+			tests.forEach((t) -> t.run());
 		}
 		catch(Exception e) {
 			logger.error("interrupted by ", e);
@@ -96,6 +97,21 @@ public class SuiteDriver {
 
 	}
 
+	public TestDriver loadTest(String testFileName, LinkedHashMap<String, Object> testArguments) 
+			throws JsonParseException, JsonMappingException, CommandNotFoundException, IOException {
+		
+		String pathName = getFullPathName(suiteProp.testHome, suite.getTestPath());
+		pathName = getFullPathName(pathName, testFileName);
+		
+		logger.debug("test is loading/getting from {}", pathName);
+		
+		if (!testContainer.containsTestDriverKey(pathName))
+			testContainer.putTestDriver(pathName, 
+					new TestDriver(this, pathName, testArguments));
+		
+		return testContainer.getTestDriver(pathName);
+	}
+	
 	private void loadObjects() throws JsonParseException, JsonMappingException, IOException {
 		String pathName = getFullPathName(suiteProp.objectsHome, suite.getObjectRepository());
 		
@@ -111,20 +127,8 @@ public class SuiteDriver {
 	private void loadTests() throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
 		tests = new ArrayList<TestDriver>();
 		
-		for (SuiteTestModel suiteTestModel : suite.getTests()) {
-			
-			String pathName = getFullPathName(suiteProp.testHome, suite.getTestPath());
-			pathName = getFullPathName(pathName, suiteTestModel.getFileName());
-			
-			logger.debug("test is loading/getting from {}", pathName);
-			
-			if (!testContainer.containsTestDriverKey(pathName))
-				testContainer.putTestDriver(pathName, 
-						new TestDriver(this, pathName, suiteTestModel.getArguments()));
-			
-			tests.add(testContainer.getTestDriver(pathName));
-			
-		}
+		for (SuiteTestModel suiteTestModel : suite.getTests()) 
+			tests.add(loadTest(suiteTestModel.getFileName(), suiteTestModel.getArguments()));
 			
 	}
 	

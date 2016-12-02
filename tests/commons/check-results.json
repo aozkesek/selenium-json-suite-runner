@@ -1,0 +1,15 @@
+{
+    "name": "duckduckgo common test check results",
+    "arguments": {
+    	"searchFormInput": ""
+    },
+    "vars": {},
+    "commands": [
+        { "command": "getAttribute", "args": "${searchFormInput},name", "value": "${searchInputName}" },
+        { "command": "assertNeq", "args": "${searchInputName},q" }
+        
+    ]
+
+
+
+}
