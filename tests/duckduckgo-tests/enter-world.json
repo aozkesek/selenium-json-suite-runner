@@ -12,12 +12,8 @@
         { "command": "isEnabled", "args": "${search_form_input_homepage}", "value": "${isSearchFormEnabled}" },
         { "command": "isDisplayed", "args": "${search_form_input_homepage}", "value": "${isSearchFormDisplayed}" },    
         { "command": "sendKeys", "args": "${search_form_input_homepage}", "value": "${queryWordEnter}" },
-        { "command": "submit", "args": "${search_form_input_homepage}" },
-        { "command": "assertEq", "args": "${search_form_input_homepage},search_form_input_homepage" },
-        { "command": "assertNeq", "args": "${search_form_input_homepage},id=search_form_input_homepage" },
-        { "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage" },
-		{ "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage", "value": "info" },
-		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" },
+		{ "command": "submit", "args": "${search_form_input_homepage}" },
+        { "command": "sleep", "args": "3000" },
 		
 		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInputCheck:=${search_form_input}" }
     ]

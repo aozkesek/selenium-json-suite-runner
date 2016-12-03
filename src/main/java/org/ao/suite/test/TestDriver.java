@@ -62,7 +62,7 @@ public class TestDriver {
 			throws JsonParseException, JsonMappingException, IOException {
 		
 		testModel = new ObjectMapper().readValue(new File(this.name), TestModel.class);
-		logger.debug("test = {}", testModel);
+		logger.debug("loaded test {}", testModel);
 		
 	}
 	
@@ -83,15 +83,16 @@ public class TestDriver {
 		
 		});
 		
-		logger.debug("updated test arguments {}", testModel);
+		logger.debug("updated test arguments {}", testModel.getArguments());
 	}
 
 	private void storeVars() {
 		
-		testModel.getArguments().forEach((k,v) -> {
-			logger.debug("put into the container {}={}", k, v);
-			suiteDriver.getObjectContainer().putVariable(k, v);
-		});
+		testModel.getArguments().forEach(
+				(k,v) -> {
+					suiteDriver.getObjectContainer().putVariable(k, v);
+					}
+				);
 		
 	}
 }

@@ -27,9 +27,8 @@ public class ObjectContainer {
 	}
 	
 	public void putVariable(String key, Object object) {
-		
 		variables.put(key, object);
-		logger.debug("put this {} = {}", key, object);
+		logger.debug("put object {} = {}", key, object);
 	}
 	
 	public Object getVariable(String key) {
@@ -43,6 +42,7 @@ public class ObjectContainer {
 	public String getVariableName(String input) {
 		if (input == null)
 			return null;
+		
 		Matcher matcher = VariablePattern.matcher(input);
 		if (!matcher.find(0)) 
 			return null;
@@ -51,6 +51,7 @@ public class ObjectContainer {
 		// do take care array and index notation -> [index_of_array]
 		String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
 		
+		logger.debug("{} is extracted from {}", varName, input);
 		return varName;
 	}
 	
@@ -74,6 +75,7 @@ public class ObjectContainer {
 		if (!isFound)
 			return input;
 		
+		logger.debug("before {}", input);
 		HashMap<String, String> kvPairs = new HashMap<String, String>();
 		
 		while (isFound) {
@@ -86,6 +88,7 @@ public class ObjectContainer {
 		for (Entry<String, String> pair: kvPairs.entrySet())
 			input = input.replaceAll("\\$\\{" + pair.getKey() + "\\}", pair.getValue());	
 		
+		logger.debug("after {}", input);
 		return input;
 	}
 

@@ -14,12 +14,8 @@
         { "command": "clear", "args": "${search_form_input}" },
         { "command": "sendKeys", "args": "${search_form_input}", "value": "${queryWordEnd}" },
         { "command": "submit", "args": "${search_form_input}" },
-        { "command": "assertEq", "args": "${search_form_input_homepage},search_form_input" },
-        { "command": "assertNeq", "args": "${search_form_input},id=search_form_input" },
-        { "command": "log", "args": "${search_form_input},id=search_form_input" },
-		{ "command": "log", "args": "${search_form_input},id=search_form_input", "value": "info" },
-		{ "command": "set", "args": "${search_form_input} is the value to set", "value": "${setvaluevariable}" },
-		
+        { "command": "sleep", "args": "3000" },
+        
 		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInputCheck:=${search_form_input}" }
     ]
 }
