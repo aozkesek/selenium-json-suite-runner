@@ -128,8 +128,8 @@ Contains a group of commands can be used to test a simple business flow.
 As of version ?.?.? the available commands are;
 
 * assertEq: asserts when two expressions are equal and fails the test.  
-args: <expr1>,<expr2>
+args: &lt;expr1&gt;,&lt;expr2&gt;
 * assertNeq: asserts when two expressions are not equal and fails the test.  
-args: <expr1>,<expr2>
+args: &lt;expr1&gt;,&lt;expr2&gt;
 
 
