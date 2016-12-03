@@ -136,10 +136,10 @@ args: &lt;web-element-descriptor&gt;
 * click: clicks given web element.        
 args: &lt;web-element-descriptor&gt;  
 * getAttribute: gets the attribute of given web element.      
-args: &lt;web-element-descriptor&gt;&lt;attribute-name&gt;  
+args: &lt;web-element-descriptor&gt;,&lt;attribute-name&gt;  
 value: &lt;variable-name&gt;  
 * getCssValue: gets the css value of given web element.      
-args: &lt;web-element-descriptor&gt;&lt;css-name&gt;  
+args: &lt;web-element-descriptor&gt;,&lt;css-name&gt;  
 value: &lt;variable-name&gt;  
 * getText: gets the text of given web element.      
 args: &lt;web-element-descriptor&gt;    
@@ -159,5 +159,19 @@ value: info | debug
 * runTest: runs another test.      
 args: &lt;full-test-path-name&gt;  
 value: arguments key value pair in format k:=v  
+* select: select .      
+args: &lt;select-command&gt;  
+value:   
+* sendKeys: sends  .      
+args: &lt;web-element-name&gt;  
+value: &lt;expr-keys&gt;  
+* set: stores given expression value into the variable  .      
+args: &lt;expr&gt;  
+value: &lt;variable-name&gt;  
+* sleep: sleeps for a while in given ms  .      
+args: &lt;time-in-milisec&gt;  
+* submit: submits form that held the given web element  .      
+args: &lt;web-element-name&gt;  
+ 
 
 
