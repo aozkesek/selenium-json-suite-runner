@@ -127,9 +127,37 @@ Contains a group of commands can be used to test a simple business flow.
 
 As of version ?.?.? the available commands are;
 
-* assertEq: asserts when two expressions are equal and fails the test.  
-args: &lt;expr1&gt;,&lt;expr2&gt;
-* assertNeq: asserts when two expressions are not equal and fails the test.  
-args: &lt;expr1&gt;,&lt;expr2&gt;
+* assertEq: asserts when two expressions are equal and fails the test.    
+args: &lt;expr1&gt;,&lt;expr2&gt;  
+* assertNeq: asserts when two expressions are not equal and fails the test.    
+args: &lt;expr1&gt;,&lt;expr2&gt;  
+* clear: clears the value of given web element.      
+args: &lt;web-element-descriptor&gt;    
+* click: clicks given web element.        
+args: &lt;web-element-descriptor&gt;  
+* getAttribute: gets the attribute of given web element.      
+args: &lt;web-element-descriptor&gt;&lt;attribute-name&gt;  
+value: &lt;variable-name&gt;  
+* getCssValue: gets the css value of given web element.      
+args: &lt;web-element-descriptor&gt;&lt;css-name&gt;  
+value: &lt;variable-name&gt;  
+* getText: gets the text of given web element.      
+args: &lt;web-element-descriptor&gt;    
+value: &lt;variable-name&gt;  
+* isDisplayed: return true if given web element is displayed.      
+args: &lt;web-element-descriptor&gt;  
+value: &lt;variable-name&gt;  
+* isEnabled: return true if given web element is enabled.      
+args: &lt;web-element-descriptor&gt;  
+value: &lt;variable-name&gt;  
+* isSelected: return true if given web element is selected.      
+args: &lt;web-element-descriptor&gt;  
+value: &lt;variable-name&gt;  
+* log: logs the given expression.  Log level is info or debug.      
+args: &lt;expr&gt;  
+value: info | debug  
+* runTest: runs another test.      
+args: &lt;full-test-path-name&gt;  
+value: arguments key value pair in format k:=v  
 
 
