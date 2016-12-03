@@ -18,18 +18,7 @@ User also should know Selenium Browser Automation.  Please refer this link
 
 Holds predefined variables can be used within the suite and test.  
 
-{  
-	"includes": [  
-	],  
-    "objects": {  
-	    "query_string": "ahmet ozkesek",  
-	    "search_form_input_homepage": "id=search_form_input_homepage",  
-	    "search_form_input": "id=search_form_input"  
-    }  
-}    
-    
-    
-### duckduckgo-objects.json
+#### duckduckgo-objects.json
 ---
 {  
 	"includes": [  
@@ -44,7 +33,9 @@ Holds predefined variables can be used within the suite and test.
 
 ### Suites
 
-### duckduckgo-suite.json
+Contains a group of test can be used to test a complex business flow.  
+
+#### duckduckgo-suite.json
 ---
 {  
     "name": "duckduckgo suit",  
@@ -70,42 +61,75 @@ Holds predefined variables can be used within the suite and test.
 
 ### Tests
 
-### enter-world.json
+Contains a group of commands can be used to test a simple business flow.  
+
+#### enter-world.json
 ---
+
 {  
     "name": "duckduckgo test enter world",  
     "arguments": {  
-    	"queryWord": "",  
+    	"queryWordEnter": "",  
     	"resultPerPage": "10"  
     },  
     "vars": {},  
     "commands": [  
         { "command": "isEnabled", "args": "${search_form_input_homepage}", "value": "${isSearchFormEnabled}" },  
         { "command": "isDisplayed", "args": "${search_form_input_homepage}", "value": "${isSearchFormDisplayed}" },      
-        { "command": "sendKeys", "args": "${search_form_input_homepage}", "value": "${queryWord}" },  
-        { "command": "submit", "args": "${search_form_input_homepage}" },  
-        { "command": "assertEq", "args": "${search_form_input_homepage},search_form_input_homepage" },  
-        { "command": "assertNeq", "args": "${search_form_input_homepage},id=search_form_input_homepage" },  
-        { "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage" },  
-		{ "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage", "value": "info" },  
-		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" }  
+        { "command": "sendKeys", "args": "${search_form_input_homepage}", "value": "${queryWordEnter}" },  
+		{ "command": "submit", "args": "${search_form_input_homepage}" },  
+        { "command": "sleep", "args": "3000" },  
+		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInputCheck:=${search_form_input}" }  
     ]  
-}  
+}    
 
-### check-result.json
+#### check-result.json
 ---
+
 {  
-    "name": "duckduckgo test check results",  
+    "name": "duckduckgo common test check results",  
     "arguments": {  
-    	"searchFormInput": ""  
+    	"searchFormInputCheck": ""  
     },  
     "vars": {},  
     "commands": [  
-        { "command": "getAttribute", "args": "${searchFormInput},name", "value": "${searchInputName}" },  
-        { "command": "assertNeq", "args": "${searchInputName},q" },  
-        { "command": "clear", "args": "${searchFormInput}" },  
-        { "command": "sendKeys", "args": "${searchFormInput}", "value": "merve ozkesek" },  
-        { "command": "submit", "args": "${searchFormInput}" }  
+        { "command": "assertEq", "args": "${search_form_input_homepage},search_form_input_homepage" },  
+        { "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage" },  
+		{ "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage", "value": "info" },  
+		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" },  
+		{ "command": "getAttribute", "args": "${searchFormInputCheck},name", "value": "${searchInputName}" },  
+        { "command": "assertNeq", "args": "${searchInputName},q" }  
     ]  
 }  
+
+#### world-end.json
+---
+
+{  
+    "name": "duckduckgo test world end ",  
+    "arguments": {  
+    	"queryWordEnd": "",  
+    	"resultPerPage": "10"  
+    },  
+    "vars": {},  
+    "commands": [  
+        { "command": "isEnabled", "args": "${search_form_input}", "value": "${isSearchFormEnabled}" },  
+        { "command": "isDisplayed", "args": "${search_form_input}", "value": "${isSearchFormDisplayed}" },      
+        { "command": "clear", "args": "${search_form_input}" },  
+        { "command": "sendKeys", "args": "${search_form_input}", "value": "${queryWordEnd}" },  
+        { "command": "submit", "args": "${search_form_input}" },  
+        { "command": "sleep", "args": "3000" },  
+ 		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInputCheck:=${search_form_input}" }  
+    ]  
+}  
+
+### Commands
+
+As of version ?.?.? the available commands are;
+
+* assertEq: asserts when two expressions are equal and fails the test.  
+args: <expr1>,<expr2>
+* assertNeq: asserts when two expressions are not equal and fails the test.  
+args: <expr1>,<expr2>
+
 

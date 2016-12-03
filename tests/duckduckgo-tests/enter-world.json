@@ -1,20 +1,16 @@
 {
     "name": "duckduckgo test enter world",
-    
     "arguments": {
     	"queryWordEnter": "",
     	"resultPerPage": "10"
     },
-
     "vars": {},
-
     "commands": [
         { "command": "isEnabled", "args": "${search_form_input_homepage}", "value": "${isSearchFormEnabled}" },
         { "command": "isDisplayed", "args": "${search_form_input_homepage}", "value": "${isSearchFormDisplayed}" },    
         { "command": "sendKeys", "args": "${search_form_input_homepage}", "value": "${queryWordEnter}" },
 		{ "command": "submit", "args": "${search_form_input_homepage}" },
         { "command": "sleep", "args": "3000" },
-		
 		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInputCheck:=${search_form_input}" }
     ]
 }
