@@ -62,13 +62,6 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		if (by == null)
 			throw new ElementNotFoundException(args);
 		
-		new WebDriverWait(suiteDriver.getWebDriver(), 10000).until(
-				new ExpectedCondition<WebElement>() {
-					public WebElement apply(WebDriver d) {
-						return d.findElement(by);
-					}
-				});
-			
 		WebElement webElement = suiteDriver.getWebDriver().findElement(by);
 		
 		return webElement;
@@ -82,13 +75,6 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		By by = getBy(args);
 		if (by == null)
 			throw new ElementNotFoundException(args);
-			
-		new WebDriverWait(suiteDriver.getWebDriver(), 10000).until(
-				new ExpectedCondition<List<WebElement>>() {
-					public List<WebElement> apply(WebDriver d) {
-						return d.findElements(by);
-					}
-				});
 		
 		List<WebElement> webElements = suiteDriver.getWebDriver().findElements(by);
 

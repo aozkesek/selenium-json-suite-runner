@@ -26,4 +26,10 @@ public class SuiteProperty {
 	@Value("${suite.webdriver}")
 	public String webDriver;
 	
+	@Value("${suite.webdriver.timeout}")
+	public long timeOut;
+	
+	@Value("${suite.remote.url}")
+	public String remoteUrl;
+	
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -12,9 +13,9 @@ import javax.annotation.PreDestroy;
 import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
 import org.ao.suite.test.command.CommandNotFoundException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,8 @@ public class SuiteDriver {
 	
 	public String SuiteId;
 	
-	private WebDriver webDriver;
+	private RemoteWebDriver webDriver;
+	
 	private SuiteModel suite;
 	private ObjectModel object;
 	private List<TestDriver> tests; 
@@ -53,6 +55,10 @@ public class SuiteDriver {
 		else if (suiteProp.webDriver.equals("chrome"))
 			webDriver = new ChromeDriver();
 		
+		webDriver.manage().
+			timeouts().
+				implicitlyWait(suiteProp.timeOut, TimeUnit.MILLISECONDS);
+		
 	}
 	
 	@PreDestroy
@@ -61,7 +67,7 @@ public class SuiteDriver {
 		logger.debug("WebDriver->quit called.");
 	}
 	
-	public WebDriver getWebDriver() {
+	public RemoteWebDriver getWebDriver() {
 		return this.webDriver;
 	}
 	
