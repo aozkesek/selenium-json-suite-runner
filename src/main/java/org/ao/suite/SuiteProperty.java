@@ -23,6 +23,9 @@ public class SuiteProperty {
 	@Value("${suite.objects.home}")
 	public String objectsHome;
 	
+	@Value("${suite.screenshot.home}")
+	public String screenshotsHome;
+	
 	@Value("${suite.webdriver}")
 	public String webDriver;
 	

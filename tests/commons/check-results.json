@@ -10,6 +10,7 @@
 		{ "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage", "value": "info" },
 		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" },
 		{ "command": "getAttribute", "args": "${searchFormInputCheck},name", "value": "${searchInputName}" },
-        { "command": "assertNeq", "args": "${searchInputName},q" }
+        { "command": "assertNeq", "args": "${searchInputName},q" },
+        { "command": "takeScreenshot", "args": "result-evidence-.png" }
     ]
 }

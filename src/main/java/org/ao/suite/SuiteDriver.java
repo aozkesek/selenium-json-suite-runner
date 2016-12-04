@@ -155,7 +155,7 @@ public class SuiteDriver {
 			
 	}
 	
-	private String getFullPathName(String path, String name) {
+	public String getFullPathName(String path, String name) {
 		String normalizedPath;
 		if (path.length() > 0) {
 			if (path.endsWith("/"))

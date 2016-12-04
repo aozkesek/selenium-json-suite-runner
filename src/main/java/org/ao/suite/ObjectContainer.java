@@ -24,6 +24,7 @@ public class ObjectContainer {
 	@PostConstruct
 	public void init() {
 		variables = new ConcurrentHashMap<String, Object>();
+		
 	}
 	
 	public void putVariable(String key, Object object) {
