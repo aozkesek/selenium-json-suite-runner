@@ -2,6 +2,8 @@ package org.ao.suite;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.ao.suite.test.TestDriver;
 import org.ao.suite.test.command.CommandNotFoundException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,16 +51,30 @@ public class SuiteDriver {
 	private static Logger logger = LoggerFactory.getLogger(SuiteDriver.class);
 	
 	@PostConstruct
-	public void init() {
+	public void init() throws MalformedURLException {
 		
-		if (suiteProp.webDriver.equals("firefox"))
-			webDriver = new FirefoxDriver();
-		else if (suiteProp.webDriver.equals("chrome"))
-			webDriver = new ChromeDriver();
+		if (suiteProp.remoteUrl != null && suiteProp.remoteUrl.length() > 0) {
+			if (suiteProp.webDriver.equals("firefox"))
+				webDriver = new RemoteWebDriver(
+						new URL(suiteProp.remoteUrl),
+						DesiredCapabilities.firefox());
+			else if (suiteProp.webDriver.equals("chrome"))
+				webDriver = new RemoteWebDriver(
+						new URL(suiteProp.remoteUrl),
+						DesiredCapabilities.chrome());
+		}
+		else {
+			if (suiteProp.webDriver.equals("firefox"))
+				webDriver = new FirefoxDriver();
+			else if (suiteProp.webDriver.equals("chrome"))
+				webDriver = new ChromeDriver();
+		}
 		
-		webDriver.manage().
-			timeouts().
-				implicitlyWait(suiteProp.timeOut, TimeUnit.MILLISECONDS);
+		webDriver.manage()
+			.timeouts()
+				.implicitlyWait(suiteProp.timeOut, TimeUnit.MILLISECONDS)
+				.pageLoadTimeout(suiteProp.timeOut, TimeUnit.MILLISECONDS)
+				.setScriptTimeout(suiteProp.timeOut, TimeUnit.MILLISECONDS);
 		
 	}
 	
