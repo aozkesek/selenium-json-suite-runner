@@ -99,7 +99,10 @@ Contains a group of commands can be used to test a simple business flow.
 		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" },  
 		{ "command": "getAttribute", "args": "${searchFormInputCheck},name", "value": "${searchInputName}" },  
         { "command": "assertNeq", "args": "${searchInputName},q" },  
-        { "command": "takeScreenshot", "args": "result-evidence-${SYS_DATETIME_NOW}.png" }  
+        { "command": "takeScreenshot", "args": "result-evidence-${SYS_DATETIME_NOW}.png" },  
+		{ "command": "inc", "args": "10", "value": "${inc_variable}" },        
+		{ "command": "inc", "args": "${inc_variable},5", "value": "${inc_variable}" },  
+		{ "command": "inc", "args": "${inc_variable},-6", "value": "${inc_variable}" }       
     ]  
 }  
 
