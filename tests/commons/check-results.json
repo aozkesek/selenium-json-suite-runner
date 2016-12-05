@@ -11,6 +11,6 @@
 		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" },
 		{ "command": "getAttribute", "args": "${searchFormInputCheck},name", "value": "${searchInputName}" },
         { "command": "assertNeq", "args": "${searchInputName},q" },
-        { "command": "takeScreenshot", "args": "result-evidence-.png" }
+        { "command": "takeScreenshot", "args": "result-evidence-${SYS_DATETIME_NOW}.png" }
     ]
 }

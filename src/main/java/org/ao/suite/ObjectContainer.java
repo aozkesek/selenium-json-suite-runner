@@ -1,5 +1,9 @@
 package org.ao.suite;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,7 +85,11 @@ public class ObjectContainer {
 		
 		while (isFound) {
 			String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
-			Object varValue = getVariable(varName);
+			Object varValue;
+			if (varName.startsWith("SYS_"))
+				varValue = getSysVariable(varName);
+			else
+				varValue = getVariable(varName);
 			kvPairs.put(varName, String.valueOf(varValue));
 			isFound = matcher.find();
 		}
@@ -93,4 +101,11 @@ public class ObjectContainer {
 		return input;
 	}
 
+	public String getSysVariable(String varName) {
+		if (varName.equals("SYS_DATETIME_NOW"))
+			return LocalDateTime.now().format(
+					DateTimeFormatter.ofPattern("yyyMMdd.HHmmss.SSS"));
+		
+		return null;
+	}
 }
