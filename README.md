@@ -98,7 +98,8 @@ Contains a group of commands can be used to test a simple business flow.
 		{ "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage", "value": "info" },  
 		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" },  
 		{ "command": "getAttribute", "args": "${searchFormInputCheck},name", "value": "${searchInputName}" },  
-        { "command": "assertNeq", "args": "${searchInputName},q" }  
+        { "command": "assertNeq", "args": "${searchInputName},q" },  
+        { "command": "takeScreenshot", "args": "result-evidence-${SYS_DATETIME_NOW}.png" }  
     ]  
 }  
 
@@ -144,6 +145,9 @@ value: &lt;variable-name&gt;
 * getText: gets the text of given web element.      
 args: &lt;web-element-descriptor&gt;    
 value: &lt;variable-name&gt;  
+* inc: increments long value of expression-1 by expression-2.      
+args: &lt;expr-1&gt;,&lt;expr-2&gt;      
+value: &lt;variable-name&gt;  
 * isDisplayed: return true if given web element is displayed.      
 args: &lt;web-element-descriptor&gt;  
 value: &lt;variable-name&gt;  
@@ -159,8 +163,8 @@ value: info | debug
 * runTest: runs another test.      
 args: &lt;full-test-path-name&gt;  
 value: arguments key value pair in format k:=v  
-* select: select .      
-args: &lt;select-command&gt;  
+* select: TO-DO: document sub commands given within the args.      
+args: &lt;select-sub-command&gt;  
 value:   
 * sendKeys: sends  .      
 args: &lt;web-element-name&gt;  
@@ -172,6 +176,7 @@ value: &lt;variable-name&gt;
 args: &lt;time-in-milisec&gt;  
 * submit: submits form that held the given web element  .      
 args: &lt;web-element-name&gt;  
- 
+* takeScreenshot: takes screenshot to the given file.      
+args: &lt;screenshot-file-path-name&gt;   
 
 
