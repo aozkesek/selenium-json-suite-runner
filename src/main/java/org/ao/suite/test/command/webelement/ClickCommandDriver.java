@@ -18,7 +18,7 @@ public class ClickCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
+		WebElement webElement = findElement(commandModel.getArgs()[0], suiteDriver);
 		webElement.click();
 		
 	}

@@ -17,13 +17,10 @@ public class SubmitCommandDriver extends AbstractCommandDriver {
 	@Override
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
-		String command = getCommand(commandModel);
-		String args = getArgs(commandModel);
 		
-		logger.debug("executing {} - {}", command, args);
-		WebElement webElement = findElement(args, suiteDriver);
+		WebElement webElement = findElement(commandModel.getArgs()[0], suiteDriver);
 		webElement.submit();
-		logger.debug("executed {} - {}", command, args);
+		
 	}
 
 }

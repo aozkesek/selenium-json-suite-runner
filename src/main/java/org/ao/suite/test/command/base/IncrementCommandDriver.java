@@ -18,11 +18,10 @@ public class IncrementCommandDriver extends AbstractCommandDriver {
 			throws RuntimeException {
 		
 		
-		String[] args = commandModel.getArgs().split(",");
-		if (args.length > 1)
-			commandModel.setValue(Long.valueOf(args[0]) + Long.valueOf(args[1]));
+		if (commandModel.getArgs().length > 1)
+			commandModel.setValue(Long.valueOf(commandModel.getArgs()[0]) + Long.valueOf(commandModel.getArgs()[1]));
 		else
-			commandModel.setValue(Long.valueOf(args[0]) + 1);
+			commandModel.setValue(Long.valueOf(commandModel.getArgs()[0]) + 1);
 		
 	
 	}

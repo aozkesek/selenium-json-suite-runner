@@ -3,7 +3,7 @@ package org.ao.suite.test.command.model;
 public class CommandModel {
 	
 	private String command;
-	private String args;
+	private String[] args;
 	private Object value;
 	public String getCommand() {
 		return command;
@@ -11,10 +11,10 @@ public class CommandModel {
 	public void setCommand(String command) {
 		this.command = command;
 	}
-	public String getArgs() {
+	public String[] getArgs() {
 		return args;
 	}
-	public void setArgs(String args) {
+	public void setArgs(String[] args) {
 		this.args = args;
 	}
 	public Object getValue() {
@@ -29,8 +29,10 @@ public class CommandModel {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("command=").append(command).append(", ");
-		sb.append("args=").append(args).append(", ");
-		sb.append("value=").append(value);
+		sb.append("args=[");
+		for(String arg : args)
+			sb.append(arg).append(", ");
+		sb.append("], value=").append(value);
 		
 		return sb.toString();
 	}

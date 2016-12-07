@@ -43,10 +43,11 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		return commandModel.getCommand();
 	}
 	
-	public String getArgs(CommandModel commandModel) {
-		String args = commandModel.getArgs();
-		if (objectContainer.containsVariable(args))
-			args = objectContainer.replaceVariables(args);
+	public String[] getArgs(CommandModel commandModel) {
+		String[] args = commandModel.getArgs();
+		for (int i = 0; i < args.length; i++)
+			if (objectContainer.containsVariable(args[i]))
+				args[i] = objectContainer.replaceVariables(args[i]);
 		return args;
 	}
 	

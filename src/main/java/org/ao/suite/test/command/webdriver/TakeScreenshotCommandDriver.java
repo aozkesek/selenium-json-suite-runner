@@ -37,11 +37,11 @@ public class TakeScreenshotCommandDriver extends AbstractCommandDriver {
                             getScreenshotAs(OutputType.FILE);
         logger.debug("temporary screenshot {} is copying here {}"
         		, tempScreenshot.getAbsolutePath()
-        		, FileSystems.getDefault().getPath(suiteProp.screenshotsHome, commandModel.getArgs()));
+        		, FileSystems.getDefault().getPath(suiteProp.screenshotsHome, commandModel.getArgs()[0]));
         
         try {
 			Files.move(tempScreenshot.toPath(), 
-					FileSystems.getDefault().getPath(suiteProp.screenshotsHome, commandModel.getArgs()), 
+					FileSystems.getDefault().getPath(suiteProp.screenshotsHome, commandModel.getArgs()[0]), 
 					StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

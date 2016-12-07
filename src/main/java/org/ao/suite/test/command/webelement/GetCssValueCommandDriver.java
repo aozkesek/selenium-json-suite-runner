@@ -19,11 +19,11 @@ public class GetCssValueCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		if (!commandModel.getArgs().contains(","))
-			throw new CommandInvalidArgumentException(commandModel.getArgs());
+		if (commandModel.getArgs() == null || commandModel.getArgs().length < 2)
+			throw new CommandInvalidArgumentException(commandModel.getCommand());
 		
-		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
-		commandModel.setValue(webElement.getCssValue(commandModel.getArgs().split(",")[1]));
+		WebElement webElement = findElement(commandModel.getArgs()[0], suiteDriver);
+		commandModel.setValue(webElement.getCssValue(commandModel.getArgs()[1]));
 		
 	}
 

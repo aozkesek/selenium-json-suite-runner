@@ -18,7 +18,7 @@ public class IsEnabledCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		WebElement webElement = findElement(commandModel.getArgs(), suiteDriver);
+		WebElement webElement = findElement(commandModel.getArgs()[0], suiteDriver);
 		commandModel.setValue(webElement.isEnabled());
 		
 	}

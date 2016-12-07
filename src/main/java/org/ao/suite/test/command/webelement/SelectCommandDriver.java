@@ -2,6 +2,7 @@ package org.ao.suite.test.command.webelement;
 
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.AbstractCommandDriver;
+import org.ao.suite.test.command.exception.CommandInvalidArgumentException;
 import org.ao.suite.test.command.model.CommandModel;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.LoggerFactory;
@@ -26,24 +27,25 @@ public class SelectCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		Select webElement = (Select)findElement(commandModel.getArgs(), suiteDriver);
+		if (commandModel.getArgs() == null || commandModel.getArgs().length < 2)
+			throw new CommandInvalidArgumentException(commandModel.getCommand());
 		
-		String[] args = commandModel.getArgs().split(",");
+		Select webElement = (Select)findElement(commandModel.getArgs()[0], suiteDriver);
 		
-		if (args[1].equals(DeselectAll))
+		if (commandModel.getArgs()[1].equals(DeselectAll))
 			webElement.deselectAll();
-		else if (args[1].equals(DeselectIndex))
-			webElement.deselectByIndex(Integer.valueOf(args[2]));
-		else if (args[1].equals(DeselectValue))
-			webElement.deselectByValue(args[2]);
-		else if (args[1].equals(DeselectText))
-			webElement.deselectByVisibleText(args[2]);
-		else if (args[1].equals(SelectIndex))
-			webElement.selectByIndex(Integer.valueOf(args[2]));
-		else if (args[1].equals(SelectValue))
-			webElement.selectByValue(args[2]);
-		else if (args[1].equals(SelectText))
-			webElement.selectByVisibleText(args[2]);
+		else if (commandModel.getArgs()[1].equals(DeselectIndex))
+			webElement.deselectByIndex(Integer.valueOf(commandModel.getArgs()[2]));
+		else if (commandModel.getArgs()[1].equals(DeselectValue))
+			webElement.deselectByValue(commandModel.getArgs()[2]);
+		else if (commandModel.getArgs()[1].equals(DeselectText))
+			webElement.deselectByVisibleText(commandModel.getArgs()[2]);
+		else if (commandModel.getArgs()[1].equals(SelectIndex))
+			webElement.selectByIndex(Integer.valueOf(commandModel.getArgs()[2]));
+		else if (commandModel.getArgs()[1].equals(SelectValue))
+			webElement.selectByValue(commandModel.getArgs()[2]);
+		else if (commandModel.getArgs()[1].equals(SelectText))
+			webElement.selectByVisibleText(commandModel.getArgs()[2]);
 		else
 			commandModel.setValue(webElement.getAllSelectedOptions());
 	
