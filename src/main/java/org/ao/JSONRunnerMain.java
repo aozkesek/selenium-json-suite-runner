@@ -1,9 +1,6 @@
 package org.ao;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.SuiteProperty;
 import org.ao.suite.test.command.CommandNotFoundException;
@@ -20,7 +17,7 @@ public class JSONRunnerMain {
 	public static Logger AppLogger = LoggerFactory.getLogger(JSONRunnerMain.class);
 	
 	public static void main(String[] args) {
-		
+
 		AppContext = SpringApplication.run(JSONRunnerMain.class, args);
 
 		SuiteProperty suiteProp = AppContext.getBean(SuiteProperty.class);
