@@ -74,14 +74,30 @@ Contains a group of commands can be used to test a simple business flow.
     },  
     "vars": {},  
     "commands": [  
-        { "command": "isEnabled", "args": "${search_form_input_homepage}", "value": "${isSearchFormEnabled}" },  
-        { "command": "isDisplayed", "args": "${search_form_input_homepage}", "value": "${isSearchFormDisplayed}" },      
-        { "command": "sendKeys", "args": "${search_form_input_homepage}", "value": "${queryWordEnter}" },  
-		{ "command": "submit", "args": "${search_form_input_homepage}" },  
-        { "command": "sleep", "args": "3000" },  
-		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInputCheck:=${search_form_input}" }  
+        { "command": "isEnabled",  
+        	"args": [ "${search_form_input_homepage}" ],   
+        	"value": "${isSearchFormEnabled}"   
+        	},  
+        { "command": "isDisplayed",  
+        	"args": [ "${search_form_input_homepage}" ],   
+        	"value": "${isSearchFormDisplayed}"   
+        	},    
+        { "command": "sendKeys",  
+        	"args": [ "${search_form_input_homepage}" ],   
+        	"value": "${queryWordEnter}"   
+        	},  
+		{ "command": "submit",  
+			"args": [ "${search_form_input_homepage}" ]   
+			},  
+        { "command": "sleep",  
+        	"args": [ "3000" ]   
+        	},  
+		{ "command": "runTest",  
+			"args": [ "../commons/check-results.json" ],  
+			"value": "searchFormInputCheck:=${search_form_input}"   
+			}  
     ]  
-}    
+}      
 
 #### check-result.json
 ---
@@ -93,18 +109,44 @@ Contains a group of commands can be used to test a simple business flow.
     },  
     "vars": {},  
     "commands": [  
-        { "command": "assertEq", "args": "${search_form_input_homepage},search_form_input_homepage" },  
-        { "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage" },  
-		{ "command": "log", "args": "${search_form_input_homepage},id=search_form_input_homepage", "value": "info" },  
-		{ "command": "set", "args": "${search_form_input_homepage} is the value to set", "value": "${setvaluevariable}" },  
-		{ "command": "getAttribute", "args": "${searchFormInputCheck},name", "value": "${searchInputName}" },  
-        { "command": "assertNeq", "args": "${searchInputName},q" },  
-        { "command": "takeScreenshot", "args": "result-evidence-${SYS_DATETIME_NOW}.png" },  
-		{ "command": "inc", "args": "10", "value": "${inc_variable}" },        
-		{ "command": "inc", "args": "${inc_variable},5", "value": "${inc_variable}" },  
-		{ "command": "inc", "args": "${inc_variable},-6", "value": "${inc_variable}" }       
+        { "command": "assertEq",   
+        	"args": [ "${search_form_input_homepage}", "search_form_input_homepage" ]   
+        	},  
+        { "command": "log",   
+        	"args": [ "${search_form_input_homepage}", "id=search_form_input_homepage" ]   
+        	},  
+		{ "command": "log",   
+			"args": [ "${search_form_input_homepage}", "id=search_form_input_homepage" ],   
+			"value": "info"   
+			},  
+		{ "command": "set",   
+			"args": [ "${search_form_input_homepage} is the value to set" ],   
+			"value": "${setvaluevariable}"   
+			},  
+		{ "command": "getAttribute",  
+			"args": [ "${searchFormInputCheck}", "name" ],   
+			"value": "${searchInputName}"   
+			},  
+        { "command": "assertNeq",  
+        	"args": [ "${searchInputName}", "q" ]  
+        	},  
+        { "command": "takeScreenshot",  
+        	"args": [ "result-evidence-${SYS_DATETIME_NOW}.png" ]   
+        	},  
+		{ "command": "inc",  
+			"args": [ "10" ],  
+			"value": "${inc_variable}"   
+			},        
+		{ "command": "inc",  
+			"args": [ "${inc_variable}", "5" ],   
+			"value": "${inc_variable}"   
+			},  
+		{ "command": "inc",  
+			"args": [ "${inc_variable}", "-6" ],   
+			"value": "${inc_variable}"   
+			}          
     ]  
-}  
+}   
 
 #### world-end.json
 ---
@@ -117,13 +159,31 @@ Contains a group of commands can be used to test a simple business flow.
     },  
     "vars": {},  
     "commands": [  
-        { "command": "isEnabled", "args": "${search_form_input}", "value": "${isSearchFormEnabled}" },  
-        { "command": "isDisplayed", "args": "${search_form_input}", "value": "${isSearchFormDisplayed}" },      
-        { "command": "clear", "args": "${search_form_input}" },  
-        { "command": "sendKeys", "args": "${search_form_input}", "value": "${queryWordEnd}" },  
-        { "command": "submit", "args": "${search_form_input}" },  
-        { "command": "sleep", "args": "3000" },  
- 		{ "command": "runTest", "args": "../commons/check-results.json", "value": "searchFormInputCheck:=${search_form_input}" }  
+        { "command": "isEnabled",   
+        	"args": [ "${search_form_input}" ],   
+        	"value": "${isSearchFormEnabled}"  
+        	},  
+        { "command": "isDisplayed",   
+        	"args": [ "${search_form_input}" ],   
+        	"value": "${isSearchFormDisplayed}"   
+        	},    
+        { "command": "clear",   
+        	"args": [ "${search_form_input}" ]  
+        	},  
+        { "command": "sendKeys",   
+        	"args": [ "${search_form_input}" ],   
+        	"value": "${queryWordEnd}"  
+        	},  
+        { "command": "submit",   
+        	"args": [ "${search_form_input}"  ]   
+        	},  
+        { "command": "sleep",   
+        	"args": [ "3000" ]  
+        	},  
+ 		{ "command": "runTest",   
+ 			"args": [ "../commons/check-results.json" ],   
+ 			"value": "searchFormInputCheck:=${search_form_input}"   
+ 			}  
     ]  
 }  
 
