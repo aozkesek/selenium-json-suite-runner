@@ -3,7 +3,7 @@ package org.ao;
 import java.io.IOException;
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.SuiteProperty;
-import org.ao.suite.test.command.CommandNotFoundException;
+import org.ao.suite.test.command.exception.CommandNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

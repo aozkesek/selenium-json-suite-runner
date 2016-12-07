@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.ao.suite.ObjectContainer;
 import org.ao.suite.SuiteDriver;
+import org.ao.suite.test.command.exception.ElementNotFoundException;
+import org.ao.suite.test.command.model.CommandModel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.ByClassName;
 import org.openqa.selenium.By.ByCssSelector;
@@ -33,18 +35,22 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		this.logger = logger;
 	}
 	
-	protected String getCommand(CommandModel commandModel) {
+	public Logger getLogger() {
+		return logger;
+	}
+	
+	public String getCommand(CommandModel commandModel) {
 		return commandModel.getCommand();
 	}
 	
-	protected String getArgs(CommandModel commandModel) {
+	public String getArgs(CommandModel commandModel) {
 		String args = commandModel.getArgs();
 		if (objectContainer.containsVariable(args))
 			args = objectContainer.replaceVariables(args);
 		return args;
 	}
 	
-	protected String getValue(CommandModel commandModel) {
+	public String getValue(CommandModel commandModel) {
 		String value = String.valueOf(commandModel.getValue());
 		if (objectContainer.containsVariable(value))
 			value = objectContainer.replaceVariables(value);

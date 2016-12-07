@@ -12,9 +12,12 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.ao.suite.model.ObjectModel;
+import org.ao.suite.model.SuiteModel;
+import org.ao.suite.model.SuiteTestModel;
 import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
-import org.ao.suite.test.command.CommandNotFoundException;
+import org.ao.suite.test.command.exception.CommandNotFoundException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;

@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.CommandDriverFactory;
-import org.ao.suite.test.command.CommandModel;
-import org.ao.suite.test.command.CommandNotFoundException;
 import org.ao.suite.test.command.ICommandDriver;
+import org.ao.suite.test.command.exception.CommandNotFoundException;
+import org.ao.suite.test.command.model.CommandModel;
+import org.ao.suite.test.model.TestModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
