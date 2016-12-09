@@ -18,6 +18,7 @@ import org.ao.suite.model.SuiteTestModel;
 import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
 import org.ao.suite.test.command.exception.CommandNotFoundException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -57,10 +58,11 @@ public class SuiteDriver {
 	public void init() throws MalformedURLException {
 		
 		if (suiteProp.remoteUrl != null && suiteProp.remoteUrl.length() > 0) {
-			if (suiteProp.webDriver.equals("firefox"))
-				webDriver = new RemoteWebDriver(
-						new URL(suiteProp.remoteUrl),
-						DesiredCapabilities.firefox());
+			if (suiteProp.webDriver.equals("firefox")) {
+				DesiredCapabilities dc = DesiredCapabilities.firefox();
+				webDriver = new RemoteWebDriver(new URL(suiteProp.remoteUrl), dc);
+							
+			}
 			else if (suiteProp.webDriver.equals("chrome"))
 				webDriver = new RemoteWebDriver(
 						new URL(suiteProp.remoteUrl),
