@@ -30,24 +30,24 @@ public class SelectCommandDriver extends AbstractCommandDriver {
 		if (commandModel.getArgs() == null || commandModel.getArgs().length < 2)
 			throw new CommandInvalidArgumentException(commandModel.getCommand());
 		
-		Select webElement = (Select)findElement(commandModel.getArgs()[0], suiteDriver);
+		Select selElement = new Select(findElement(commandModel.getArgs()[0], suiteDriver));
 		
 		if (commandModel.getArgs()[1].equals(DeselectAll))
-			webElement.deselectAll();
+			selElement.deselectAll();
 		else if (commandModel.getArgs()[1].equals(DeselectIndex))
-			webElement.deselectByIndex(Integer.valueOf(commandModel.getArgs()[2]));
+			selElement.deselectByIndex(Integer.valueOf(commandModel.getArgs()[2]));
 		else if (commandModel.getArgs()[1].equals(DeselectValue))
-			webElement.deselectByValue(commandModel.getArgs()[2]);
+			selElement.deselectByValue(commandModel.getArgs()[2]);
 		else if (commandModel.getArgs()[1].equals(DeselectText))
-			webElement.deselectByVisibleText(commandModel.getArgs()[2]);
+			selElement.deselectByVisibleText(commandModel.getArgs()[2]);
 		else if (commandModel.getArgs()[1].equals(SelectIndex))
-			webElement.selectByIndex(Integer.valueOf(commandModel.getArgs()[2]));
+			selElement.selectByIndex(Integer.valueOf(commandModel.getArgs()[2]));
 		else if (commandModel.getArgs()[1].equals(SelectValue))
-			webElement.selectByValue(commandModel.getArgs()[2]);
+			selElement.selectByValue(commandModel.getArgs()[2]);
 		else if (commandModel.getArgs()[1].equals(SelectText))
-			webElement.selectByVisibleText(commandModel.getArgs()[2]);
+			selElement.selectByVisibleText(commandModel.getArgs()[2]);
 		else
-			commandModel.setValue(webElement.getAllSelectedOptions());
+			commandModel.setValue(selElement.getAllSelectedOptions());
 	
 	}
 
