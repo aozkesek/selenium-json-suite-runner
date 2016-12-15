@@ -1,4 +1,4 @@
-package org.ao.suite.test.command.webelement;
+package org.ao.suite.test.command.select;
 
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.AbstractCommandDriver;
