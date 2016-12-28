@@ -10,7 +10,7 @@
 
   "cleanUpCycle": 5000,
   "timeout": 300000,
-  "browserTimeout": 0,
-  "maxSession": 4,
+  "browserTimeout": 15000,
+  "maxSession": 8,
   "jettyMaxThreads":-1
 }
