@@ -37,7 +37,7 @@ dependencies {
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
 	compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
 	
-	#compile 'org.seleniumhq.selenium:selenium-server:3.0.1'
+        /*compile 'org.seleniumhq.selenium:selenium-server:3.0.1'*/
 	compile 'org.seleniumhq.selenium:selenium-java:3.0.1'
 
         compile 'org.slf4j:slf4j-api:1.7.22'
