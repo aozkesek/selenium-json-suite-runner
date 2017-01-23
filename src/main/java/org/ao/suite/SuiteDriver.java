@@ -25,6 +25,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -50,13 +55,15 @@ public class SuiteDriver {
 	private TestContainer testContainer;
 	@Autowired
 	private ObjectContainer objectContainer;
+	@Autowired
+	private AnnotationConfigApplicationContext appCtx;
 	
 	private static Logger logger = LoggerFactory.getLogger(SuiteDriver.class);
 	
 	@PostConstruct
 	public void init() throws MalformedURLException {
 		
-		if (suiteProp.remoteUrl != null && suiteProp.remoteUrl.length() > 0) {
+		if (suiteProp.remoteUrl != null && !suiteProp.remoteUrl.isEmpty()) {
 			if (suiteProp.webDriver.equals("firefox"))
 				webDriver = new RemoteWebDriver(
 						new URL(suiteProp.remoteUrl), 
@@ -75,9 +82,9 @@ public class SuiteDriver {
 		
 		webDriver.manage()
 			.timeouts()
-				.implicitlyWait(suiteProp.timeOut, TimeUnit.MILLISECONDS)
-				.pageLoadTimeout(suiteProp.timeOut, TimeUnit.MILLISECONDS)
-				.setScriptTimeout(suiteProp.timeOut, TimeUnit.MILLISECONDS);
+			.implicitlyWait(suiteProp.timeOut, TimeUnit.MILLISECONDS)
+			.pageLoadTimeout(suiteProp.timeOut, TimeUnit.MILLISECONDS)
+			.setScriptTimeout(suiteProp.timeOut, TimeUnit.MILLISECONDS);
 		
 	}
 	
@@ -103,10 +110,12 @@ public class SuiteDriver {
 			tests.forEach((t) -> t.run());
 		}
 		catch(Exception e) {
-			logger.error("interrupted by ", e);
+			throw e;
+		}
+		finally {
+		        webDriver.quit();
 		}
 		
-		webDriver.quit();
 	}
 	
 	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
@@ -133,7 +142,8 @@ public class SuiteDriver {
 		
 		if (!testContainer.containsTestDriverKey(pathName))
 			testContainer.putTestDriver(pathName, 
-					new TestDriver(this, pathName, testArguments));
+					appCtx.getBean(TestDriver.class)
+					        .init(this, pathName, testArguments));
 		
 		return testContainer.getTestDriver(pathName);
 	}

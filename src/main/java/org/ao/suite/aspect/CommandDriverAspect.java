@@ -1,4 +1,4 @@
-package org.ao.suite.test.command.aspect;
+package org.ao.suite.aspect;
 
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.AbstractCommandDriver;
@@ -33,11 +33,11 @@ public class CommandDriverAspect {
 		if (commandModel.getValue() != null)
 			repCommandModel.setValue(acd.getValue(commandModel));
 		
-		acd.getLogger().debug("AROUND-ASPECT: replaced {}", repCommandModel);
+		acd.getLogger().debug("AROUND-ASPECT: command-parameter replaced {}", repCommandModel);
 		
 		Object returnObject = pjp.proceed(new Object[]{repCommandModel, suiteDriver});
 		
-		acd.getLogger().debug("AROUND-ASPECT: returned {}", repCommandModel);
+		acd.getLogger().debug("AROUND-ASPECT: command-parameter returned {}", repCommandModel);
 		
 		if (commandModel.getValue() != null) {
 			String value = commandModel.getValue().toString();

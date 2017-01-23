@@ -11,11 +11,15 @@ import org.ao.suite.test.command.model.CommandModel;
 import org.ao.suite.test.model.TestModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Component
+@Scope("prototype")
 public class TestDriver {
 	
 	private SuiteDriver suiteDriver;
@@ -27,18 +31,24 @@ public class TestDriver {
 	
 	private static Logger logger = LoggerFactory.getLogger(TestDriver.class);
 	
-	public TestDriver(SuiteDriver suiteDriver, String name, LinkedHashMap<String, Object> arguments) 
-			throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
-		
-		this.suiteDriver = suiteDriver;
-		this.name = name;
-		this.arguments = arguments;
-		
-		loadTest();
-		prepareCommands();
-		putArguments();
-		storeVars();
-		
+	public String getName() {
+	        return name;
+	}
+	
+	public TestDriver init(SuiteDriver suiteDriver, String name, LinkedHashMap<String, Object> arguments) 
+	                throws JsonParseException, JsonMappingException, 
+                        IOException, CommandNotFoundException {
+	        
+	        this.suiteDriver = suiteDriver;
+                this.name = name;
+                this.arguments = arguments;
+                
+                loadTest();
+                prepareCommands();
+                putArguments();
+                storeVars();
+                        
+                return this;
 	}
 	
 	public void run() {
