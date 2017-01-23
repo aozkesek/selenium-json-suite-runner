@@ -17,7 +17,7 @@ public class CommandDriverAspect {
         @Pointcut("execution(* org.ao.suite.test.command.*.execute(..))")
         public void commandExecute() {}
 
-//	@Around("commandExecute() && args(commandModel, suiteDriver)")
+	@Around("commandExecute() && args(commandModel, suiteDriver)")
 	@Order(0)
 	public Object replaceCommandModelObject(ProceedingJoinPoint jp, CommandModel commandModel, 
 	                SuiteDriver suiteDriver) 
