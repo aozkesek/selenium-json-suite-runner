@@ -43,10 +43,7 @@ public class SuiteDriverAspect {
                         bw.append("<body>");
                         bw.newLine();
                         
-                        bw.append("<table>");
-                        bw.newLine();
-                        
-                        bw.append("<tr><td colspan=\"2\">" + suiteDriver.SuiteId + "</td> </tr>");
+                        bw.append("<table><tr><td>");
                         bw.newLine();
                         
                 } catch (IOException e) {
@@ -65,7 +62,7 @@ public class SuiteDriverAspect {
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
                         
-                        bw.append("<tr><td>" + suiteDriver.SuiteId + "</td> <td>SUCCEEDED</td> </tr>");
+                        bw.append("</td></tr><tr><th>" + suiteDriver.SuiteId + "</th> <th>SUCCEEDED</th> </tr>");
                         bw.newLine();
                         
                         bw.append("</table>");
@@ -91,7 +88,7 @@ public class SuiteDriverAspect {
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
                         
-                        bw.append("<tr><td>" + suiteDriver.SuiteId + "</td> <td>FAILED</td> </tr>");
+                        bw.append("</td></tr><tr><th>" + suiteDriver.SuiteId + "</th> <th>FAILED</th> </tr>");
                         bw.newLine();
                         
                         bw.append("</table>");

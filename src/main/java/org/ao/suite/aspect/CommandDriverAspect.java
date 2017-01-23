@@ -1,11 +1,17 @@
 package org.ao.suite.aspect;
 
+import java.io.BufferedWriter;
+
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.AbstractCommandDriver;
 import org.ao.suite.test.command.model.CommandModel;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -18,7 +24,6 @@ public class CommandDriverAspect {
         public void commandExecute() {}
 
 	@Around("commandExecute() && args(commandModel, suiteDriver)")
-	@Order(0)
 	public Object replaceCommandModelObject(ProceedingJoinPoint jp, CommandModel commandModel, 
 	                SuiteDriver suiteDriver) 
 	                throws Throwable {
@@ -62,24 +67,51 @@ public class CommandDriverAspect {
 		
 	}
 	
-	@Around("commandExecute() && args(commandModel, suiteDriver)")
-        @Order(1)
-        public Object reportCommandExecute(ProceedingJoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
+	@Before("commandExecute() && args(commandModel, suiteDriver)")
+        public void reportCommandExecuteStart(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
                         throws Throwable {
-                
-                Object retVal = null;
-                
+        
                 try {
-                        retVal = jp.proceed();
+                        BufferedWriter bw = suiteDriver.getReportWriter();
+                        bw.append("<li>");
+                        bw.newLine();
                         
-                        return retVal;
                 }
                 catch(Exception ex) {
-                        
-                        throw ex;
+                                                   
                 }
-                
                 
         }
 
+	@AfterReturning("commandExecute() && args(commandModel, suiteDriver)")
+        public void reportCommandExecuteSuccessEnd(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
+                        throws Throwable {
+        
+                try {
+                        BufferedWriter bw = suiteDriver.getReportWriter();
+                        bw.append(commandModel.getCommand() + " SUCCEEDED</li>");
+                        bw.newLine();
+                        
+                }
+                catch(Exception ex) {
+                                                   
+                }
+                
+        }
+	
+	@AfterThrowing("commandExecute() && args(commandModel, suiteDriver)")
+        public void reportCommandExecuteFailureEnd(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
+                        throws Throwable {
+        
+                try {
+                        BufferedWriter bw = suiteDriver.getReportWriter();
+                        bw.append(commandModel.getCommand() + " FAILED</li>");
+                        bw.newLine();
+                        
+                }
+                catch(Exception ex) {
+                                                   
+                }
+                
+        }
 }
