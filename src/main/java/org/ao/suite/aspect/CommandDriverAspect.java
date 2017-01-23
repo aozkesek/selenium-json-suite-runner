@@ -6,18 +6,24 @@ import org.ao.suite.test.command.model.CommandModel;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
 public class CommandDriverAspect {
+        
+        @Pointcut("execution(* org.ao.suite.test.command.*.execute(..))")
+        public void commandExecute() {}
 
-	@Around("execution(* org.ao.suite.test.command.*.execute(..))")
-	public Object replaceCommandModelObject(ProceedingJoinPoint pjp) throws Throwable {
+//	@Around("commandExecute() && args(commandModel, suiteDriver)")
+	@Order(0)
+	public Object replaceCommandModelObject(ProceedingJoinPoint jp, CommandModel commandModel, 
+	                SuiteDriver suiteDriver) 
+	                throws Throwable {
 		
-		AbstractCommandDriver acd = (AbstractCommandDriver)pjp.getTarget();
-		CommandModel commandModel = (CommandModel)pjp.getArgs()[0];
-		SuiteDriver suiteDriver = (SuiteDriver)pjp.getArgs()[1];
+		AbstractCommandDriver acd = (AbstractCommandDriver)jp.getTarget();
 		
 		acd.getLogger().debug("AROUND-ASPECT: executing {}", commandModel);
 		
@@ -35,7 +41,7 @@ public class CommandDriverAspect {
 		
 		acd.getLogger().debug("AROUND-ASPECT: command-parameter replaced {}", repCommandModel);
 		
-		Object returnObject = pjp.proceed(new Object[]{repCommandModel, suiteDriver});
+		Object returnObject = jp.proceed(new Object[]{repCommandModel, suiteDriver});
 		
 		acd.getLogger().debug("AROUND-ASPECT: command-parameter returned {}", repCommandModel);
 		
@@ -55,5 +61,25 @@ public class CommandDriverAspect {
 		return returnObject;
 		
 	}
+	
+	@Around("commandExecute() && args(commandModel, suiteDriver)")
+        @Order(1)
+        public Object reportCommandExecute(ProceedingJoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
+                        throws Throwable {
+                
+                Object retVal = null;
+                
+                try {
+                        retVal = jp.proceed();
+                        
+                        return retVal;
+                }
+                catch(Exception ex) {
+                        
+                        throw ex;
+                }
+                
+                
+        }
 
 }

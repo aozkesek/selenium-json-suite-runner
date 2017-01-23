@@ -17,14 +17,17 @@ public class SuiteProperty {
 	@Value("${suite.home}")
 	public String home;
 	
-	@Value("${suite.test.home}")
-	public String testHome;
+	@Value("${suite.tests.home}")
+	public String testsHome;
 	
 	@Value("${suite.objects.home}")
 	public String objectsHome;
 	
-	@Value("${suite.screenshot.home}")
+	@Value("${suite.screenshots.home}")
 	public String screenshotsHome;
+	
+	@Value("${suite.reports.home}")
+        public String reportsHome;
 	
 	@Value("${suite.webdriver}")
 	public String webDriver;

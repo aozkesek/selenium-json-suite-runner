@@ -1,5 +1,6 @@
 package org.ao.suite;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,11 +26,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -104,9 +101,8 @@ public class SuiteDriver {
 	
 	public void RunTests() {
 		
-		webDriver.get(suite.getTestUrl());
-		
 		try {
+		        webDriver.get(suite.getTestUrl());
 			tests.forEach((t) -> t.run());
 		}
 		catch(Exception e) {
@@ -119,11 +115,12 @@ public class SuiteDriver {
 	}
 	
 	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
-		String pathName = getFullPathName(suiteProp.home, suitePathName);
+		String pathName = FullPathName(suiteProp.home, suitePathName);
+		
+		SuiteId = suitePathName + "_" + String.valueOf(Thread.currentThread().getId());
 		
 		logger.debug("suit is loading {}", suitePathName);
-		suite = new ObjectMapper().
-						readValue(new File(pathName), SuiteModel.class);
+		suite = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
 		logger.debug("suite has loaded as {}", suite);
 		
 		loadObjects();
@@ -135,8 +132,8 @@ public class SuiteDriver {
 	public TestDriver loadTest(String testFileName, LinkedHashMap<String, Object> testArguments) 
 			throws JsonParseException, JsonMappingException, CommandNotFoundException, IOException {
 		
-		String pathName = getFullPathName(suiteProp.testHome, suite.getTestPath());
-		pathName = getFullPathName(pathName, testFileName);
+		String pathName = FullPathName(suiteProp.testsHome, suite.getTestPath());
+		pathName = FullPathName(pathName, testFileName);
 		
 		logger.debug("test is loading/getting from {}", pathName);
 		
@@ -149,11 +146,10 @@ public class SuiteDriver {
 	}
 	
 	private void loadObjects() throws JsonParseException, JsonMappingException, IOException {
-		String pathName = getFullPathName(suiteProp.objectsHome, suite.getObjectRepository());
+		String pathName = FullPathName(suiteProp.objectsHome, suite.getObjectRepository());
 		
 		logger.debug("object is loading {}", pathName);
-		object = new ObjectMapper().
-						readValue(new File(pathName), ObjectModel.class);
+		object = new ObjectMapper().readValue(new File(pathName), ObjectModel.class);
 		logger.debug("object has loaded as {}", object);
 		
 		object.getObjects().
@@ -168,7 +164,17 @@ public class SuiteDriver {
 			
 	}
 	
-	public String getFullPathName(String path, String name) {
+	private BufferedWriter reportWriter = null;
+	
+	public BufferedWriter getReportWriter() {
+	        return reportWriter;
+	}
+	
+	public void setReportWriter(BufferedWriter reportWriter) {
+	        this.reportWriter = reportWriter;
+	}
+	
+	public static String FullPathName(String path, String name) {
 		String normalizedPath;
 		if (path.length() > 0) {
 			if (path.endsWith("/"))
