@@ -174,6 +174,16 @@ public class SuiteDriver {
 	        this.reportWriter = reportWriter;
 	}
 	
+	private boolean isNeededCommaTest = false;
+	
+	public boolean isNeededCommaTest() { return isNeededCommaTest; }
+	public void setNeededCommaTest(boolean isNeeded) { isNeededCommaTest = isNeeded; }
+	
+	private boolean isNeededCommaCommand = false;
+        
+	public boolean isNeededCommaCommand() { return isNeededCommaCommand; }
+        public void setNeededCommaCommand(boolean isNeeded) { isNeededCommaCommand = isNeeded; }
+        
 	public static String FullPathName(String path, String name) {
 		String normalizedPath;
 		if (path.length() > 0) {

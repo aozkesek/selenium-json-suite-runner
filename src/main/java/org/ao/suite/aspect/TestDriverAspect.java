@@ -27,9 +27,15 @@ public class TestDriverAspect {
                 
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
-                        bw.append("<table><tr><td><ul>");
+                        if (suiteDriver.isNeededCommaTest())
+                                bw.append(", { \"name\": \"" + testName + "\"");
+                        else
+                                bw.append("{ \"name\": \"" + testName + "\"");
+                        bw.append(", \"commands\": [");
                         bw.newLine();
                         
+                        suiteDriver.setNeededCommaTest(true);
+                        suiteDriver.setNeededCommaCommand(false);
                 }
                 catch(Exception ex) {
                         
@@ -41,15 +47,11 @@ public class TestDriverAspect {
         @AfterReturning("testRun()")
         public void reportTestRunSuccessEnd(JoinPoint jp) {
                 TestDriver td = (TestDriver)jp.getTarget();
-                String testName = td.getName();
                 SuiteDriver suiteDriver = td.getSuiteDriver();  
 
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
-                        bw.append("</ul></td></tr><tr><th>" + testName + "</th> <th>SUCCEEDED</th> </tr>");
-                        bw.newLine();
-                        
-                        bw.append("</table>");
+                        bw.append("] , \"isSuccessful\": true }");
                         bw.newLine();
                         
                 }
@@ -61,14 +63,11 @@ public class TestDriverAspect {
         @AfterThrowing("testRun()")
         public void reportTestRunEnd(JoinPoint jp) {
                 TestDriver td = (TestDriver)jp.getTarget();
-                String testName = td.getName();
                 SuiteDriver suiteDriver = td.getSuiteDriver();    
                 
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
-                        bw.append("</ul></td></tr><tr><th>" + testName + "</th> <th>FAILED</th> </tr>");
-                        bw.newLine();
-                        bw.append("</table>");
+                        bw.append("] , \"isSuccessful\": false }");
                         bw.newLine();
                         
                 }

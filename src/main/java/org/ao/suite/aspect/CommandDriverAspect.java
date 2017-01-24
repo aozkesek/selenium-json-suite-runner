@@ -13,7 +13,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -71,10 +70,17 @@ public class CommandDriverAspect {
         public void reportCommandExecuteStart(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
                         throws Throwable {
         
+	        if (!commandModel.getCommand().equals("runTest"))
+	                return;
+	        
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
-                        bw.append("<li>");
+                        if (suiteDriver.isNeededCommaCommand())
+                                bw.append(", { \"test\": ");
+                        else
+                                bw.append("{ \"test\": ");
                         bw.newLine();
+                        
                         
                 }
                 catch(Exception ex) {
@@ -82,15 +88,25 @@ public class CommandDriverAspect {
                 }
                 
         }
-
+        
 	@AfterReturning("commandExecute() && args(commandModel, suiteDriver)")
         public void reportCommandExecuteSuccessEnd(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
                         throws Throwable {
         
+	        boolean isRunTest = commandModel.getCommand().equals("runTest");
+	        
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
-                        bw.append(commandModel.getCommand() + " SUCCEEDED</li>");
+                        if (isRunTest)
+                                bw.append(", \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": true }");
+                        else
+                                if (suiteDriver.isNeededCommaCommand())
+                                        bw.append(", { \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": true }");
+                                else
+                                        bw.append("{ \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": true }");
                         bw.newLine();
+                        
+                        suiteDriver.setNeededCommaCommand(true);
                         
                 }
                 catch(Exception ex) {
@@ -102,12 +118,20 @@ public class CommandDriverAspect {
 	@AfterThrowing("commandExecute() && args(commandModel, suiteDriver)")
         public void reportCommandExecuteFailureEnd(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
                         throws Throwable {
+	        boolean isRunTest = commandModel.getCommand().equals("runTest");
         
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
-                        bw.append(commandModel.getCommand() + " FAILED</li>");
+                        if (isRunTest)
+                                bw.append(", \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": false }");
+                        else
+                                if (suiteDriver.isNeededCommaCommand())
+                                        bw.append(", { \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": false }");
+                                else
+                                        bw.append("{ \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": false }");
                         bw.newLine();
                         
+                        suiteDriver.setNeededCommaCommand(true);
                 }
                 catch(Exception ex) {
                                                    

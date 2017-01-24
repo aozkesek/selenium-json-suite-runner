@@ -31,19 +31,15 @@ public class SuiteDriverAspect {
                 String reportFileName = suiteDriver.SuiteId
                                 .replace('/', '_')
                                 .replace('\\', '_');
-                File reportFile = new File(SuiteDriver.FullPathName(suiteProp.reportsHome, reportFileName)
-                                .replaceAll(".json", ".html"));
+                File reportFile = new File(SuiteDriver.FullPathName(suiteProp.reportsHome, reportFileName));
                 try {
                         BufferedWriter bw = new BufferedWriter(new FileWriter(reportFile));
                         suiteDriver.setReportWriter(bw);
                         
-                        bw.write("<html>");
-                        bw.newLine();
+                        bw.write("{ \"name\": \"" + suiteDriver.SuiteId + "\"");
+                        bw.write(", \"threadId\": " + String.valueOf(Thread.currentThread().getId()));
+                        bw.write(", \"tests\": [");
                         
-                        bw.append("<body>");
-                        bw.newLine();
-                        
-                        bw.append("<table><tr><td>");
                         bw.newLine();
                         
                 } catch (IOException e) {
@@ -62,18 +58,9 @@ public class SuiteDriverAspect {
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
                         
-                        bw.append("</td></tr><tr><th>" + suiteDriver.SuiteId + "</th> <th>SUCCEEDED</th> </tr>");
+                        bw.append("], \"isSuccessful\": true }");
                         bw.newLine();
                         
-                        bw.append("</table>");
-                        bw.newLine();
-                        
-                        bw.append("</body>");
-                        bw.newLine();
-                        
-                        bw.append("</html>");
-                        bw.newLine();
-                                      
                         bw.close();
                         
                 } catch (IOException e) {
@@ -88,16 +75,7 @@ public class SuiteDriverAspect {
                 try {
                         BufferedWriter bw = suiteDriver.getReportWriter();
                         
-                        bw.append("</td></tr><tr><th>" + suiteDriver.SuiteId + "</th> <th>FAILED</th> </tr>");
-                        bw.newLine();
-                        
-                        bw.append("</table>");
-                        bw.newLine();
-                        
-                        bw.append("</body>");
-                        bw.newLine();
-                        
-                        bw.append("</html>");
+                        bw.append("], \"isSuccessful\": false }");
                         bw.newLine();
                                       
                         bw.close();
