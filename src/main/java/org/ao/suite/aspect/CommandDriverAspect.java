@@ -79,6 +79,8 @@ public class CommandDriverAspect {
                                 bw.append(", { \"test\": ");
                         else
                                 bw.append("{ \"test\": ");
+                        suiteDriver.setNeededCommaTest(false);
+                        suiteDriver.setNeededCommaCommand(false);
                         bw.newLine();
                         
                         
