@@ -1,0 +1,108 @@
+<html>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<script type="text/javascript">
+
+$(function() {
+
+        
+        var reportJson = $.parseJSON('{ "name": "duckduckgo-suit.json_1", "threadId": 1, "tests": ['
+                + '{ "name": "./tests/duckduckgo-tests/enter-world.json", "commands": ['
+                + '{ "command": "isEnabled", "isSuccessful": true }'
+                + ', { "command": "isDisplayed", "isSuccessful": true }'
+                + ', { "command": "sendKeys", "isSuccessful": true }'
+                + ', { "command": "submit", "isSuccessful": true }'
+                + ', { "command": "sleep", "isSuccessful": true }'
+                + ', { "test": '
+                + '{ "name": "./tests/duckduckgo-tests/../commons/check-results.json", "commands": ['
+                + '{ "command": "assertEq", "isSuccessful": true }'
+                + ', { "command": "log", "isSuccessful": true }'
+                + ', { "command": "log", "isSuccessful": true }'
+                + ', { "command": "set", "isSuccessful": true }'
+                + ', { "command": "getAttribute", "isSuccessful": true }'
+                + ', { "command": "assertNeq", "isSuccessful": true }'
+                + ', { "command": "takeScreenshot", "isSuccessful": true }'
+                + ', { "command": "inc", "isSuccessful": true }'
+                + ', { "command": "inc", "isSuccessful": true }'
+                + ', { "command": "inc", "isSuccessful": true }'
+                + '] , "isSuccessful": true }'
+                + ', "command": "runTest", "isSuccessful": true }'
+                + '] , "isSuccessful": true }'
+                + ', { "name": "./tests/duckduckgo-tests/world-end.json", "commands": ['
+                + '{ "command": "isEnabled", "isSuccessful": true }'
+                + ', { "command": "isDisplayed", "isSuccessful": true }'
+                + ', { "command": "clear", "isSuccessful": true }'
+                + ', { "command": "sendKeys", "isSuccessful": true }'
+                + ', { "command": "submit", "isSuccessful": true }'
+                + ', { "command": "sleep", "isSuccessful": true }'
+                + ', { "test": '
+                + '{ "name": "./tests/duckduckgo-tests/../commons/check-results.json", "commands": ['
+                + '{ "command": "assertEq", "isSuccessful": true }'
+                + ', { "command": "log", "isSuccessful": true }'
+                + ', { "command": "log", "isSuccessful": true }'
+                + ', { "command": "set", "isSuccessful": true }'
+                + ', { "command": "getAttribute", "isSuccessful": true }'
+                + ', { "command": "assertNeq", "isSuccessful": true }'
+                + ', { "command": "takeScreenshot", "isSuccessful": true }'
+                + ', { "command": "inc", "isSuccessful": true }'
+                + ', { "command": "inc", "isSuccessful": true }'
+                + ', { "command": "inc", "isSuccessful": true }'
+                + '] , "isSuccessful": true }'
+                + ', "command": "runTest", "isSuccessful": true }'
+                + '] , "isSuccessful": true }'
+                + '], "isSuccessful": true }');
+
+        var reportTable = $('<table><tbody></tbody></table>');
+        
+        reportTable.append("<tr><th>SUITE: "+reportJson.name+"</th><th>THREAD: "+reportJson.threadId+"</th><th>RESULT: "+(reportJson.isSuccessful?"OK":"FAILED")+"</th></tr>");
+
+        $.each(reportJson.tests, function(idxt, test) {
+                
+                testTableWriter(reportTable, test);
+
+        });                
+
+        reportTable.appendTo($("body"));
+
+        function testTableWriter(parent, test) {
+                var tableRow = $('<tr></tr>');
+                var tableCol = $('<td colspan="3"></td>');
+                var table = $('<table><tbody><tr><th>.</th><th>TEST: '+test.name+'</th><th>RESULT: '+(test.isSuccessful?"OK":"FAILED")+'</th></tr></tbody></table>');
+
+                $.each(test.commands, function(idx, cmd) {
+                        table.append('<tr><td></td><td>COMMAND: '+cmd.command+'</td><td>RESULT: '+(cmd.isSuccessful?"OK":"FAILED")+'</td></tr>');
+                        if (cmd.command === "runTest") {
+                                testTableWriter(table, cmd.test);
+                        }
+                        
+                });
+
+                table.appendTo(tableCol);
+                tableCol.appendTo(tableRow);
+                tableRow.appendTo(parent);
+        }
+});                
+
+</script>
+
+<style type="text/css">
+
+table, th, td {
+        border: 1px solid black;
+        
+}
+
+</style>
+
+<body>
+
+<p>
+Select report file:<br>
+<input type="file" id="reportFile" />
+</p>
+
+
+</body>
+
+</html>
