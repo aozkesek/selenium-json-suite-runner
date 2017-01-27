@@ -4,66 +4,34 @@
 
 <script type="text/javascript">
 
-$(function() {
 
-        
-        var reportJson = $.parseJSON('{ "name": "duckduckgo-suit.json_1", "threadId": 1, "tests": ['
-                + '{ "name": "./tests/duckduckgo-tests/enter-world.json", "commands": ['
-                + '{ "command": "isEnabled", "isSuccessful": true }'
-                + ', { "command": "isDisplayed", "isSuccessful": true }'
-                + ', { "command": "sendKeys", "isSuccessful": true }'
-                + ', { "command": "submit", "isSuccessful": true }'
-                + ', { "command": "sleep", "isSuccessful": true }'
-                + ', { "test": '
-                + '{ "name": "./tests/duckduckgo-tests/../commons/check-results.json", "commands": ['
-                + '{ "command": "assertEq", "isSuccessful": true }'
-                + ', { "command": "log", "isSuccessful": true }'
-                + ', { "command": "log", "isSuccessful": true }'
-                + ', { "command": "set", "isSuccessful": true }'
-                + ', { "command": "getAttribute", "isSuccessful": true }'
-                + ', { "command": "assertNeq", "isSuccessful": true }'
-                + ', { "command": "takeScreenshot", "isSuccessful": true }'
-                + ', { "command": "inc", "isSuccessful": true }'
-                + ', { "command": "inc", "isSuccessful": true }'
-                + ', { "command": "inc", "isSuccessful": true }'
-                + '] , "isSuccessful": true }'
-                + ', "command": "runTest", "isSuccessful": true }'
-                + '] , "isSuccessful": true }'
-                + ', { "name": "./tests/duckduckgo-tests/world-end.json", "commands": ['
-                + '{ "command": "isEnabled", "isSuccessful": true }'
-                + ', { "command": "isDisplayed", "isSuccessful": true }'
-                + ', { "command": "clear", "isSuccessful": true }'
-                + ', { "command": "sendKeys", "isSuccessful": true }'
-                + ', { "command": "submit", "isSuccessful": true }'
-                + ', { "command": "sleep", "isSuccessful": true }'
-                + ', { "test": '
-                + '{ "name": "./tests/duckduckgo-tests/../commons/check-results.json", "commands": ['
-                + '{ "command": "assertEq", "isSuccessful": true }'
-                + ', { "command": "log", "isSuccessful": true }'
-                + ', { "command": "log", "isSuccessful": true }'
-                + ', { "command": "set", "isSuccessful": true }'
-                + ', { "command": "getAttribute", "isSuccessful": true }'
-                + ', { "command": "assertNeq", "isSuccessful": true }'
-                + ', { "command": "takeScreenshot", "isSuccessful": true }'
-                + ', { "command": "inc", "isSuccessful": true }'
-                + ', { "command": "inc", "isSuccessful": true }'
-                + ', { "command": "inc", "isSuccessful": true }'
-                + '] , "isSuccessful": true }'
-                + ', "command": "runTest", "isSuccessful": true }'
-                + '] , "isSuccessful": true }'
-                + '], "isSuccessful": true }');
 
-        var reportTable = $('<table><tbody></tbody></table>');
-        
-        reportTable.append("<tr><th>SUITE: "+reportJson.name+"</th><th>THREAD: "+reportJson.threadId+"</th><th>RESULT: "+(reportJson.isSuccessful?"OK":"FAILED")+"</th></tr>");
-
-        $.each(reportJson.tests, function(idxt, test) {
+        function showSelected() {
+                var reportFile = $("#reportFile");
                 
-                testTableWriter(reportTable, test);
+                $.each(reportFile.prop('files'), function(i, file)  {
+                        
+                        $.ajax({
+                                url: file.name
+                                , success: function(data) {
+                                        var reportTable = $('<table><tbody></tbody></table>');
+                                        
+                                        reportTable.append("<tr><th>SUITE: "+data.name+"</th><th>THREAD: "+data.threadId+"</th><th>RESULT: "+(data.isSuccessful?"OK":"FAILED")+"</th></tr>");
 
-        });                
+                                        $.each(data.tests, function(idxt, test) {
+                                                
+                                                testTableWriter(reportTable, test);
 
-        reportTable.appendTo($("body"));
+                                        });                
+
+                                        reportTable.appendTo($("body"));
+
+                                }
+                        });
+
+                });
+
+        }
 
         function testTableWriter(parent, test) {
                 var tableRow = $('<tr></tr>');
@@ -82,7 +50,6 @@ $(function() {
                 tableCol.appendTo(tableRow);
                 tableRow.appendTo(parent);
         }
-});                
 
 </script>
 
@@ -100,6 +67,11 @@ table, th, td {
 <p>
 Select report file:<br>
 <input type="file" id="reportFile" />
+</p>
+
+
+<p>
+<input type="button" value="Show selected" onclick="showSelected()"/>
 </p>
 
 
