@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
 
-	compile 'org.springframework.boot:spring-boot-starter:1.5.2.RELEASE'
+	compile 'org.springframework.boot:spring-boot-starter:1.5.3.RELEASE'
 	compile 'org.springframework:spring-aop:4.3.8.RELEASE'
 	compile 'org.springframework:spring-aspects:4.3.8.RELEASE'
 	
@@ -36,8 +36,8 @@ dependencies {
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.8.8'
 	compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.8'
 	
-	/*compile 'org.seleniumhq.selenium:selenium-server:3.3.1'*/
-	compile 'org.seleniumhq.selenium:selenium-java:3.3.1'
+	/*compile 'org.seleniumhq.selenium:selenium-server:3.4.0'*/
+	compile 'org.seleniumhq.selenium:selenium-java:3.4.0'
 
         compile 'org.slf4j:slf4j-api:1.7.22'
 
