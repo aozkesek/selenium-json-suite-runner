@@ -9,8 +9,9 @@
 
 apply plugin: 'java'
 apply plugin: 'java-library-distribution'
+apply plugin: 'application'
 
-
+mainClassName= "org.ao.JSONRunnerMain"
 
 jar {
 	manifest {
@@ -28,20 +29,20 @@ repositories {
 
 dependencies {
 
-	compile 'org.springframework.boot:spring-boot-starter:1.5.3.RELEASE'
-	compile 'org.springframework:spring-aop:4.3.8.RELEASE'
-	compile 'org.springframework:spring-aspects:4.3.8.RELEASE'
+	compile 'org.springframework.boot:spring-boot-starter:1.5.7.RELEASE'
+	compile 'org.springframework:spring-aop:5.0.0.RELEASE'
+	compile 'org.springframework:spring-aspects:5.0.0.RELEASE'
 	
 	compile 'com.fasterxml.jackson.core:jackson-core:2.8.8'
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.8.8'
 	compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.8'
 	
 	/*compile 'org.seleniumhq.selenium:selenium-server:3.4.0'*/
-	compile 'org.seleniumhq.selenium:selenium-java:3.4.0'
+	compile 'org.seleniumhq.selenium:selenium-java:3.5.3'
 
-        compile 'org.slf4j:slf4j-api:1.7.22'
+	compile 'org.slf4j:slf4j-api:1.7.22'
 
-        testCompile 'org.testng:testng:6.10'
+	testCompile 'org.testng:testng:6.10'
 }
 
 test.useTestNG()
