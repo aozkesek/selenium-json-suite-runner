@@ -28,20 +28,20 @@ repositories {
 
 dependencies {
 
-	compile 'org.springframework.boot:spring-boot-starter:1.5.3.RELEASE'
-	compile 'org.springframework:spring-aop:4.3.8.RELEASE'
-	compile 'org.springframework:spring-aspects:4.3.8.RELEASE'
+	compile 'org.springframework.boot:spring-boot-starter:1.5.7.RELEASE'
+	compile 'org.springframework:spring-aop:4.3.11.RELEASE'
+	compile 'org.springframework:spring-aspects:4.3.11.RELEASE'
 	
-	compile 'com.fasterxml.jackson.core:jackson-core:2.8.8'
-	compile 'com.fasterxml.jackson.core:jackson-databind:2.8.8'
-	compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.8'
+	compile 'com.fasterxml.jackson.core:jackson-core:2.9.1'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
+	compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.1'
 	
 	/*compile 'org.seleniumhq.selenium:selenium-server:3.4.0'*/
-	compile 'org.seleniumhq.selenium:selenium-java:3.4.0'
+	compile 'org.seleniumhq.selenium:selenium-java:3.5.3'
 
-        compile 'org.slf4j:slf4j-api:1.7.22'
+        compile 'org.slf4j:slf4j-api:1.7.25'
 
-        testCompile 'org.testng:testng:6.10'
+        testCompile 'org.testng:testng:6.11'
 }
 
 test.useTestNG()
