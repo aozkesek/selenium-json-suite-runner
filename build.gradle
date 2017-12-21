@@ -46,3 +46,12 @@ dependencies {
 }
 
 test.useTestNG()
+
+
+compileJava {
+	doFirst {
+		options.compilerArgs = [
+			'--add-modules', 'ALL-SYSTEM'
+		]
+	}
+}
