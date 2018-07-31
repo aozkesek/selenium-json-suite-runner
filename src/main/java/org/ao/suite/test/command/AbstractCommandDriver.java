@@ -18,12 +18,10 @@ import org.openqa.selenium.By.ByXPath;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
+@Scope("prototype")
 public abstract class AbstractCommandDriver implements ICommandDriver {
-	
-	@Autowired
-	protected ObjectContainer objectContainer;
 	
 	protected Logger logger;
 	
@@ -43,7 +41,7 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		return commandModel.getCommand();
 	}
 	
-	public String[] getArgs(CommandModel commandModel) {
+	public String[] getArgs(CommandModel commandModel, ObjectContainer objectContainer) {
 		String[] args = commandModel.getArgs();
 		for (int i = 0; i < args.length; i++)
 			if (objectContainer.containsVariable(args[i]))
@@ -51,7 +49,7 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		return args;
 	}
 	
-	public String getValue(CommandModel commandModel) {
+	public String getValue(CommandModel commandModel, ObjectContainer objectContainer) {
 		String value = String.valueOf(commandModel.getValue());
 		if (objectContainer.containsVariable(value))
 			value = objectContainer.replaceVariables(value);

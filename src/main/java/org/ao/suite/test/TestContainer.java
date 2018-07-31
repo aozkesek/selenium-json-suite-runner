@@ -9,10 +9,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope("singleton")
+@Scope("prototype")
 public class TestContainer {
 
-	private static ConcurrentHashMap<String, TestDriver> testDrivers;
+	private ConcurrentHashMap<String, TestDriver> testDrivers;
+	
 	private static Logger logger = LoggerFactory.getLogger(TestContainer.class);
 	
 	@PostConstruct

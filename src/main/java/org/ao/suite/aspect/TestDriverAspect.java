@@ -1,8 +1,5 @@
 package org.ao.suite.aspect;
 
-import java.io.BufferedWriter;
-
-import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.TestDriver;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -21,59 +18,46 @@ public class TestDriverAspect {
 
         @Before("testRun()")
         public void reportTestRunStart(JoinPoint jp) {
-                TestDriver td = (TestDriver)jp.getTarget();
-                String testName = td.getName();
-                SuiteDriver suiteDriver = td.getSuiteDriver(); 
+                TestDriver testDriver = (TestDriver)jp.getTarget(); 
                 
-                try {
-                        BufferedWriter bw = suiteDriver.getReportWriter();
-                        if (suiteDriver.isNeededCommaTest())
-                                bw.append(", { \"name\": \"" + testName + "\"");
-                        else
-                                bw.append("{ \"name\": \"" + testName + "\"");
-                        bw.append(", \"commands\": [");
-                        bw.newLine();
+                testDriver.getLogger().debug("BEFORE-ASPECT: {}", jp.getTarget());
+                
+                testDriver.getLogger().debug("BEFORE-ASPECT: {} is starting.", testDriver.getName());
+                if (testDriver.getSuiteDriver().isNeededCommaTest())
+                       	testDriver.getSuiteDriver().getReportWriter().print(", ");
+                       
+                testDriver.getSuiteDriver().getReportWriter()
+                       	.printf("{ \"name\": \"%1$s\", \"commands\": [\n"
+                        			, testDriver.getName());
                         
-                        suiteDriver.setNeededCommaTest(true);
-                        suiteDriver.setNeededCommaCommand(false);
-                }
-                catch(Exception ex) {
-                        
-                }
+                testDriver.getSuiteDriver().setNeededCommaTest(true);
+                testDriver.getSuiteDriver().setNeededCommaCommand(false);
                 
                 
         }
         
         @AfterReturning("testRun()")
         public void reportTestRunSuccessEnd(JoinPoint jp) {
-                TestDriver td = (TestDriver)jp.getTarget();
-                SuiteDriver suiteDriver = td.getSuiteDriver();  
-
-                try {
-                        BufferedWriter bw = suiteDriver.getReportWriter();
-                        bw.append("] , \"isSuccessful\": true }");
-                        bw.newLine();
-                        
-                }
-                catch(Exception ex) {
-                        
-                }
+                TestDriver testDriver = (TestDriver)jp.getTarget();
+                
+                testDriver.getLogger().debug("AFTERRETURNING-ASPECT: {}", jp.getTarget());
+                
+                testDriver.getSuiteDriver().getReportWriter().println("] , \"isSuccessful\": true }");
+                testDriver.getLogger().debug("AFTERRETURNING-ASPECT: {} is finished.", testDriver.getName());
+                
+                
         }
 	
         @AfterThrowing("testRun()")
         public void reportTestRunEnd(JoinPoint jp) {
-                TestDriver td = (TestDriver)jp.getTarget();
-                SuiteDriver suiteDriver = td.getSuiteDriver();    
+                TestDriver testDriver = (TestDriver)jp.getTarget();
                 
-                try {
-                        BufferedWriter bw = suiteDriver.getReportWriter();
-                        bw.append("] , \"isSuccessful\": false }");
-                        bw.newLine();
+                testDriver.getLogger().debug("AFTERTHROWING-ASPECT: {}", jp.getTarget());
+                
+                testDriver.getSuiteDriver().getReportWriter().println("] , \"isSuccessful\": false }");
+                testDriver.getLogger().debug("AFTERTHROWING-ASPECT: {} is finished.", testDriver.getName());
                         
-                }
-                catch(Exception ex) {
-                        
-                }
+                
         }
         
 }

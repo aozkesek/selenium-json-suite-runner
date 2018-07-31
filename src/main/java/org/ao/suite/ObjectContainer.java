@@ -16,11 +16,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope("singleton")
+@Scope("prototype")
 public class ObjectContainer {
 	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_]+\\}");
 	
-	private static ConcurrentHashMap<String, Object> variables;
+	private ConcurrentHashMap<String, Object> variables;
+	
 	private static Logger logger = LoggerFactory.getLogger(ObjectContainer.class);
 	
 	@PostConstruct

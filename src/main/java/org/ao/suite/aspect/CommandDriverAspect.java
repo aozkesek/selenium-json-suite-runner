@@ -1,7 +1,5 @@
 package org.ao.suite.aspect;
 
-import java.io.BufferedWriter;
-
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.AbstractCommandDriver;
 import org.ao.suite.test.command.model.CommandModel;
@@ -27,9 +25,11 @@ public class CommandDriverAspect {
 	                SuiteDriver suiteDriver) 
 	                throws Throwable {
 		
-		AbstractCommandDriver acd = (AbstractCommandDriver)jp.getTarget();
+		AbstractCommandDriver commandDriver = (AbstractCommandDriver)jp.getTarget();
 		
-		acd.getLogger().debug("AROUND-ASPECT: executing {}", commandModel);
+		commandDriver.getLogger().debug("AROUND-ASPECT: {} {} {}", jp.getTarget(),commandModel, suiteDriver);
+		
+		commandDriver.getLogger().debug("AROUND-ASPECT: executing {}", commandModel);
 		
 		CommandModel repCommandModel = new CommandModel(){
 			{ 
@@ -39,15 +39,15 @@ public class CommandDriverAspect {
 				}
 			};
 		if (commandModel.getArgs() != null)
-			repCommandModel.setArgs(acd.getArgs(commandModel));
+			repCommandModel.setArgs(commandDriver.getArgs(commandModel, suiteDriver.getObjectContainer()));
 		if (commandModel.getValue() != null)
-			repCommandModel.setValue(acd.getValue(commandModel));
+			repCommandModel.setValue(commandDriver.getValue(commandModel, suiteDriver.getObjectContainer()));
 		
-		acd.getLogger().debug("AROUND-ASPECT: command-parameter replaced {}", repCommandModel);
+		commandDriver.getLogger().debug("AROUND-ASPECT: command-parameter replaced {}", repCommandModel);
 		
 		Object returnObject = jp.proceed(new Object[]{repCommandModel, suiteDriver});
 		
-		acd.getLogger().debug("AROUND-ASPECT: command-parameter returned {}", repCommandModel);
+		commandDriver.getLogger().debug("AROUND-ASPECT: command-parameter returned {}", repCommandModel);
 		
 		if (commandModel.getValue() != null) {
 			String value = commandModel.getValue().toString();
@@ -60,7 +60,7 @@ public class CommandDriverAspect {
 			}
 		}
 		
-		acd.getLogger().debug("AROUND-ASPECT: executed {}", commandModel);
+		commandDriver.getLogger().debug("AROUND-ASPECT: executed {}", commandModel);
 		
 		return returnObject;
 		
@@ -70,24 +70,19 @@ public class CommandDriverAspect {
         public void reportCommandExecuteStart(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
                         throws Throwable {
         
+		
 	        if (!commandModel.getCommand().equals("runTest"))
 	                return;
-	        
-                try {
-                        BufferedWriter bw = suiteDriver.getReportWriter();
-                        if (suiteDriver.isNeededCommaCommand())
-                                bw.append(", { \"test\": ");
-                        else
-                                bw.append("{ \"test\": ");
-                        suiteDriver.setNeededCommaTest(false);
-                        suiteDriver.setNeededCommaCommand(false);
-                        bw.newLine();
+	        AbstractCommandDriver commandDriver = (AbstractCommandDriver)jp.getTarget();
+	        commandDriver.getLogger().debug("BEFORE-ASPECT: {} {} {}", jp.getTarget(),commandModel, suiteDriver);
+			
+                if (suiteDriver.isNeededCommaCommand())
+                       	suiteDriver.getReportWriter().println(", { \"test\": ");
+                else
+                      	suiteDriver.getReportWriter().println("{ \"test\": ");
+                suiteDriver.setNeededCommaTest(false);
+                suiteDriver.setNeededCommaCommand(false);
                         
-                        
-                }
-                catch(Exception ex) {
-                                                   
-                }
                 
         }
         
@@ -95,49 +90,38 @@ public class CommandDriverAspect {
         public void reportCommandExecuteSuccessEnd(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
                         throws Throwable {
         
-	        boolean isRunTest = commandModel.getCommand().equals("runTest");
-	        
-                try {
-                        BufferedWriter bw = suiteDriver.getReportWriter();
-                        if (isRunTest)
-                                bw.append(", \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": true }");
-                        else
-                                if (suiteDriver.isNeededCommaCommand())
-                                        bw.append(", { \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": true }");
-                                else
-                                        bw.append("{ \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": true }");
-                        bw.newLine();
-                        
-                        suiteDriver.setNeededCommaCommand(true);
-                        
-                }
-                catch(Exception ex) {
-                                                   
-                }
-                
+	        AbstractCommandDriver commandDriver = (AbstractCommandDriver)jp.getTarget();
+	        commandDriver.getLogger().debug("AFTERRETURNING-ASPECT: {} {} {}", jp.getTarget(),commandModel, suiteDriver);
+		
+	        if (commandModel.getCommand().equals("runTest"))
+	        	suiteDriver.getReportWriter().print(", ");
+	        else
+                    if (suiteDriver.isNeededCommaCommand())
+                    	suiteDriver.getReportWriter().print(", { ");
+                    else
+                    	suiteDriver.getReportWriter().print("{ ");
+	        suiteDriver.getReportWriter().printf("\"command\": \"%1$s\", \"isSuccessful\": true }\n", commandModel.getCommand());
+            
+	        suiteDriver.setNeededCommaCommand(true);       
         }
 	
 	@AfterThrowing("commandExecute() && args(commandModel, suiteDriver)")
         public void reportCommandExecuteFailureEnd(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
                         throws Throwable {
-	        boolean isRunTest = commandModel.getCommand().equals("runTest");
-        
-                try {
-                        BufferedWriter bw = suiteDriver.getReportWriter();
-                        if (isRunTest)
-                                bw.append(", \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": false }");
-                        else
-                                if (suiteDriver.isNeededCommaCommand())
-                                        bw.append(", { \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": false }");
-                                else
-                                        bw.append("{ \"command\": \"" + commandModel.getCommand() + "\", \"isSuccessful\": false }");
-                        bw.newLine();
-                        
-                        suiteDriver.setNeededCommaCommand(true);
-                }
-                catch(Exception ex) {
-                                                   
-                }
+	        AbstractCommandDriver commandDriver = (AbstractCommandDriver)jp.getTarget();
+	        commandDriver.getLogger().debug("AFTERTHROWING-ASPECT: {} {} {}", jp.getTarget(),commandModel, suiteDriver);
+			
+	        if (commandModel.getCommand().equals("runTest"))
+            	suiteDriver.getReportWriter().print(", ");
+            else
+                    if (suiteDriver.isNeededCommaCommand())
+                    	suiteDriver.getReportWriter().print(", { ");
+                    else
+                    	suiteDriver.getReportWriter().print("{ ");
+            suiteDriver.getReportWriter().printf("\"command\": \"%1$s\", \"isSuccessful\": false }\n", commandModel.getCommand());
+            
+            suiteDriver.setNeededCommaCommand(true);
+                
                 
         }
 }

@@ -2,12 +2,15 @@ package org.ao.suite;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -20,8 +23,9 @@ import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
 import org.ao.suite.test.command.exception.CommandNotFoundException;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,11 +68,11 @@ public class SuiteDriver {
 			if (suiteProp.webDriver.equals("firefox"))
 				webDriver = new RemoteWebDriver(
 						new URL(suiteProp.remoteUrl), 
-						DesiredCapabilities.firefox());
+						new FirefoxOptions());
 			else if (suiteProp.webDriver.equals("chrome"))
 				webDriver = new RemoteWebDriver(
 						new URL(suiteProp.remoteUrl),
-						DesiredCapabilities.chrome());
+						new ChromeOptions());
 		}
 		else {
 			if (suiteProp.webDriver.equals("firefox"))
@@ -99,6 +103,10 @@ public class SuiteDriver {
 		return this.objectContainer;
 	}
 	
+	public Logger getLogger() {
+		return logger;
+	}
+	
 	public void RunTests() {
 		
 		try {
@@ -117,7 +125,9 @@ public class SuiteDriver {
 	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
 		String pathName = FullPathName(suiteProp.home, suitePathName);
 		
-		SuiteId = suitePathName + "_" + String.valueOf(Thread.currentThread().getId());
+		SuiteId = UUID.randomUUID().toString()
+				.concat("_")
+        		.concat(suitePathName);
 		
 		logger.debug("suit is loading {}", suitePathName);
 		suite = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
@@ -164,14 +174,23 @@ public class SuiteDriver {
 			
 	}
 	
-	private BufferedWriter reportWriter = null;
+	private PrintWriter reportWriter = null;
 	
-	public BufferedWriter getReportWriter() {
+	public PrintWriter getReportWriter() {
 	        return reportWriter;
 	}
 	
-	public void setReportWriter(BufferedWriter reportWriter) {
-	        this.reportWriter = reportWriter;
+	public void openReportWriter() {
+		String reportFileName = SuiteId
+				.replace('/', '_')
+                .replace('\\', '_');
+		File reportFile = new File(SuiteDriver.FullPathName(suiteProp.reportsHome, reportFileName));
+    
+		try {
+			this.reportWriter = new PrintWriter(new BufferedWriter(new FileWriter(reportFile)));
+		} catch (IOException e) {
+			logger.error("{}", e);
+		}
 	}
 	
 	private boolean isNeededCommaTest = false;

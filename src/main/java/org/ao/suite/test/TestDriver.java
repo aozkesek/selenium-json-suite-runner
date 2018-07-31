@@ -39,6 +39,10 @@ public class TestDriver {
 	        return suiteDriver;
 	}
 	
+	public Logger getLogger() {
+		return logger;
+	}
+	
 	public TestDriver init(SuiteDriver suiteDriver, String name, LinkedHashMap<String, Object> arguments) 
 	                throws JsonParseException, JsonMappingException, 
                         IOException, CommandNotFoundException {

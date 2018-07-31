@@ -5,11 +5,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope("singleton")
+@Scope("prototype")
 public class SuiteProperty {
 
 	@Value("${suite.parallel}")
 	public boolean isParallel;
+	
+	@Value("${suite.parallel.count}")
+	public int parallelCount;
 	
 	@Value("${suite.startup}")
 	public String startUp;
