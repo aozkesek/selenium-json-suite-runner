@@ -66,8 +66,7 @@ public class JSONRunnerMain {
 			
 		ExecutorService suiteExec = Executors.newFixedThreadPool(SuiteProp.parallelCount);
 		try {
-			suiteExec.invokeAll(suiteTasks);		
-			suiteExec.wait();
+			suiteExec.invokeAll(suiteTasks);
 		} catch (InterruptedException e) {
 			AppLogger.error("Program interrupted by {}", e);
 		}

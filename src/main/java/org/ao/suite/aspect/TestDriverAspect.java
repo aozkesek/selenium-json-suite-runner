@@ -1,5 +1,6 @@
 package org.ao.suite.aspect;
 
+import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.TestDriver;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -19,19 +20,17 @@ public class TestDriverAspect {
         @Before("testRun()")
         public void reportTestRunStart(JoinPoint jp) {
                 TestDriver testDriver = (TestDriver)jp.getTarget(); 
+                SuiteDriver suiteDriver = testDriver.getSuiteDriver();
                 
-                testDriver.getLogger().debug("BEFORE-ASPECT: {}", jp.getTarget());
-                
-                testDriver.getLogger().debug("BEFORE-ASPECT: {} is starting.", testDriver.getName());
-                if (testDriver.getSuiteDriver().isNeededCommaTest())
-                       	testDriver.getSuiteDriver().getReportWriter().print(", ");
+                if (suiteDriver.isNeededCommaTest())
+                       	suiteDriver.getReportWriter().print(", ");
                        
-                testDriver.getSuiteDriver().getReportWriter()
+                suiteDriver.getReportWriter()
                        	.printf("{ \"name\": \"%1$s\", \"commands\": [\n"
                         			, testDriver.getName());
                         
-                testDriver.getSuiteDriver().setNeededCommaTest(true);
-                testDriver.getSuiteDriver().setNeededCommaCommand(false);
+                suiteDriver.setNeededCommaTest(true);
+                suiteDriver.setNeededCommaCommand(false);
                 
                 
         }
@@ -40,10 +39,8 @@ public class TestDriverAspect {
         public void reportTestRunSuccessEnd(JoinPoint jp) {
                 TestDriver testDriver = (TestDriver)jp.getTarget();
                 
-                testDriver.getLogger().debug("AFTERRETURNING-ASPECT: {}", jp.getTarget());
-                
-                testDriver.getSuiteDriver().getReportWriter().println("] , \"isSuccessful\": true }");
-                testDriver.getLogger().debug("AFTERRETURNING-ASPECT: {} is finished.", testDriver.getName());
+                testDriver.getSuiteDriver().getReportWriter()
+                	.println("] , \"isSuccessful\": true }");
                 
                 
         }
@@ -52,10 +49,8 @@ public class TestDriverAspect {
         public void reportTestRunEnd(JoinPoint jp) {
                 TestDriver testDriver = (TestDriver)jp.getTarget();
                 
-                testDriver.getLogger().debug("AFTERTHROWING-ASPECT: {}", jp.getTarget());
-                
-                testDriver.getSuiteDriver().getReportWriter().println("] , \"isSuccessful\": false }");
-                testDriver.getLogger().debug("AFTERTHROWING-ASPECT: {} is finished.", testDriver.getName());
+                testDriver.getSuiteDriver().getReportWriter()
+                	.println("] , \"isSuccessful\": false }");
                         
                 
         }

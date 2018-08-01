@@ -20,11 +20,10 @@ public class SuiteDriverAspect {
         public void reportSuiteRunTestsStart(JoinPoint jp) {
                 SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
                 
-                suiteDriver.getLogger().debug("BEFORE-ASPECT: {}", jp.getTarget());
-		
                 suiteDriver.openReportWriter();
 				
-		suiteDriver.getLogger().debug("BEFORE-ASPECT: {} was opened.", suiteDriver.SuiteId);
+		suiteDriver.getLogger()
+			.debug("BEFORE-ASPECT: {} is opened.", suiteDriver.SuiteId);
 				
 		suiteDriver.getReportWriter()
 			.printf("{ \"name\": \"%1$s\", \"tests\": [\n"
@@ -35,22 +34,24 @@ public class SuiteDriverAspect {
         @AfterReturning("suiteRunTests()")
         public void reportSuiteRunTestsSuccessEnd(JoinPoint jp) {
                 SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
-                suiteDriver.getLogger().debug("AFTERRETURNING-ASPECT: {}", jp.getTarget());
-		
-                suiteDriver.getReportWriter().println("], \"isSuccessful\": true }");
-				
+                
+                suiteDriver.getReportWriter()
+                	.println("], \"isSuccessful\": true }");		
 		suiteDriver.getReportWriter().close();
-		suiteDriver.getLogger().debug("AFTERRETURNING-ASPECT: {} was closed.", suiteDriver.SuiteId);
+		
+		suiteDriver.getLogger()
+			.debug("AFTERRETURNING-ASPECT: {} is closed.", suiteDriver.SuiteId);
         }
 
         @AfterThrowing("suiteRunTests()")
         public void reportSuiteRunTestsFailureEnd(JoinPoint jp) {
                 SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
-                suiteDriver.getLogger().debug("AFTERTHROWING-ASPECT: {}", jp.getTarget());
-		
-                suiteDriver.getReportWriter().println("], \"isSuccessful\": false }");
-				              
+                
+                suiteDriver.getReportWriter()
+                	.println("], \"isSuccessful\": false }");	              
 		suiteDriver.getReportWriter().close();
-		suiteDriver.getLogger().debug("AFTERTHROWING-ASPECT: {} was closed.", suiteDriver.SuiteId);
+		
+		suiteDriver.getLogger()
+			.debug("AFTERTHROWING-ASPECT: {} is closed.", suiteDriver.SuiteId);
         }
 }
