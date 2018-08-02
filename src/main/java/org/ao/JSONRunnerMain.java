@@ -13,9 +13,12 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 @SpringBootApplication
 public class JSONRunnerMain {
@@ -59,17 +62,26 @@ public class JSONRunnerMain {
 
 	public static void parallelRun() {
 		AppLogger.debug("Parallel Mode is ON.");
+		
+		ExecutorService suiteExec = Executors.newWorkStealingPool();
 		List<SuiteTask> suiteTasks = new ArrayList<SuiteTask>();
+		final List<Future<Boolean>> taskFutures = new ArrayList<Future<Boolean>>();
+		Consumer<Future<Boolean>> waitFor = f -> {
+			try {
+				f.get();
+			} catch (InterruptedException | ExecutionException e) {
+				AppLogger.error("one of is interrupted by {}", e);
+			}
+		};  
 		
 		for (int i = 0; i < SuiteProp.parallelCount; i++) 
 			suiteTasks.add(new SuiteTask(AppContext.getBean(SuiteDriver.class), SuiteProp.startUp));
 			
-		ExecutorService suiteExec = Executors.newFixedThreadPool(SuiteProp.parallelCount);
-		try {
-			suiteExec.invokeAll(suiteTasks);
-		} catch (InterruptedException e) {
-			AppLogger.error("Program interrupted by {}", e);
-		}
+		
+		suiteTasks.parallelStream()
+			.forEach(st -> taskFutures.add(suiteExec.submit(st)));
+		
+		taskFutures.parallelStream().forEach(waitFor);
 		
 		suiteExec.shutdown();
 		try {
