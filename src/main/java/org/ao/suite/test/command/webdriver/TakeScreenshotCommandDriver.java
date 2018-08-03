@@ -33,15 +33,18 @@ public class TakeScreenshotCommandDriver extends AbstractCommandDriver {
 			throws RuntimeException {
 		
 		WebDriver augmentedDriver = new Augmenter().augment(suiteDriver.getWebDriver());
-        File tempScreenshot = ((TakesScreenshot)augmentedDriver).
-                            getScreenshotAs(OutputType.FILE);
-        logger.debug("temporary screenshot {} is copying here {}"
+		File tempScreenshot = ((TakesScreenshot)augmentedDriver).getScreenshotAs(OutputType.FILE);
+		String name = suiteDriver.SuiteId
+				.concat("-")
+				.concat(commandModel.getArgs()[0]);
+		
+		logger.debug("taken temporary screenshot {} is moving to {}"
         		, tempScreenshot.getAbsolutePath()
-        		, FileSystems.getDefault().getPath(suiteProp.screenshotsHome, commandModel.getArgs()[0]));
+        		, FileSystems.getDefault().getPath(suiteProp.screenshotsHome, name));
         
-        try {
+		try {
 			Files.move(tempScreenshot.toPath(), 
-					FileSystems.getDefault().getPath(suiteProp.screenshotsHome, commandModel.getArgs()[0]), 
+					FileSystems.getDefault().getPath(suiteProp.screenshotsHome, name), 
 					StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

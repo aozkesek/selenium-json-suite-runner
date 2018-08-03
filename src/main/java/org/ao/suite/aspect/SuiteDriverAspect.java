@@ -23,7 +23,7 @@ public class SuiteDriverAspect {
                 suiteDriver.openReportWriter();
 				
 		suiteDriver.getLogger()
-			.debug("BEFORE-ASPECT: {} is opened.", suiteDriver.SuiteId);
+			.debug("BEFORE-ASPECT: Report output file {} is opened.", suiteDriver.SuiteId);
 				
 		suiteDriver.getReportWriter()
 			.printf("{ \"name\": \"%1$s\", \"tests\": [\n"
@@ -40,7 +40,7 @@ public class SuiteDriverAspect {
 		suiteDriver.getReportWriter().close();
 		
 		suiteDriver.getLogger()
-			.debug("AFTERRETURNING-ASPECT: {} is closed.", suiteDriver.SuiteId);
+			.debug("AFTERRETURNING-ASPECT: Report output file {} is closed.", suiteDriver.SuiteId);
         }
 
         @AfterThrowing("suiteRunTests()")
@@ -52,6 +52,6 @@ public class SuiteDriverAspect {
 		suiteDriver.getReportWriter().close();
 		
 		suiteDriver.getLogger()
-			.debug("AFTERTHROWING-ASPECT: {} is closed.", suiteDriver.SuiteId);
+			.debug("AFTERTHROWING-ASPECT: Report output file {} is closed.", suiteDriver.SuiteId);
         }
 }

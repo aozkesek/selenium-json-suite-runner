@@ -1,6 +1,8 @@
 package org.ao.suite.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SuiteModel {
 
@@ -12,6 +14,7 @@ public class SuiteModel {
 	@JsonProperty("test_url")
 	private String testUrl;
 	private SuiteTestModel[] tests;
+	
 	public String getName() {
 		return name;
 	}
@@ -45,16 +48,13 @@ public class SuiteModel {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		ObjectMapper om = new ObjectMapper();
 		
-		sb.append("name=").append(name).append(", ");
-		sb.append("object_repository_path=").append(objectRepository).append(", ");
-		sb.append("test_path=").append(testPath).append(", ");
-		sb.append("tests=[");
-		for (SuiteTestModel m: tests)
-			sb.append(m.toString()).append(", ");
-		sb.append("]");
+		try {
+			return om.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return super.toString();
+		}
 		
-		return sb.toString();
 	}
 }

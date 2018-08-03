@@ -125,13 +125,11 @@ public class SuiteDriver {
 	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
 		String pathName = FullPathName(suiteProp.home, suitePathName);
 		
-		SuiteId = UUID.randomUUID().toString()
-				.concat("_")
-        		.concat(suitePathName);
+		SuiteId = UUID.randomUUID().toString().concat("_").concat(suitePathName);
 		
-		logger.debug("suit is loading {}", suitePathName);
+		logger.debug("loading {}", suitePathName);
 		suite = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
-		logger.debug("suite has loaded as {}", suite);
+		logger.debug("{} here it is\n{}", suitePathName, suite);
 		
 		loadObjects();
 		
@@ -145,12 +143,9 @@ public class SuiteDriver {
 		String pathName = FullPathName(suiteProp.testsHome, suite.getTestPath());
 		pathName = FullPathName(pathName, testFileName);
 		
-		logger.debug("test is loading/getting from {}", pathName);
-		
-		if (!testContainer.containsTestDriverKey(pathName))
-			testContainer.putTestDriver(pathName, 
-					appCtx.getBean(TestDriver.class)
-					        .init(this, pathName, testArguments));
+		testContainer.putTestDriver(
+				pathName, 
+				appCtx.getBean(TestDriver.class).init(this, pathName, testArguments));
 		
 		return testContainer.getTestDriver(pathName);
 	}
@@ -158,12 +153,12 @@ public class SuiteDriver {
 	private void loadObjects() throws JsonParseException, JsonMappingException, IOException {
 		String pathName = FullPathName(suiteProp.objectsHome, suite.getObjectRepository());
 		
-		logger.debug("object is loading {}", pathName);
+		logger.debug("loading {}", pathName);
 		object = new ObjectMapper().readValue(new File(pathName), ObjectModel.class);
-		logger.debug("object has loaded as {}", object);
+		logger.debug("{} here it is\n{}", pathName, object);
 		
 		object.getObjects().
-			forEach((k,v) -> objectContainer.putVariable(k, v));
+			forEach((k,v) -> logger.debug("{}", objectContainer.putVariable(k, v.toString())));
 	}
 	
 	private void loadTests() throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
@@ -181,9 +176,7 @@ public class SuiteDriver {
 	}
 	
 	public void openReportWriter() {
-		String reportFileName = SuiteId
-				.replace('/', '_')
-                .replace('\\', '_');
+		String reportFileName = SuiteId.replace('/', '_').replace('\\', '_');
 		File reportFile = new File(SuiteDriver.FullPathName(suiteProp.reportsHome, reportFileName));
     
 		try {

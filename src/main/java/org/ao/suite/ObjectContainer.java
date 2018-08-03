@@ -2,109 +2,113 @@ package org.ao.suite;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.annotation.PostConstruct;
 
+import org.ao.suite.model.VariableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 @Component
 @Scope("prototype")
 public class ObjectContainer {
-	protected static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_]+\\}");
-	
-	private ConcurrentHashMap<String, Object> variables;
 	
 	private static Logger logger = LoggerFactory.getLogger(ObjectContainer.class);
 	
+	private ConcurrentHashMap<String, VariableModel> variables;
+	
 	@PostConstruct
 	public void init() {
-		variables = new ConcurrentHashMap<String, Object>();
-		
+		variables = new ConcurrentHashMap<String, VariableModel>();
 	}
 	
-	public void putVariable(String key, Object object) {
-		variables.put(key, object);
-		logger.debug("put object {} = {}", key, object);
-	}
-	
-	public Object getVariable(String key) {
-		return variables.get(key);
-	}
-	
-	public boolean containsVariablesKey(String key) {
-		return variables.containsKey(key);
-	}
-	
-	public String getVariableName(String input) {
-		if (input == null)
-			return null;
+	public VariableModel putVariable(String key, String value) {
+		VariableModel variableModel = new VariableModel(key, value);
 		
-		Matcher matcher = VariablePattern.matcher(input);
-		if (!matcher.find(0)) 
-			return null;
-			
-		// before return the extracted ${}, 
-		// do take care array and index notation -> [index_of_array]
-		String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
-		
-		logger.debug("{} is extracted from {}", varName, input);
-		return varName;
-	}
-	
-	public boolean containsVariable(String input) {
-		
-		if (input == null)
-			return false;
-		
-		Matcher matcher = VariablePattern.matcher(input);
-		
-		return matcher.find(0);
-	}
-	
-	public String replaceVariables(String input) {
-		if (input == null)
-			return null;
-		
-		Matcher matcher = VariablePattern.matcher(input);
-		boolean isFound = matcher.find(0);
-		
-		if (!isFound)
-			return input;
-		
-		logger.debug("before {}", input);
-		HashMap<String, String> kvPairs = new HashMap<String, String>();
-		
-		while (isFound) {
-			String varName = input.substring(matcher.start() + 2, matcher.end() - 1);
-			Object varValue;
-			if (varName.startsWith("SYS_"))
-				varValue = getSysVariable(varName);
-			else
-				varValue = getVariable(varName);
-			kvPairs.put(varName, String.valueOf(varValue));
-			isFound = matcher.find();
+		if (variables.containsKey(key)) {
+			variableModel = variables.replace(key, variableModel);
+			logger.debug("replace {} = {}", key, value);
+		}
+		else {
+			variableModel = variables.put(key, variableModel);
+			logger.debug("new {} = {}", key, value);
 		}
 		
-		for (Entry<String, String> pair: kvPairs.entrySet())
-			input = input.replaceAll("\\$\\{" + pair.getKey() + "\\}", pair.getValue());	
-		
-		logger.debug("after {}", input);
-		return input;
+		return variableModel;
 	}
-
-	public String getSysVariable(String varName) {
-		if (varName.equals("SYS_DATETIME_NOW"))
-			return LocalDateTime.now().format(
-					DateTimeFormatter.ofPattern("yyyMMdd.HHmmss.SSS"));
+	
+	public String getVariable(String key) {
+		if (key == null)
+			return null;
 		
-		return null;
+		//check if the key is a variable
+		if (VariableModel.containsVariableName(key))
+			//yes, go deep inside then
+			return getVariable(VariableModel.VariableName(key));
+		
+		if (!variables.containsKey(key))
+			//not found in the container, check if it is system variable then
+			return getSysVariable(key);
+		
+		String value = variables.get(key).getValue();
+		if (!VariableModel.containsVariableName(value))
+			//has a basic value, so return the what is found
+			return value;
+		
+		// the value has another variable, go deep inside
+		String refKey = VariableModel.VariableName(value);
+		
+		// first check if it is system variable
+		if (refKey.startsWith("SYS_"))
+			return getSysVariable(refKey);
+		
+		return getVariable(refKey);
+		
+		
 	}
+	
+	public String getReplacedVariable(String source) {
+		
+		if (!VariableModel.containsVariableName(source))		
+			return source;
+		
+		String ref = VariableModel.VariableName(source);
+		String val = getVariable(ref);
+		if (source.equals("${"+ref+"}"))
+			source = val;
+		else
+			source = source.replace("${"+ref+"}", val);
+		
+		//continue to check if there is another
+		return getReplacedVariable(source);
+	}
+	
+	private String getSysVariable(String key) {
+		
+		if (key.equals("SYS_DATETIME_NOW"))
+			//give it always the refreshed one
+			return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyMMdd.HHmmss.SSS"));
+					
+		// not a system variable, return back with it's own
+		return key;
+	}
+	
+	@Override
+	public String toString() {
+		ObjectMapper om = new ObjectMapper();
+		try {
+			return om.writeValueAsString(variables);
+		} catch (JsonProcessingException e) {
+			return variables.toString();
+		}
+		
+	}
+	
+	
 }

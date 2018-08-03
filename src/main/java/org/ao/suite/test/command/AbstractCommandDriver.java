@@ -2,7 +2,6 @@ package org.ao.suite.test.command;
 
 import java.util.List;
 
-import org.ao.suite.ObjectContainer;
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.exception.ElementNotFoundException;
 import org.ao.suite.test.command.model.CommandModel;
@@ -39,21 +38,6 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 	
 	public String getCommand(CommandModel commandModel) {
 		return commandModel.getCommand();
-	}
-	
-	public String[] getArgs(CommandModel commandModel, ObjectContainer objectContainer) {
-		String[] args = commandModel.getArgs();
-		for (int i = 0; i < args.length; i++)
-			if (objectContainer.containsVariable(args[i]))
-				args[i] = objectContainer.replaceVariables(args[i]);
-		return args;
-	}
-	
-	public String getValue(CommandModel commandModel, ObjectContainer objectContainer) {
-		String value = String.valueOf(commandModel.getValue());
-		if (objectContainer.containsVariable(value))
-			value = objectContainer.replaceVariables(value);
-		return value;
 	}
 	
 	protected WebElement findElement(String args, SuiteDriver suiteDriver) throws ElementNotFoundException {

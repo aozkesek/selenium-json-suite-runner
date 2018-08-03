@@ -28,7 +28,7 @@
         	"args": [ "3000" ]
         	},
  		{ "command": "runTest", 
- 			"args": [ "../commons/check-results.json" ], 
+ 			"args": [ "commons/check-results.json" ], 
  			"value": "searchFormInputCheck:=${search_form_input}" 
  			}
     ]

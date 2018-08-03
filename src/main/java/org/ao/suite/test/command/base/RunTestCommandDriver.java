@@ -31,7 +31,9 @@ public class RunTestCommandDriver extends AbstractCommandDriver {
 	}
 	
 	private LinkedHashMap<String, Object> getTestArguments(CommandModel commandModel) {
+		
 		LinkedHashMap<String, Object> testArguments = new LinkedHashMap<String, Object>();
+		
 		if (commandModel.getValue() != null) {
 			String[] args = commandModel.getValue().toString().split(",");
 			for (String arg : args) {
@@ -40,6 +42,7 @@ public class RunTestCommandDriver extends AbstractCommandDriver {
 				testArguments.put(kvPair[0], kvPair[1]);
 			}
 		}
+		
 		return testArguments;
 	}
 

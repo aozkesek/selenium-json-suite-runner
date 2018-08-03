@@ -2,6 +2,9 @@ package org.ao.suite.model;
 
 import java.util.LinkedHashMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class ObjectModel {
 	private String[] includes;
 	private LinkedHashMap<String, Object> objects;
@@ -24,8 +27,11 @@ public class ObjectModel {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		objects.forEach((k,v) -> sb.append(k).append("=").append(v).append(", "));
-		return sb.toString();
+		ObjectMapper om = new ObjectMapper();
+		try {
+			return om.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return super.toString();
+		}
 	}
 }

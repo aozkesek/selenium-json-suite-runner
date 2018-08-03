@@ -15,8 +15,7 @@ public class IncrementCommandDriver extends AbstractCommandDriver {
 	
 	@Override
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
-			throws RuntimeException {
-		
+			throws RuntimeException {	
 		
 		if (commandModel.getArgs().length > 1)
 			commandModel.setValue(Long.valueOf(commandModel.getArgs()[0]) + Long.valueOf(commandModel.getArgs()[1]));

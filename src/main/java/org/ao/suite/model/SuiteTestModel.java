@@ -3,6 +3,8 @@ package org.ao.suite.model;
 import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SuiteTestModel {
 
@@ -29,15 +31,11 @@ public class SuiteTestModel {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("file_name=").append(fileName).append(", ");
-		
-		sb.append("arguments={");
-		if (arguments != null)
-			arguments.forEach((k, v) -> sb.append(k).append("=").append(v).append(", "));
-		sb.append("}");
-		
-		return sb.toString();
+		ObjectMapper om = new ObjectMapper();
+		try {
+			return om.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return super.toString();
+		}
 	}
 }

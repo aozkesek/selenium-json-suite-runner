@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import org.ao.suite.SuiteDriver;
+import org.ao.suite.model.VariableModel;
 import org.ao.suite.test.command.CommandDriverFactory;
 import org.ao.suite.test.command.ICommandDriver;
 import org.ao.suite.test.command.exception.CommandNotFoundException;
@@ -24,7 +25,8 @@ public class TestDriver {
 	
 	private SuiteDriver suiteDriver;
 	private String name;
-	private LinkedHashMap<String, Object> arguments;
+	private LinkedHashMap<String, VariableModel> arguments;
+	
 	private TestModel testModel;
 	
 	private LinkedHashMap<CommandModel, ICommandDriver> commandDrivers;
@@ -49,8 +51,14 @@ public class TestDriver {
 	        
 	        this.suiteDriver = suiteDriver;
                 this.name = name;
-                this.arguments = arguments;
-                
+                this.arguments = new LinkedHashMap<String, VariableModel>();
+                this.commandDrivers = new LinkedHashMap<CommandModel, ICommandDriver>();
+		
+                if (arguments != null)
+                	arguments.forEach(
+                			(k, v) -> this.arguments.put(k, new VariableModel(k, v.toString()))
+                			);
+                	
                 loadTest();
                 prepareCommands();
                 putArguments();
@@ -61,57 +69,45 @@ public class TestDriver {
 	
 	public void run() {
 		
-		logger.debug("{} is running now.", name);
+		logger.debug("running {}", name);
 		
 		commandDrivers.forEach( (cm, cd) -> cd.execute(cm, suiteDriver) );
 		
 	}
 	
 	private void prepareCommands() throws CommandNotFoundException {
-		this.commandDrivers = new LinkedHashMap<CommandModel, ICommandDriver>();
 		
 		for (CommandModel m: testModel.getCommands())
-			this.commandDrivers.put(
-					m, CommandDriverFactory.getCommandDriver(m)
-					);
+			this.commandDrivers.put(m, CommandDriverFactory.getCommandDriver(m));
 	
 	}
 	
-	private void loadTest() 
-			throws JsonParseException, JsonMappingException, IOException {
+	private void loadTest() throws JsonParseException, JsonMappingException, IOException {
 		
+		logger.debug("loading {}", this.name);
 		testModel = new ObjectMapper().readValue(new File(this.name), TestModel.class);
-		logger.debug("loaded test {}", testModel);
+		logger.debug("{} is loaded.\n{}", this.name, testModel);
 		
 	}
 	
 	private void putArguments() {
 		
+		//gets actual argument then put it into test's argument
 		arguments.forEach((k, v) -> {
-			
-			if (testModel.getArguments().containsKey(k)) {
-				if (suiteDriver.getObjectContainer().containsVariable(v.toString()))
-					testModel.getArguments().
-						replace(k, suiteDriver.getObjectContainer().replaceVariables(v.toString()));
-				else
-					testModel.getArguments().
-						replace(k, v);
-			}
+			if (testModel.getArguments().containsKey(k)) 
+				testModel.getArguments().replace(k, v);
 			else
 				logger.error("Invalid argument {} is ignoring for test {}", k, testModel);
 		
 		});
 		
-		logger.debug("updated test arguments {}", testModel.getArguments());
+		logger.debug("updated test arguments is\n{}", testModel.getArguments());
 	}
 
 	private void storeVars() {
 		
-		testModel.getArguments().forEach(
-				(k,v) -> {
-					suiteDriver.getObjectContainer().putVariable(k, v);
-					}
-				);
+		testModel.getArguments()
+			.forEach( (k,v) -> { suiteDriver.getObjectContainer().putVariable(k, v.toString()); });
 		
 	}
 }

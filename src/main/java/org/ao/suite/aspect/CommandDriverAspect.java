@@ -1,6 +1,7 @@
 package org.ao.suite.aspect;
 
 import org.ao.suite.SuiteDriver;
+import org.ao.suite.model.VariableModel;
 import org.ao.suite.test.command.AbstractCommandDriver;
 import org.ao.suite.test.command.model.CommandModel;
 import org.aspectj.lang.JoinPoint;
@@ -31,19 +32,21 @@ public class CommandDriverAspect {
 		
 		logger.debug("AROUND-ASPECT: executing {}", commandModel);
 		
-		CommandModel repCommandModel = new CommandModel(){
-			{ 
-				setCommand(commandModel.getCommand());
-				setArgs(commandModel.getArgs());
-				setValue(commandModel.getValue());
-				}
-			};
+		CommandModel repCommandModel = commandModel.clone();
 		
-		if (commandModel.getArgs() != null)
-			repCommandModel.setArgs(commandDriver.getArgs(commandModel, suiteDriver.getObjectContainer()));
+		if (repCommandModel.getArgs() != null) {
+			for(int i = 0; i < repCommandModel.getArgs().length; i++)
+				repCommandModel.getArgs()[i] = suiteDriver
+								.getObjectContainer()
+								.getReplacedVariable(commandModel.getArgs()[i]);
+		}
 		
-		if (commandModel.getValue() != null)
-			repCommandModel.setValue(commandDriver.getValue(commandModel, suiteDriver.getObjectContainer()));
+		if (repCommandModel.getValue() != null) {
+			
+			repCommandModel.setValue(suiteDriver
+							.getObjectContainer()
+							.getReplacedVariable(repCommandModel.getValue().toString()));
+		}
 		
 		logger.debug("AROUND-ASPECT: command-parameter is replaced by {}", repCommandModel);
 		
@@ -53,12 +56,13 @@ public class CommandDriverAspect {
 		
 		if (commandModel.getValue() != null) {
 			String value = commandModel.getValue().toString();
-			if (suiteDriver.getObjectContainer().containsVariable(value)) {
-				String varName = suiteDriver.getObjectContainer().getVariableName(value);
+			if (VariableModel.containsVariableName(value)) {
+				String ref = VariableModel.VariableName(value);
 				// value can only a variable name if we want to save the returned value
-				if (value.equals("${" + varName + "}")) { 
-					suiteDriver.getObjectContainer().putVariable(varName, repCommandModel.getValue());	
-				}
+				if (value.equals("${" + ref + "}"))
+					suiteDriver
+						.getObjectContainer()
+						.putVariable(ref, repCommandModel.getValue().toString());	
 			}
 		}
 		
