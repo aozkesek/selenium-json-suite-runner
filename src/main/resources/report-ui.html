@@ -1,6 +1,6 @@
 <html>
-
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<!-- COPY THIS FILE UNDER reports folder, so you can prevent to get cross origin request security -CORS- error -->
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 
 <script type="text/javascript">
 
@@ -9,14 +9,17 @@
         function showSelected() {
                 var reportFile = $("#reportFile");
                 
+                $("table").remove();
+                
                 $.each(reportFile.prop('files'), function(i, file)  {
                         
                         $.ajax({
-                                url: file.name
+                                url: reportFile.prop('baseURI').replace('report-ui.html',file.name)
+                                , dataType: "json"
                                 , success: function(data) {
                                         var reportTable = $('<table><tbody></tbody></table>');
                                         
-                                        reportTable.append("<tr><th>SUITE: "+data.name+"</th><th>THREAD: "+data.threadId+"</th><th>RESULT: "+(data.isSuccessful?"OK":"FAILED")+"</th></tr>");
+                                        reportTable.append("<tr><th>SUITE: "+data.name+"</th><th>RESULT: "+(data.isSuccessful?"OK":"FAILED")+"</th></tr>");
 
                                         $.each(data.tests, function(idxt, test) {
                                                 
@@ -74,6 +77,7 @@ Select report file:<br>
 <input type="button" value="Show selected" onclick="showSelected()"/>
 </p>
 
+<table></table>
 
 </body>
 

@@ -14,8 +14,8 @@ public class SuiteProperty {
 	@Value("${suite.parallel.count}")
 	public int parallelCount;
 	
-	@Value("${suite.startup}")
-	public String startUp;
+	@Value("${suite.suites}")
+	public String suites;
 	
 	@Value("${suite.home}")
 	public String home;

@@ -45,17 +45,17 @@ public class JSONRunnerMain {
 	}
 
 	public static void run() {
-		SuiteDriver startUpSuite = AppContext.getBean(SuiteDriver.class);
+		SuiteDriver suiteToRun = AppContext.getBean(SuiteDriver.class);
 		try {
-			startUpSuite.Load(SuiteProp.startUp);
-			startUpSuite.RunTests();
+			suiteToRun.Load(SuiteProp.suites);
+			suiteToRun.RunTests();
 
 		} catch (IOException | CommandNotFoundException e) {
 			AppLogger.error("Program interrupted by {}", e);
 			
 		}
 		finally {
-			startUpSuite.destroy(); // !!! re-check this method's execution
+			suiteToRun.destroy(); // !!! re-check this method's execution
 		}
 	}
 
@@ -73,9 +73,10 @@ public class JSONRunnerMain {
 			}
 		};  
 		
+		String[] suitesToRun = SuiteProp.suites.split(",");
 		for (int i = 0; i < SuiteProp.parallelCount; i++) 
-			suiteTasks.add(new SuiteTask(AppContext.getBean(SuiteDriver.class), SuiteProp.startUp));
-			
+			for (int k = 0; k < suitesToRun.length; k++)
+				suiteTasks.add(new SuiteTask(AppContext.getBean(SuiteDriver.class), suitesToRun[k]));
 		
 		suiteTasks.parallelStream()
 			.forEach(st -> taskFutures.add(suiteExec.submit(st)));
