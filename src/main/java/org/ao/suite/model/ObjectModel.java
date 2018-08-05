@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class ObjectModel {
 	private String[] includes;
@@ -27,7 +28,7 @@ public class ObjectModel {
 
 	@Override
 	public String toString() {
-		ObjectMapper om = new ObjectMapper();
+		ObjectMapper om = new ObjectMapper(new YAMLFactory());
 		try {
 			return om.writeValueAsString(this);
 		} catch (JsonProcessingException e) {

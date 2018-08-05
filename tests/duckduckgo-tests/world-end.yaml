@@ -1,0 +1,33 @@
+name: duckduckgo test world end
+arguments: 
+  ? queryWordEnd
+  : null
+  ? resultPerPage
+  : 10
+vars: null
+commands:
+  - command: isEnabled
+    args:
+      - ${search_form_input}
+    value: ${isSearchFormEnabled}
+  - command: isDisplayed
+    args:
+      - ${search_form_input}
+    value: ${isSearchFormDisplayed}
+  - command: clear
+    args:
+      - ${search_form_input}
+  - command: sendKeys
+    args:
+      - ${search_form_input}
+    value: ${queryWordEnd}
+  - command: submit
+    args:
+      - ${search_form_input}
+  - command: sleep
+    args:
+      - 3000
+  - command: runTest
+    args:
+      - commons/check-results.yaml
+    value: searchFormInputCheck:=${search_form_input}

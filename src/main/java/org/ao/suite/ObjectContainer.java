@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 
 @Component
@@ -101,7 +102,7 @@ public class ObjectContainer {
 	
 	@Override
 	public String toString() {
-		ObjectMapper om = new ObjectMapper();
+		ObjectMapper om = new ObjectMapper(new YAMLFactory());
 		try {
 			return om.writeValueAsString(variables);
 		} catch (JsonProcessingException e) {

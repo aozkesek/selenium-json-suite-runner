@@ -15,9 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 @Component
 @Scope("prototype")
@@ -46,8 +45,7 @@ public class TestDriver {
 	}
 	
 	public TestDriver init(SuiteDriver suiteDriver, String name, LinkedHashMap<String, Object> arguments) 
-	                throws JsonParseException, JsonMappingException, 
-                        IOException, CommandNotFoundException {
+	                throws IOException, CommandNotFoundException {
 	        
 	        this.suiteDriver = suiteDriver;
                 this.name = name;
@@ -55,9 +53,9 @@ public class TestDriver {
                 this.commandDrivers = new LinkedHashMap<CommandModel, ICommandDriver>();
 		
                 if (arguments != null)
-                	arguments.forEach(
-                			(k, v) -> this.arguments.put(k, new VariableModel(k, v.toString()))
-                			);
+                	arguments
+                		.forEach((k, v) -> 
+                			this.arguments.put(k, new VariableModel(k, v == null ? null : v.toString())));
                 	
                 loadTest();
                 prepareCommands();
@@ -82,10 +80,10 @@ public class TestDriver {
 	
 	}
 	
-	private void loadTest() throws JsonParseException, JsonMappingException, IOException {
+	private void loadTest() throws IOException {
 		
 		logger.debug("loading {}", this.name);
-		testModel = new ObjectMapper().readValue(new File(this.name), TestModel.class);
+		testModel = new ObjectMapper(new YAMLFactory()).readValue(new File(this.name), TestModel.class);
 		logger.debug("{} is loaded.\n{}", this.name, testModel);
 		
 	}

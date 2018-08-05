@@ -34,9 +34,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 @Component
 @Scope("prototype")
@@ -122,13 +121,13 @@ public class SuiteDriver {
 		
 	}
 	
-	public void Load(String suitePathName) throws JsonParseException, IOException, CommandNotFoundException {
+	public void Load(String suitePathName) throws IOException, CommandNotFoundException {
 		String pathName = FullPathName(suiteProp.home, suitePathName);
 		
 		SuiteId = UUID.randomUUID().toString().concat("_").concat(suitePathName);
 		
 		logger.debug("loading {}", suitePathName);
-		suite = new ObjectMapper().readValue(new File(pathName), SuiteModel.class);
+		suite = new ObjectMapper(new YAMLFactory()).readValue(new File(pathName), SuiteModel.class);
 		logger.debug("{} here it is\n{}", suitePathName, suite);
 		
 		loadObjects();
@@ -138,7 +137,7 @@ public class SuiteDriver {
 	}
 
 	public TestDriver loadTest(String testFileName, LinkedHashMap<String, Object> testArguments) 
-			throws JsonParseException, JsonMappingException, CommandNotFoundException, IOException {
+			throws CommandNotFoundException, IOException {
 		
 		String pathName = FullPathName(suiteProp.testsHome, suite.getTestPath());
 		pathName = FullPathName(pathName, testFileName);
@@ -150,18 +149,18 @@ public class SuiteDriver {
 		return testContainer.getTestDriver(pathName);
 	}
 	
-	private void loadObjects() throws JsonParseException, JsonMappingException, IOException {
+	private void loadObjects() throws IOException {
 		String pathName = FullPathName(suiteProp.objectsHome, suite.getObjectRepository());
 		
 		logger.debug("loading {}", pathName);
-		object = new ObjectMapper().readValue(new File(pathName), ObjectModel.class);
+		object = new ObjectMapper(new YAMLFactory()).readValue(new File(pathName), ObjectModel.class);
 		logger.debug("{} here it is\n{}", pathName, object);
 		
 		object.getObjects().
 			forEach((k,v) -> logger.debug("{}", objectContainer.putVariable(k, v.toString())));
 	}
 	
-	private void loadTests() throws JsonParseException, JsonMappingException, IOException, CommandNotFoundException {
+	private void loadTests() throws IOException, CommandNotFoundException {
 		tests = new ArrayList<TestDriver>();
 		
 		for (SuiteTestModel suiteTestModel : suite.getTests()) 
@@ -207,8 +206,8 @@ public class SuiteDriver {
 		else
 			normalizedPath = name;
 		
-		if (!normalizedPath.endsWith(".json") && !normalizedPath.endsWith("/"))
-			normalizedPath = normalizedPath.concat(".json");
+		if (!normalizedPath.endsWith(".yaml") && !normalizedPath.endsWith("/"))
+			normalizedPath = normalizedPath.concat(".yaml");
 		
 		return normalizedPath;
 	}

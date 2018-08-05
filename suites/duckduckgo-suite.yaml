@@ -1,0 +1,12 @@
+name: duckduckgo suite
+object_repository: duckduckgo-or/duckduckgo-objects.yaml
+test_path: duckduckgo-tests/
+test_url: https://duckduckgo.com/
+tests:
+- file_name: enter-world.yaml
+  arguments:
+    queryWordEnter: ${query_string}
+    abcdef: null
+- file_name: world-end.yaml
+  arguments:
+    queryWordEnd: merve ozkesek
