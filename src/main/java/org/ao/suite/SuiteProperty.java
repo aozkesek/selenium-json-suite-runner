@@ -5,8 +5,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope("prototype")
+@Scope("singleton")
 public class SuiteProperty {
+	
+	@Value("${suite.format}")
+	public String format;
 
 	@Value("${suite.parallel}")
 	public boolean isParallel;

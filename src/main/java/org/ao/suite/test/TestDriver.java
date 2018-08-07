@@ -3,6 +3,8 @@ package org.ao.suite.test;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+
+import org.ao.suite.ObjectMapperFactory;
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.model.VariableModel;
 import org.ao.suite.test.command.CommandDriverFactory;
@@ -12,11 +14,11 @@ import org.ao.suite.test.command.model.CommandModel;
 import org.ao.suite.test.model.TestModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 @Component
 @Scope("prototype")
@@ -29,6 +31,9 @@ public class TestDriver {
 	private TestModel testModel;
 	
 	private LinkedHashMap<CommandModel, ICommandDriver> commandDrivers;
+	
+	@Autowired
+	private ObjectMapperFactory objectMapperFactory;
 	
 	private static Logger logger = LoggerFactory.getLogger(TestDriver.class);
 	
@@ -83,7 +88,8 @@ public class TestDriver {
 	private void loadTest() throws IOException {
 		
 		logger.debug("loading {}", this.name);
-		testModel = new ObjectMapper(new YAMLFactory()).readValue(new File(this.name), TestModel.class);
+		testModel = objectMapperFactory.getObjectMapper()
+				.readValue(new File(this.name), TestModel.class);
 		logger.debug("{} is loaded.\n{}", this.name, testModel);
 		
 	}

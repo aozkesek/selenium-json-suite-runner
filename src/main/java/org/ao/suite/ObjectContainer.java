@@ -8,12 +8,11 @@ import javax.annotation.PostConstruct;
 import org.ao.suite.model.VariableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 
 @Component
@@ -23,6 +22,9 @@ public class ObjectContainer {
 	private static Logger logger = LoggerFactory.getLogger(ObjectContainer.class);
 	
 	private ConcurrentHashMap<String, VariableModel> variables;
+	
+	@Autowired
+	private ObjectMapperFactory objectMapperFactory;
 	
 	@PostConstruct
 	public void init() {
@@ -102,13 +104,12 @@ public class ObjectContainer {
 	
 	@Override
 	public String toString() {
-		ObjectMapper om = new ObjectMapper(new YAMLFactory());
 		try {
-			return om.writeValueAsString(variables);
+			return objectMapperFactory.getObjectMapper()
+					.writeValueAsString(variables);
 		} catch (JsonProcessingException e) {
 			return variables.toString();
-		}
-		
+		}		
 	}
 	
 	

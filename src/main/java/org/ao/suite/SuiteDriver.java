@@ -34,9 +34,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 @Component
 @Scope("prototype")
 public class SuiteDriver {
@@ -55,6 +52,8 @@ public class SuiteDriver {
 	private TestContainer testContainer;
 	@Autowired
 	private ObjectContainer objectContainer;
+	@Autowired
+	private ObjectMapperFactory objectMapperFactory;
 	@Autowired
 	private AnnotationConfigApplicationContext appCtx;
 	
@@ -127,7 +126,8 @@ public class SuiteDriver {
 		SuiteId = UUID.randomUUID().toString().concat("_").concat(suitePathName);
 		
 		logger.debug("loading {}", suitePathName);
-		suite = new ObjectMapper(new YAMLFactory()).readValue(new File(pathName), SuiteModel.class);
+		suite = objectMapperFactory.getObjectMapper()
+				.readValue(new File(pathName), SuiteModel.class);
 		logger.debug("{} here it is\n{}", suitePathName, suite);
 		
 		loadObjects();
@@ -153,7 +153,8 @@ public class SuiteDriver {
 		String pathName = FullPathName(suiteProp.objectsHome, suite.getObjectRepository());
 		
 		logger.debug("loading {}", pathName);
-		object = new ObjectMapper(new YAMLFactory()).readValue(new File(pathName), ObjectModel.class);
+		object = objectMapperFactory.getObjectMapper()
+				.readValue(new File(pathName), ObjectModel.class);
 		logger.debug("{} here it is\n{}", pathName, object);
 		
 		object.getObjects().
