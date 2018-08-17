@@ -1,18 +1,19 @@
 package org.ao.suite.model;
-
-import java.util.LinkedHashMap;
-
+import java.util.Map;
 import org.ao.suite.ObjectMapperFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/*
+ * this class holds tests definition that loaded from user test script file
+ */
 public class SuiteTestModel {
 
 	@JsonProperty("file_name")
 	private String fileName;
 	
-	private LinkedHashMap<String, Object> arguments;
+	private Map<String, String> arguments;
 	
 	public String getFileName() {
 		return fileName;
@@ -22,11 +23,11 @@ public class SuiteTestModel {
 		this.fileName = fileName;
 	}
 	
-	public LinkedHashMap<String, Object> getArguments() {
+	public Map<String, String> getArguments() {
 		return arguments;
 	}
 	
-	public void setArguments(LinkedHashMap<String, Object> arguments) {
+	public void setArguments(Map<String, String> arguments) {
 		this.arguments = arguments;
 	}
 	

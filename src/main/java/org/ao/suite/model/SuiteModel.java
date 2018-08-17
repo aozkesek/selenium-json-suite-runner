@@ -5,6 +5,9 @@ import org.ao.suite.ObjectMapperFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/*
+ * this class holds suite definition that loaded from user suite script file
+ */
 public class SuiteModel {
 
 	private String name;

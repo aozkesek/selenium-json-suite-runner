@@ -3,13 +3,16 @@ package org.ao.suite.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+ * this class holds variables 
+ */
 public class VariableModel {
 	
 	private String name;
-	private String value;
-	private String reValue;
+	private Object value;
+	private Object reValue;
 	
-	public VariableModel(String name, String value) {
+	public VariableModel(String name, Object value) {
 		this.name = name;
 		this.value = value;
 		this.reValue = value;
@@ -23,25 +26,26 @@ public class VariableModel {
 		return name;
 	}
 
-	public String getValue() {
+	public Object getValue() {
 		if (value == null)
 			return null;
 		
-		if (containsVariableName(value))
-			//do not return the reValue, it mights to be re-calculated
-			return value;
+		if (value instanceof String)
+			if (containsVariableName(String.valueOf(value)))
+				//do not return the reValue, it mights to be re-calculated
+				return value;
 		
 		return reValue;	
 	}
 	
-	public void setValue(String value) {
+	public void setValue(Object value) {
 		// always save into the reValue
 		this.reValue = value;
 	}
 	
 	@Override
 	public String toString() {
-		return getValue();
+		return getValue() == null ? null : String.valueOf(getValue());
 	}
 	
 	private final static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_]+\\}");

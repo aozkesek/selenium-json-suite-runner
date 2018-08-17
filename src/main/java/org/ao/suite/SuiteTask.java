@@ -28,7 +28,7 @@ public class SuiteTask implements Callable<Boolean> {
 	@Override
 	public Boolean call() {
 		try {
-			suiteDriver.Load(suite);
+			suiteDriver.loadSuite(suite);
 			logger.debug("{} suite is loaded.", suite);
 			suiteDriver.RunTests();
 		} catch (CommandNotFoundException | IOException e) {

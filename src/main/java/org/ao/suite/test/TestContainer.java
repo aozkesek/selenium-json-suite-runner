@@ -1,10 +1,9 @@
 package org.ao.suite.test;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -12,18 +11,15 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class TestContainer {
 
-	private ConcurrentHashMap<String, TestDriver> testDrivers;
-	
-	private static Logger logger = LoggerFactory.getLogger(TestContainer.class);
+	private Map<String, TestDriver> testDrivers;
 	
 	@PostConstruct
 	public void init() {
-		testDrivers = new ConcurrentHashMap<String, TestDriver>();
+		testDrivers = new HashMap<>();
 	}
 	
 	public void putTestDriver(String key, TestDriver testDriver) {
 		testDrivers.put(key, testDriver);
-		logger.debug("put test {}", key);
 	}
 	
 	public TestDriver getTestDriver(String key) {

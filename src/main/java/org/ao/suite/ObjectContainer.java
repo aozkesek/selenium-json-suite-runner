@@ -2,7 +2,9 @@ package org.ao.suite;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 import org.ao.suite.model.VariableModel;
@@ -21,14 +23,14 @@ public class ObjectContainer {
 	
 	private static Logger logger = LoggerFactory.getLogger(ObjectContainer.class);
 	
-	private ConcurrentHashMap<String, VariableModel> variables;
+	private Map<String, VariableModel> variables;
 	
 	@Autowired
 	private ObjectMapperFactory objectMapperFactory;
 	
 	@PostConstruct
 	public void init() {
-		variables = new ConcurrentHashMap<String, VariableModel>();
+		variables = new HashMap<>();
 	}
 	
 	public VariableModel putVariable(String key, String value) {
@@ -46,7 +48,7 @@ public class ObjectContainer {
 		return variableModel;
 	}
 	
-	public String getVariable(String key) {
+	public Object getVariable(String key) {
 		if (key == null)
 			return null;
 		
@@ -59,7 +61,15 @@ public class ObjectContainer {
 			//not found in the container, check if it is system variable then
 			return getSysVariable(key);
 		
-		String value = variables.get(key).getValue();
+		VariableModel variable = variables.get(key);
+		if (variable.getValue() == null)
+			return null;
+		
+		if (!(variable.getValue() instanceof String))
+			// not a string, then return it
+			return variable.getValue();
+			
+		String value = variable.getValue().toString();
 		if (!VariableModel.containsVariableName(value))
 			//has a basic value, so return the what is found
 			return value;
@@ -79,10 +89,13 @@ public class ObjectContainer {
 	public String getReplacedVariable(String source) {
 		
 		if (!VariableModel.containsVariableName(source))		
+		// not include variable, return it's own
 			return source;
 		
 		String ref = VariableModel.VariableName(source);
-		String val = getVariable(ref);
+		Object oVal = getVariable(ref); 
+		// we expect here pure string value
+		String val = oVal == null ? "" : oVal instanceof String ? String.valueOf(oVal) : "";
 		if (source.equals("${"+ref+"}"))
 			source = val;
 		else
@@ -96,8 +109,9 @@ public class ObjectContainer {
 		
 		if (key.equals("SYS_DATETIME_NOW"))
 			//give it always the refreshed one
-			return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyMMdd.HHmmss.SSS"));
-					
+			return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd.HHmmss.SSS"));
+		// insert here others you want
+		
 		// not a system variable, return back with it's own
 		return key;
 	}

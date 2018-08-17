@@ -4,6 +4,7 @@ import org.ao.suite.SuiteDriver;
 import org.ao.suite.model.VariableModel;
 import org.ao.suite.test.command.AbstractCommandDriver;
 import org.ao.suite.test.command.model.CommandModel;
+import org.ao.suite.test.command.model.CommandModelBuilder;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -32,21 +33,12 @@ public class CommandDriverAspect {
 		
 		logger.debug("AROUND-ASPECT: executing {}", commandModel);
 		
-		CommandModel repCommandModel = commandModel.clone();
-		
-		if (repCommandModel.getArgs() != null) {
-			for(int i = 0; i < repCommandModel.getArgs().length; i++)
-				repCommandModel.getArgs()[i] = suiteDriver
-								.getObjectContainer()
-								.getReplacedVariable(commandModel.getArgs()[i]);
-		}
-		
-		if (repCommandModel.getValue() != null) {
-			
-			repCommandModel.setValue(suiteDriver
-							.getObjectContainer()
-							.getReplacedVariable(repCommandModel.getValue().toString()));
-		}
+		CommandModelBuilder commandModelBuilder = new CommandModelBuilder();
+		CommandModel repCommandModel = commandModelBuilder
+				.setCommand(commandModel.getCommand())
+				.setValue(commandModel.getValue(), suiteDriver.getObjectContainer())
+				.setArgs(commandModel.getArgs(), suiteDriver.getObjectContainer())
+				.build();
 		
 		logger.debug("AROUND-ASPECT: command-parameter is replaced by {}", repCommandModel);
 		

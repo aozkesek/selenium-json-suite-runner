@@ -8,8 +8,8 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +19,6 @@ import javax.annotation.PreDestroy;
 import org.ao.suite.model.ObjectModel;
 import org.ao.suite.model.SuiteModel;
 import org.ao.suite.model.SuiteTestModel;
-import org.ao.suite.test.TestContainer;
 import org.ao.suite.test.TestDriver;
 import org.ao.suite.test.command.exception.CommandNotFoundException;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -48,8 +47,6 @@ public class SuiteDriver {
 	
 	@Autowired
 	private SuiteProperty suiteProp;
-	@Autowired
-	private TestContainer testContainer;
 	@Autowired
 	private ObjectContainer objectContainer;
 	@Autowired
@@ -120,53 +117,52 @@ public class SuiteDriver {
 		
 	}
 	
-	public void Load(String suitePathName) throws IOException, CommandNotFoundException {
-		String pathName = FullPathName(suiteProp.home, suitePathName);
+	// load suite
+	public void loadSuite(String suitePathName) throws IOException, CommandNotFoundException {
+		String pathName = fullPathName(suiteProp.home, suitePathName);
 		
 		SuiteId = UUID.randomUUID().toString().concat("_").concat(suitePathName);
 		
 		logger.debug("loading {}", suitePathName);
 		suite = objectMapperFactory.getObjectMapper()
 				.readValue(new File(pathName), SuiteModel.class);
-		logger.debug("{} here it is\n{}", suitePathName, suite);
+		logger.debug("{} loaded.\n{}", suitePathName, suite);
 		
-		loadObjects();
+		loadSuiteObjects();
 		
-		loadTests();
+		loadSuiteTests();
 
 	}
 
-	public TestDriver loadTest(String testFileName, LinkedHashMap<String, Object> testArguments) 
-			throws CommandNotFoundException, IOException {
-		
-		String pathName = FullPathName(suiteProp.testsHome, suite.getTestPath());
-		pathName = FullPathName(pathName, testFileName);
-		
-		testContainer.putTestDriver(
-				pathName, 
-				appCtx.getBean(TestDriver.class).init(this, pathName, testArguments));
-		
-		return testContainer.getTestDriver(pathName);
-	}
-	
-	private void loadObjects() throws IOException {
-		String pathName = FullPathName(suiteProp.objectsHome, suite.getObjectRepository());
+	private void loadSuiteObjects() throws IOException {
+		String pathName = fullPathName(suiteProp.objectsHome, suite.getObjectRepository());
 		
 		logger.debug("loading {}", pathName);
 		object = objectMapperFactory.getObjectMapper()
 				.readValue(new File(pathName), ObjectModel.class);
-		logger.debug("{} here it is\n{}", pathName, object);
+		logger.debug("{} loaded.\n{}", pathName, object);
 		
+		// then put them into container, so others can access them
 		object.getObjects().
-			forEach((k,v) -> logger.debug("{}", objectContainer.putVariable(k, v.toString())));
+			forEach((k,v) -> objectContainer.putVariable(k, v));
+		
 	}
 	
-	private void loadTests() throws IOException, CommandNotFoundException {
+	public TestDriver loadTest(String name, Map<String, String> arguments) 
+			throws CommandNotFoundException, IOException {
+		
+		String pathName = fullPathName(suiteProp.testsHome, suite.getTestPath());
+		pathName = fullPathName(pathName, name);
+		
+		return appCtx.getBean(TestDriver.class).init(this, pathName, arguments);
+	}
+	
+	private void loadSuiteTests() throws CommandNotFoundException, IOException {
 		tests = new ArrayList<TestDriver>();
 		
-		for (SuiteTestModel suiteTestModel : suite.getTests()) 
-			tests.add(loadTest(suiteTestModel.getFileName(), suiteTestModel.getArguments()));
-			
+		for (SuiteTestModel test : suite.getTests()) 
+			tests.add(loadTest(test.getFileName(), test.getArguments()));		
+		
 	}
 	
 	private PrintWriter reportWriter = null;
@@ -177,7 +173,7 @@ public class SuiteDriver {
 	
 	public void openReportWriter() {
 		String reportFileName = SuiteId.replace('/', '_').replace('\\', '_');
-		File reportFile = new File(SuiteDriver.FullPathName(suiteProp.reportsHome, reportFileName));
+		File reportFile = new File(fullPathName(suiteProp.reportsHome, reportFileName));
     
 		try {
 			this.reportWriter = new PrintWriter(new BufferedWriter(new FileWriter(reportFile)));
@@ -196,19 +192,21 @@ public class SuiteDriver {
 	public boolean isNeededCommaCommand() { return isNeededCommaCommand; }
         public void setNeededCommaCommand(boolean isNeeded) { isNeededCommaCommand = isNeeded; }
         
-	public static String FullPathName(String path, String name) {
+	private String fullPathName(String path, String name) {
 		String normalizedPath;
 		if (path.length() > 0) {
 			if (path.endsWith("/"))
 				normalizedPath = path.concat(name);
 			else
 				normalizedPath = path.concat("/").concat(name);
-		}
-		else
+		} else
 			normalizedPath = name;
 		
-		if (!normalizedPath.endsWith(".yaml") && !normalizedPath.endsWith("/"))
-			normalizedPath = normalizedPath.concat(".yaml");
+		if (normalizedPath.endsWith("/"))
+			return normalizedPath;
+		
+		if (!normalizedPath.endsWith(".".concat(suiteProp.format)))
+			normalizedPath = normalizedPath.concat(".".concat(suiteProp.format));
 		
 		return normalizedPath;
 	}

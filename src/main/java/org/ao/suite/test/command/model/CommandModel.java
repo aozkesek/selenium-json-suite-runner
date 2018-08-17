@@ -4,7 +4,10 @@ import org.ao.suite.ObjectMapperFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-public class CommandModel implements Cloneable {
+/*
+ * this class holds command, command arguments and return value 
+ */
+public class CommandModel {
 	
 	private String command;
 	private String[] args;
@@ -44,20 +47,4 @@ public class CommandModel implements Cloneable {
 		}
 	}
 
-	@Override
-	public CommandModel clone( ) {
-		CommandModel cloned = new CommandModel();
-		cloned.command = command;
-		
-		if (args != null && args.length > 0) {
-			cloned.args = new String[args.length];
-			for (int i = 0; i < args.length; i++)
-				cloned.args[i] = args[i];
-		}
-		
-		if (value != null)
-			cloned.value = value;
-		
-		return cloned;
-	}
 }

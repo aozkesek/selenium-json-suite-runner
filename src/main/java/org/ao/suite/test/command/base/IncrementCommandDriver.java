@@ -13,12 +13,19 @@ public class IncrementCommandDriver extends AbstractCommandDriver {
 		super(LoggerFactory.getLogger(IncrementCommandDriver.class));
 	}
 	
+	/*
+	 * 
+	 * (non-Javadoc)
+	 * @see org.ao.suite.test.command.ICommandDriver#execute(org.ao.suite.test.command.model.CommandModel, org.ao.suite.SuiteDriver)
+	 */
 	@Override
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {	
 		
 		if (commandModel.getArgs().length > 1)
-			commandModel.setValue(Long.valueOf(commandModel.getArgs()[0]) + Long.valueOf(commandModel.getArgs()[1]));
+			commandModel.setValue(
+					Long.valueOf(commandModel.getArgs()[0]) 
+					+ Long.valueOf(commandModel.getArgs()[1]));
 		else
 			commandModel.setValue(Long.valueOf(commandModel.getArgs()[0]) + 1);
 		

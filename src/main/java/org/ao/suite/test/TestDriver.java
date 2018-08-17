@@ -2,6 +2,8 @@ package org.ao.suite.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import org.ao.suite.ObjectMapperFactory;
@@ -11,6 +13,7 @@ import org.ao.suite.test.command.CommandDriverFactory;
 import org.ao.suite.test.command.ICommandDriver;
 import org.ao.suite.test.command.exception.CommandNotFoundException;
 import org.ao.suite.test.command.model.CommandModel;
+import org.ao.suite.test.command.model.CommandModelBuilder;
 import org.ao.suite.test.model.TestModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,19 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @Component
 @Scope("prototype")
 public class TestDriver {
 	
-	private SuiteDriver suiteDriver;
 	private String name;
-	private LinkedHashMap<String, VariableModel> arguments;
-	
 	private TestModel testModel;
-	
-	private LinkedHashMap<CommandModel, ICommandDriver> commandDrivers;
+	private SuiteDriver suiteDriver;
+	private Map<CommandModel, ICommandDriver> commands;
 	
 	@Autowired
 	private ObjectMapperFactory objectMapperFactory;
@@ -49,22 +47,17 @@ public class TestDriver {
 		return logger;
 	}
 	
-	public TestDriver init(SuiteDriver suiteDriver, String name, LinkedHashMap<String, Object> arguments) 
+	public TestDriver init(SuiteDriver suiteDriver, String name, Map<String, String> args) 
 	                throws IOException, CommandNotFoundException {
 	        
 	        this.suiteDriver = suiteDriver;
                 this.name = name;
-                this.arguments = new LinkedHashMap<String, VariableModel>();
-                this.commandDrivers = new LinkedHashMap<CommandModel, ICommandDriver>();
-		
-                if (arguments != null)
-                	arguments
-                		.forEach((k, v) -> 
-                			this.arguments.put(k, new VariableModel(k, v == null ? null : v.toString())));
-                	
+                // commands must be sorted
+                this.commands = new LinkedHashMap<>();
+			
                 loadTest();
                 prepareCommands();
-                putArguments();
+                putArguments(args);
                 storeVars();
                         
                 return this;
@@ -74,15 +67,8 @@ public class TestDriver {
 		
 		logger.debug("running {}", name);
 		
-		commandDrivers.forEach( (cm, cd) -> cd.execute(cm, suiteDriver) );
+		commands.forEach((cm, cd) -> cd.execute(cm, suiteDriver));
 		
-	}
-	
-	private void prepareCommands() throws CommandNotFoundException {
-		
-		for (CommandModel m: testModel.getCommands())
-			this.commandDrivers.put(m, CommandDriverFactory.getCommandDriver(m));
-	
 	}
 	
 	private void loadTest() throws IOException {
@@ -94,14 +80,31 @@ public class TestDriver {
 		
 	}
 	
-	private void putArguments() {
+	private void prepareCommands() throws CommandNotFoundException {
+		CommandModelBuilder builder = new CommandModelBuilder();
+		for (CommandModel m: testModel.getCommands()) {
+			CommandModel command = builder
+					.setCommand(m.getCommand())
+					.setValue(m.getValue())
+					.setArgs(m.getArgs())
+					.build();
+			commands.put(command, CommandDriverFactory.getCommandDriver(m));
+		}
+	
+	}
+	
+	private void putArguments(Map<String, String> args) {
+		
+		if (args == null)
+			return;
 		
 		//gets actual argument then put it into test's argument
-		arguments.forEach((k, v) -> {
+		args.forEach((k, v) -> {
+			// put only matched ones
 			if (testModel.getArguments().containsKey(k)) 
 				testModel.getArguments().replace(k, v);
 			else
-				logger.error("Invalid argument {} is ignoring for test {}", k, testModel);
+				logger.error("Ignored {} is Invalid for {}", k, testModel.getName());
 		
 		});
 		
@@ -111,7 +114,7 @@ public class TestDriver {
 	private void storeVars() {
 		
 		testModel.getArguments()
-			.forEach( (k,v) -> { suiteDriver.getObjectContainer().putVariable(k, v.toString()); });
+			.forEach((k,v) -> suiteDriver.getObjectContainer().putVariable(k, v));
 		
 	}
 }

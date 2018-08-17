@@ -47,7 +47,7 @@ public class JSONRunnerMain {
 	public static void run() {
 		SuiteDriver suiteToRun = AppContext.getBean(SuiteDriver.class);
 		try {
-			suiteToRun.Load(SuiteProp.suites);
+			suiteToRun.loadSuite(SuiteProp.suites);
 			suiteToRun.RunTests();
 
 		} catch (IOException | CommandNotFoundException e) {

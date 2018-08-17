@@ -1,7 +1,8 @@
 package org.ao.suite.test.command.base;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.test.command.AbstractCommandDriver;
@@ -30,9 +31,9 @@ public class RunTestCommandDriver extends AbstractCommandDriver {
 	
 	}
 	
-	private LinkedHashMap<String, Object> getTestArguments(CommandModel commandModel) {
+	private Map<String, String> getTestArguments(CommandModel commandModel) {
 		
-		LinkedHashMap<String, Object> testArguments = new LinkedHashMap<String, Object>();
+		Map<String, String> testArguments = new HashMap<>();
 		
 		if (commandModel.getValue() != null) {
 			String[] args = commandModel.getValue().toString().split(",");

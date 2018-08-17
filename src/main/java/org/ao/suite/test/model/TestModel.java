@@ -1,17 +1,20 @@
 package org.ao.suite.test.model;
 
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.ao.suite.ObjectMapperFactory;
 import org.ao.suite.test.command.model.CommandModel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/*
+ * this class holds test definition that loaded from test script file
+ */
 public class TestModel {
 
 	private String name;
-	private LinkedHashMap<String, Object> arguments;
-	private LinkedHashMap<String, Object> vars;
+	private Map<String, String> arguments;
+	private Map<String, String> vars;
 	private CommandModel[] commands;
 	
 	public String getName() {
@@ -22,19 +25,19 @@ public class TestModel {
 		this.name = name;
 	}
 	
-	public LinkedHashMap<String, Object> getArguments() {
+	public Map<String, String> getArguments() {
 		return arguments;
 	}
 	
-	public void setArguments(LinkedHashMap<String, Object> arguments) {
+	public void setArguments(Map<String, String> arguments) {
 		this.arguments = arguments;
 	}
 	
-	public LinkedHashMap<String, Object> getVars() {
+	public Map<String, String> getVars() {
 		return vars;
 	}
 	
-	public void setVars(LinkedHashMap<String, Object> vars) {
+	public void setVars(Map<String, String> vars) {
 		this.vars = vars;
 	}
 	
