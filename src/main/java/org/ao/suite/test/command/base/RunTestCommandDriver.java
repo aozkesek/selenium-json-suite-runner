@@ -23,7 +23,7 @@ public class RunTestCommandDriver extends AbstractCommandDriver {
 		
 		try {
 			suiteDriver
-				.loadTest(commandModel.getArgs()[0], getTestArguments(commandModel))
+				.loadTest(commandModel.getArgs().get(0), getTestArguments(commandModel))
 				.run();
 		} catch (IOException e) {
 			throw new RuntimeException(e);

@@ -21,9 +21,9 @@ public class LogCommandDriver extends AbstractCommandDriver {
 				? "debug" : String.valueOf(commandModel.getValue()).toLowerCase();
 		
 		if (level.equals("info") )
-			logger.info("\nLOG-> {}", commandModel.getArgs()[0]);
+			logger.info("\nLOG-> {}", commandModel.getArgs().get(0));
 		else
-			logger.debug("\nLOG-> {}", commandModel.getArgs()[0]);
+			logger.debug("\nLOG-> {}", commandModel.getArgs().get(0));
 	
 	}
 

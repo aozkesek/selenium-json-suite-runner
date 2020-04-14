@@ -48,7 +48,7 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		if (by == null)
 			throw new ElementNotFoundException(args);
 		
-		WebElement webElement = suiteDriver.getWebDriver().findElement(by);
+		WebElement webElement = suiteDriver.findElementBy(by);
 		
 		return webElement;
 		
@@ -62,7 +62,7 @@ public abstract class AbstractCommandDriver implements ICommandDriver {
 		if (by == null)
 			throw new ElementNotFoundException(args);
 		
-		List<WebElement> webElements = suiteDriver.getWebDriver().findElements(by);
+		List<WebElement> webElements = suiteDriver.findElementsBy(by);
 
 		return webElements;
 		

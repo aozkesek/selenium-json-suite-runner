@@ -18,7 +18,7 @@ public class SubmitCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		WebElement webElement = findElement(commandModel.getArgs()[0], suiteDriver);
+		WebElement webElement = findElement(commandModel.getArgs().get(0), suiteDriver);
 		webElement.submit();
 		
 	}

@@ -1,14 +1,11 @@
 package org.ao.suite.model;
 import java.util.Map;
-import org.ao.suite.ObjectMapperFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
-/*
- * this class holds tests definition that loaded from user test script file
- */
-public class SuiteTestModel {
+import org.ao.suite.Model;
+
+public class SuiteTestModel implements Model {
 
 	@JsonProperty("file_name")
 	private String fileName;
@@ -30,14 +27,5 @@ public class SuiteTestModel {
 	public void setArguments(Map<String, String> arguments) {
 		this.arguments = arguments;
 	}
-	
-	@Override
-	public String toString() {
-		try {
-			return new ObjectMapperFactory().getObjectMapper()
-					.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			return super.toString();
-		}
-	}
+
 }

@@ -1,0 +1,26 @@
+
+suite:
+    format: yaml
+    
+    path: ./suites
+    testsPath: ./tests
+    objectsPath: ./objects
+    reportsPath: ./reports
+    
+    isParallel: true
+    threadCount: 1    
+    
+    driver: firefox
+    timeout: 15000
+
+    remoteUrl: #http://localhost:4444/wd/hub
+
+    suites: 
+        - duckduckgo-suite.yaml
+
+
+logging:
+    file: logs/suiterunner.log
+    level:
+        root: INFO
+        org.ao: DEBUG

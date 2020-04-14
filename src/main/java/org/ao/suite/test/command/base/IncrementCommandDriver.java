@@ -22,12 +22,12 @@ public class IncrementCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {	
 		
-		if (commandModel.getArgs().length > 1)
+		if (commandModel.getArgs().size() > 1)
 			commandModel.setValue(
-					Long.valueOf(commandModel.getArgs()[0]) 
-					+ Long.valueOf(commandModel.getArgs()[1]));
+					Long.valueOf(commandModel.getArgs().get(0)) 
+					+ Long.valueOf(commandModel.getArgs().get(1)));
 		else
-			commandModel.setValue(Long.valueOf(commandModel.getArgs()[0]) + 1);
+			commandModel.setValue(Long.valueOf(commandModel.getArgs().get(0)) + 1);
 		
 	
 	}

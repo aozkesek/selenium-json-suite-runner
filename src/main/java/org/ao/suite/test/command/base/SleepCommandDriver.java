@@ -18,7 +18,7 @@ public class SleepCommandDriver extends AbstractCommandDriver {
 			throws RuntimeException {
 		
 		try {
-			Thread.sleep(Long.valueOf(commandModel.getArgs()[0]));
+			Thread.sleep(Long.valueOf(commandModel.getArgs().get(0)));
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}

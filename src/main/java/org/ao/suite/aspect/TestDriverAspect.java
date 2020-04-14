@@ -14,45 +14,30 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class TestDriverAspect {
         
-        @Pointcut("execution(* org.ao.suite.test.TestDriver.run(..))")
-        public void testRun() {}
+    @Pointcut("execution(* org.ao.suite.test.TestDriver.run(..))")
+    public void testRun() {}
 
-        @Before("testRun()")
-        public void reportTestRunStart(JoinPoint jp) {
-                TestDriver testDriver = (TestDriver)jp.getTarget(); 
-                SuiteDriver suiteDriver = testDriver.getSuiteDriver();
-                
-                if (suiteDriver.isNeededCommaTest())
-                       	suiteDriver.getReportWriter().print(", ");
-                       
-                suiteDriver.getReportWriter()
-                       	.printf("{ \"name\": \"%1$s\", \"commands\": [\n"
-                        			, testDriver.getName());
-                        
-                suiteDriver.setNeededCommaTest(true);
-                suiteDriver.setNeededCommaCommand(false);
-                
-                
-        }
+    @Before("testRun()")
+    public void reportTestRunStart(JoinPoint jp) {
         
-        @AfterReturning("testRun()")
-        public void reportTestRunSuccessEnd(JoinPoint jp) {
-                TestDriver testDriver = (TestDriver)jp.getTarget();
-                
-                testDriver.getSuiteDriver().getReportWriter()
-                	.println("] , \"isSuccessful\": true }");
-                
-                
-        }
-	
-        @AfterThrowing("testRun()")
-        public void reportTestRunEnd(JoinPoint jp) {
-                TestDriver testDriver = (TestDriver)jp.getTarget();
-                
-                testDriver.getSuiteDriver().getReportWriter()
-                	.println("] , \"isSuccessful\": false }");
-                        
-                
-        }
+        TestDriver testDriver = (TestDriver)jp.getTarget(); 
+        SuiteDriver suiteDriver = testDriver.getSuiteDriver();
+        
+        suiteDriver.reportTestStart(testDriver.getName());            
+    }
+    
+    @AfterReturning("testRun()")
+    public void reportTestRunSuccessEnd(JoinPoint jp) {
+        TestDriver testDriver = (TestDriver)jp.getTarget();
+            
+        testDriver.getSuiteDriver().report("] , \"isSuccessful\": true }");            
+    }
+
+    @AfterThrowing("testRun()")
+    public void reportTestRunEnd(JoinPoint jp) {
+        TestDriver testDriver = (TestDriver)jp.getTarget();
+            
+        testDriver.getSuiteDriver().report("] , \"isSuccessful\": false }");
+    }
         
 }

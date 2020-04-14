@@ -27,25 +27,25 @@ public class SelectCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		if (commandModel.getArgs() == null || commandModel.getArgs().length < 2)
+		if (commandModel.getArgs() == null || commandModel.getArgs().size() < 2)
 			throw new CommandInvalidArgumentException(commandModel.getCommand());
 		
-		Select selElement = new Select(findElement(commandModel.getArgs()[0], suiteDriver));
+		Select selElement = new Select(findElement(commandModel.getArgs().get(0), suiteDriver));
 		
-		if (commandModel.getArgs()[1].equals(DeselectAll))
+		if (commandModel.getArgs().get(1).equals(DeselectAll))
 			selElement.deselectAll();
-		else if (commandModel.getArgs()[1].equals(DeselectIndex))
-			selElement.deselectByIndex(Integer.valueOf(commandModel.getArgs()[2]));
-		else if (commandModel.getArgs()[1].equals(DeselectValue))
-			selElement.deselectByValue(commandModel.getArgs()[2]);
-		else if (commandModel.getArgs()[1].equals(DeselectText))
-			selElement.deselectByVisibleText(commandModel.getArgs()[2]);
-		else if (commandModel.getArgs()[1].equals(SelectIndex))
-			selElement.selectByIndex(Integer.valueOf(commandModel.getArgs()[2]));
-		else if (commandModel.getArgs()[1].equals(SelectValue))
-			selElement.selectByValue(commandModel.getArgs()[2]);
-		else if (commandModel.getArgs()[1].equals(SelectText))
-			selElement.selectByVisibleText(commandModel.getArgs()[2]);
+		else if (commandModel.getArgs().get(1).equals(DeselectIndex))
+			selElement.deselectByIndex(Integer.valueOf(commandModel.getArgs().get(2)));
+		else if (commandModel.getArgs().get(1).equals(DeselectValue))
+			selElement.deselectByValue(commandModel.getArgs().get(2));
+		else if (commandModel.getArgs().get(1).equals(DeselectText))
+			selElement.deselectByVisibleText(commandModel.getArgs().get(2));
+		else if (commandModel.getArgs().get(1).equals(SelectIndex))
+			selElement.selectByIndex(Integer.valueOf(commandModel.getArgs().get(2)));
+		else if (commandModel.getArgs().get(1).equals(SelectValue))
+			selElement.selectByValue(commandModel.getArgs().get(2));
+		else if (commandModel.getArgs().get(1).equals(SelectText))
+			selElement.selectByVisibleText(commandModel.getArgs().get(2));
 		else
 			commandModel.setValue(selElement.getAllSelectedOptions());
 	

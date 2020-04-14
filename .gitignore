@@ -3,6 +3,8 @@
 *.log
 .settings/
 .gradle/
+.idea/
+.vscode/
 gradle/
 build/
 bin/

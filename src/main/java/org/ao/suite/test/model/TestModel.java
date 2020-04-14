@@ -1,21 +1,17 @@
 package org.ao.suite.test.model;
 
+import java.util.List;
 import java.util.Map;
 
-import org.ao.suite.ObjectMapperFactory;
+import org.ao.suite.Model;
 import org.ao.suite.test.command.model.CommandModel;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-/*
- * this class holds test definition that loaded from test script file
- */
-public class TestModel {
+public class TestModel implements Model {
 
 	private String name;
 	private Map<String, String> arguments;
 	private Map<String, String> vars;
-	private CommandModel[] commands;
+	private List<CommandModel> commands;
 	
 	public String getName() {
 		return name;
@@ -41,21 +37,12 @@ public class TestModel {
 		this.vars = vars;
 	}
 	
-	public CommandModel[] getCommands() {
+	public List<CommandModel> getCommands() {
 		return commands;
 	}
 	
-	public void setCommands(CommandModel[] commands) {
+	public void setCommands(List<CommandModel> commands) {
 		this.commands = commands;
 	}
 	
-	@Override
-	public String toString() {
-		try {
-			return new ObjectMapperFactory().getObjectMapper()
-					.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			return super.toString();
-		}
-	}
 }

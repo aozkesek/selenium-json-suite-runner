@@ -3,16 +3,15 @@ package org.ao.suite.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
- * this class holds variables 
- */
-public class VariableModel {
+import org.ao.suite.Model;
+
+public class VariableModel<T> implements Model {
 	
 	private String name;
-	private Object value;
-	private Object reValue;
+	private T value;
+	private T reValue;
 	
-	public VariableModel(String name, Object value) {
+	public VariableModel(String name, T value) {
 		this.name = name;
 		this.value = value;
 		this.reValue = value;
@@ -26,19 +25,23 @@ public class VariableModel {
 		return name;
 	}
 
-	public Object getValue() {
-		if (value == null)
-			return null;
+	public T getValue() {
+        
+        if (value == null) {
+            return null;
+        }
 		
-		if (value instanceof String)
-			if (containsVariableName(String.valueOf(value)))
-				//do not return the reValue, it mights to be re-calculated
-				return value;
+		if (value instanceof String) {
+			if (containesVariable(String.valueOf(value))) {
+				//do not return the reValue, it needs to be re-calculated
+                return value;
+            }
+        }
 		
 		return reValue;	
 	}
 	
-	public void setValue(Object value) {
+	public void setValue(T value) {
 		// always save into the reValue
 		this.reValue = value;
 	}
@@ -48,15 +51,19 @@ public class VariableModel {
 		return getValue() == null ? null : String.valueOf(getValue());
 	}
 	
-	private final static Pattern VariablePattern = Pattern.compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_]+\\}");
+    private final static Pattern VariablePattern = Pattern
+        .compile("\\$\\{[A-Z,a-z,_][A-Z,a-z,0-9,.,_]+\\}");
 	
-	public static String VariableName(String name) {
-		if (name == null)
-			return null;
+	public static String toVariable(String name) {
+        
+        if (name == null) {
+            return null;
+        }
 		
 		Matcher matcher = VariablePattern.matcher(name);
-		if (!matcher.find(0)) 
-			return null;
+		if (!matcher.find(0)) {
+            return null;
+        }
 			
 		// before return the extracted ${}, 
 		// do take care array and index notation -> [index_of_array]
@@ -64,13 +71,15 @@ public class VariableModel {
 		return varName;
 	}
 	
-	public static Boolean containsVariableName(String source) {
-		if (source == null)
-			return false;
+	public static Boolean containesVariable(String source) {
+        
+        if (source == null) {
+            return false;
+        }
 		
-		Matcher matcher = VariablePattern.matcher(source);
-		
-		return matcher.find(0);
+        return VariablePattern
+            .matcher(source)
+            .find(0);
 	}
 	
 }

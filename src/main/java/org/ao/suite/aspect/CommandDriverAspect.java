@@ -2,7 +2,6 @@ package org.ao.suite.aspect;
 
 import org.ao.suite.SuiteDriver;
 import org.ao.suite.model.VariableModel;
-import org.ao.suite.test.command.AbstractCommandDriver;
 import org.ao.suite.test.command.model.CommandModel;
 import org.ao.suite.test.command.model.CommandModelBuilder;
 import org.aspectj.lang.JoinPoint;
@@ -13,110 +12,82 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
 public class CommandDriverAspect {
         
-        @Pointcut("execution(* org.ao.suite.test.command.*.execute(..))")
-        public void commandExecute() {}
+    @Pointcut("execution(* org.ao.suite.test.command.*.execute(..))")
+    public void commandExecute() {}
 
 	@Around("commandExecute() && args(commandModel, suiteDriver)")
-	public Object replaceCommandModelObject(ProceedingJoinPoint jp, CommandModel commandModel, 
-	                SuiteDriver suiteDriver) 
-	                throws Throwable {
+    public Object replaceCommandModelObject(ProceedingJoinPoint jp, 
+                                            CommandModel commandModel, 
+	                                        SuiteDriver suiteDriver) 
+	throws Throwable {
 		
-		AbstractCommandDriver commandDriver = (AbstractCommandDriver)jp.getTarget();
-		Logger logger = commandDriver.getLogger();
+		suiteDriver.logDebug("AROUND-ASPECT: {} is being executed...", commandModel);
 		
-		logger.debug("AROUND-ASPECT: executing {}", commandModel);
-		
-		CommandModelBuilder commandModelBuilder = new CommandModelBuilder();
-		CommandModel repCommandModel = commandModelBuilder
+		CommandModel repCommandModel = CommandModelBuilder.builder()
 				.setCommand(commandModel.getCommand())
-				.setValue(commandModel.getValue(), suiteDriver.getObjectContainer())
-				.setArgs(commandModel.getArgs(), suiteDriver.getObjectContainer())
+				.setValue(commandModel.getValue(), suiteDriver::getReplacedVariable)
+				.setArgs(commandModel.getArgs(), suiteDriver::getReplacedVariable)
 				.build();
 		
-		logger.debug("AROUND-ASPECT: command-parameter is replaced by {}", repCommandModel);
+        suiteDriver.logDebug("AROUND-ASPECT: command-parameter is replaced by {}", 
+            repCommandModel);
 		
 		Object returnObject = jp.proceed(new Object[]{repCommandModel, suiteDriver});
 		
-		logger.debug("AROUND-ASPECT: command-parameter {} is returned back.", repCommandModel);
+        suiteDriver.logDebug("AROUND-ASPECT: command-parameter {} is returned back.", 
+            repCommandModel);
 		
 		if (commandModel.getValue() != null) {
 			String value = commandModel.getValue().toString();
-			if (VariableModel.containsVariableName(value)) {
-				String ref = VariableModel.VariableName(value);
+			if (VariableModel.containesVariable(value)) {
+				String ref = VariableModel.toVariable(value);
 				// value can only a variable name if we want to save the returned value
-				if (value.equals("${" + ref + "}"))
-					suiteDriver
-						.getObjectContainer()
-						.putVariable(ref, repCommandModel.getValue().toString());	
+				if (value.equals("${" + ref + "}")) {
+					suiteDriver.putVariable(ref, repCommandModel.getValue().toString());	
+                }
 			}
 		}
 		
-		logger.debug("AROUND-ASPECT: {} is executed.", commandModel);
+		suiteDriver.logDebug("AROUND-ASPECT: {} is executed.", commandModel);
 		
 		return returnObject;
 		
 	}
 	
 	@Before("commandExecute() && args(commandModel, suiteDriver)")
-        public void reportCommandExecuteStart(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
-                        throws Throwable {
-		
-	        if (!commandModel.getCommand().equals("runTest"))
-	                return;
-	     	
-                if (suiteDriver.isNeededCommaCommand())
-                       	suiteDriver.getReportWriter().println(", { \"test\": ");
-                else
-                      	suiteDriver.getReportWriter().println("{ \"test\": ");
-                
-                suiteDriver.setNeededCommaTest(false);
-                suiteDriver.setNeededCommaCommand(false);
-                        
-                
+    public void reportCommandExecuteStart(  JoinPoint jp, 
+                                            CommandModel commandModel, 
+                                            SuiteDriver suiteDriver) 
+    throws Throwable {
+    
+        if (commandModel.getCommand().equals("runTest")) {
+            suiteDriver.reportCommandStart();
         }
+            
+    }
         
 	@AfterReturning("commandExecute() && args(commandModel, suiteDriver)")
-        public void reportCommandExecuteSuccessEnd(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
-                        throws Throwable {
-        
-	        if (commandModel.getCommand().equals("runTest"))
-	        	suiteDriver.getReportWriter().print(", ");
-	        else
-                    if (suiteDriver.isNeededCommaCommand())
-                    	suiteDriver.getReportWriter().print(", { ");
-                    else
-                    	suiteDriver.getReportWriter().print("{ ");
-	        
-	        suiteDriver.getReportWriter()
-	        	.printf("\"command\": \"%1$s\", \"isSuccessful\": true }\n", commandModel.getCommand());
-            
-	        suiteDriver.setNeededCommaCommand(true);       
-        }
+    public void reportCommandExecuteSuccessEnd( JoinPoint jp, 
+                                                CommandModel commandModel, 
+                                                SuiteDriver suiteDriver) 
+    throws Throwable {
+    
+        suiteDriver.reportCommandEnd(commandModel.getCommand(), true);
+    }
 	
 	@AfterThrowing("commandExecute() && args(commandModel, suiteDriver)")
-        public void reportCommandExecuteFailureEnd(JoinPoint jp, CommandModel commandModel, SuiteDriver suiteDriver) 
-                        throws Throwable {
-	        
-		if (commandModel.getCommand().equals("runTest"))
-			suiteDriver.getReportWriter().print(", ");
-		else
-			if (suiteDriver.isNeededCommaCommand())
-				suiteDriver.getReportWriter().print(", { ");
-			else
-				suiteDriver.getReportWriter().print("{ ");
+    public void reportCommandExecuteFailureEnd( JoinPoint jp, 
+                                                CommandModel commandModel, 
+                                                SuiteDriver suiteDriver) 
+    throws Throwable {
+        
+        suiteDriver.reportCommandEnd(commandModel.getCommand(), false);
             
-		suiteDriver.getReportWriter()
-			.printf("\"command\": \"%1$s\", \"isSuccessful\": false }\n", commandModel.getCommand());
-            
-		suiteDriver.setNeededCommaCommand(true);
-                
-                
-        }
+    }
 }

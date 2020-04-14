@@ -1,71 +1,78 @@
 package org.ao.suite.test;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
+import javax.annotation.PostConstruct;
 
 import org.ao.suite.ObjectMapperFactory;
 import org.ao.suite.SuiteDriver;
-import org.ao.suite.model.VariableModel;
 import org.ao.suite.test.command.CommandDriverFactory;
 import org.ao.suite.test.command.ICommandDriver;
 import org.ao.suite.test.command.exception.CommandNotFoundException;
 import org.ao.suite.test.command.model.CommandModel;
 import org.ao.suite.test.command.model.CommandModelBuilder;
 import org.ao.suite.test.model.TestModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class TestDriver {
+public class TestDriver implements Callable<Boolean> {
 	
-	private String name;
+    private Path testPath;
 	private TestModel testModel;
-	private SuiteDriver suiteDriver;
-	private Map<CommandModel, ICommandDriver> commands;
+    private SuiteDriver suiteDriver;
+    private Map<String, String> args;
+    // commands must be in ordered
+	private Map<CommandModel, ICommandDriver> commands = new LinkedHashMap<>();
 	
 	@Autowired
 	private ObjectMapperFactory objectMapperFactory;
+	@Autowired
+	private CommandDriverFactory commandDriverFactory;
 	
-	private static Logger logger = LoggerFactory.getLogger(TestDriver.class);
-	
+    public TestDriver(SuiteDriver suiteDriver, Path testPath, 
+                      Map<String, String> args) {
+
+        this.suiteDriver = suiteDriver;
+        this.testPath = testPath;
+        this.args = args;
+    }
+
 	public String getName() {
-	        return name;
+	    return testPath.toString();
 	}
 	
 	public SuiteDriver getSuiteDriver() {
-	        return suiteDriver;
+	    return suiteDriver;
 	}
-	
-	public Logger getLogger() {
-		return logger;
-	}
-	
-	public TestDriver init(SuiteDriver suiteDriver, String name, Map<String, String> args) 
-	                throws IOException, CommandNotFoundException {
-	        
-	        this.suiteDriver = suiteDriver;
-                this.name = name;
-                // commands must be sorted
-                this.commands = new LinkedHashMap<>();
-			
-                loadTest();
-                prepareCommands();
-                putArguments(args);
-                storeVars();
-                        
-                return this;
-	}
-	
+
+    @PostConstruct
+    public void prepareTest() throws IOException {
+        loadTest();
+        prepareCommands();
+        putArguments(args);
+        storeVars();
+    }
+
+    @Override
+    public Boolean call() {
+        try {
+            run();
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+
 	public void run() {
 		
-		logger.debug("running {}", name);
+		suiteDriver.logDebug("{} is running...", testPath);
 		
 		commands.forEach((cm, cd) -> cd.execute(cm, suiteDriver));
 		
@@ -73,48 +80,51 @@ public class TestDriver {
 	
 	private void loadTest() throws IOException {
 		
-		logger.debug("loading {}", this.name);
-		testModel = objectMapperFactory.getObjectMapper()
-				.readValue(new File(this.name), TestModel.class);
-		logger.debug("{} is loaded.\n{}", this.name, testModel);
-		
+		suiteDriver.logDebug("Test {} is loading...", testPath);
+
+        testModel = objectMapperFactory.getObjectMapper()
+				.readValue(testPath.toFile(), TestModel.class);
+        		
 	}
 	
 	private void prepareCommands() throws CommandNotFoundException {
-		CommandModelBuilder builder = new CommandModelBuilder();
 		for (CommandModel m: testModel.getCommands()) {
-			CommandModel command = builder
+			CommandModel command = CommandModelBuilder.builder()
 					.setCommand(m.getCommand())
 					.setValue(m.getValue())
 					.setArgs(m.getArgs())
 					.build();
-			commands.put(command, CommandDriverFactory.getCommandDriver(m));
+			commands.put(command, commandDriverFactory.getCommandDriver(m));
 		}
 	
 	}
 	
 	private void putArguments(Map<String, String> args) {
 		
-		if (args == null)
-			return;
+		if (args == null || args.size() == 0) {
+            return;
+        }
 		
 		//gets actual argument then put it into test's argument
 		args.forEach((k, v) -> {
 			// put only matched ones
-			if (testModel.getArguments().containsKey(k)) 
+			if (testModel.getArguments().containsKey(k)) {
 				testModel.getArguments().replace(k, v);
-			else
-				logger.error("Ignored {} is Invalid for {}", k, testModel.getName());
+            } 
+            else {
+                suiteDriver.logError("{} ignored invalid {}", 
+                    testModel.getName(), k);
+            }
 		
 		});
 		
-		logger.debug("updated test arguments is\n{}", testModel.getArguments());
+        suiteDriver.logDebug("{} arguments are updated\n{}", 
+            testModel.getName(), testModel.getArguments());
 	}
 
 	private void storeVars() {
 		
-		testModel.getArguments()
-			.forEach((k,v) -> suiteDriver.getObjectContainer().putVariable(k, v));
-		
+        testModel.getArguments()
+            .forEach(suiteDriver::putVariable);
 	}
 }

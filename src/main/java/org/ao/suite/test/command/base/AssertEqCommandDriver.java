@@ -20,11 +20,11 @@ public class AssertEqCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws ElementNotFoundException {
 		
-		if (commandModel.getArgs() == null || commandModel.getArgs().length < 2)
+		if (commandModel.getArgs() == null || commandModel.getArgs().size() < 2)
 			throw new CommandInvalidArgumentException(commandModel.getCommand());
 		
-		String actual = commandModel.getArgs()[0];
-		String expected = commandModel.getArgs()[1];
+		String actual = commandModel.getArgs().get(0);
+		String expected = commandModel.getArgs().get(1);
 		
 		if (actual.equals(expected))
 			throw new AssertEqException(actual + " equal to " + expected);

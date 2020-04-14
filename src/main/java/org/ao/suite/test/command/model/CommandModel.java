@@ -1,16 +1,13 @@
 package org.ao.suite.test.command.model;
 
-import org.ao.suite.ObjectMapperFactory;
+import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.ao.suite.Model;
 
-/*
- * this class holds command, command arguments and return value 
- */
-public class CommandModel {
+public class CommandModel implements Model {
 	
 	private String command;
-	private String[] args;
+	private List<String> args;
 	private Object value;
 	
 	public String getCommand() {
@@ -21,11 +18,11 @@ public class CommandModel {
 		this.command = command;
 	}
 	
-	public String[] getArgs() {
+	public List<String> getArgs() {
 		return args;
 	}
 	
-	public void setArgs(String[] args) {
+	public void setArgs(List<String> args) {
 		this.args = args;
 	}
 	
@@ -37,14 +34,4 @@ public class CommandModel {
 		this.value = value;
 	}
 	
-	@Override
-	public String toString() {
-		try {
-			return new ObjectMapperFactory().getObjectMapper()
-					.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			return super.toString();
-		}
-	}
-
 }

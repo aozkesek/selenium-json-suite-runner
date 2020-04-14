@@ -2,12 +2,12 @@ package org.ao.suite.test.command.webdriver;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import org.ao.suite.SuiteDriver;
-import org.ao.suite.SuiteProperty;
+import org.ao.suite.SuiteProperties;
 import org.ao.suite.test.command.AbstractCommandDriver;
 import org.ao.suite.test.command.model.CommandModel;
 import org.openqa.selenium.OutputType;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class TakeScreenshotCommandDriver extends AbstractCommandDriver {
 
 	@Autowired
-	private SuiteProperty suiteProp;
+	private SuiteProperties suiteProp;
 	
 	public TakeScreenshotCommandDriver() {
 		super(LoggerFactory.getLogger(TakeScreenshotCommandDriver.class));
@@ -30,22 +30,26 @@ public class TakeScreenshotCommandDriver extends AbstractCommandDriver {
 	
 	@Override
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
-			throws RuntimeException {
+    throws RuntimeException {
 		
 		WebDriver augmentedDriver = new Augmenter().augment(suiteDriver.getWebDriver());
 		File tempScreenshot = ((TakesScreenshot)augmentedDriver).getScreenshotAs(OutputType.FILE);
-		String name = suiteDriver.SuiteId
+        String screenshotsPath = suiteProp.reportsPath;
+
+        Path moveTo = Path.of(
+            screenshotsPath,
+            suiteDriver.getSuiteId()
 				.concat("-")
-				.concat(commandModel.getArgs()[0]);
-		
-		logger.debug("taken temporary screenshot {} is moving to {}"
+                .concat(commandModel.getArgs().get(0))
+            );
+        
+		suiteDriver.logDebug("Taken temporary screenshot {} is moving to {}"
         		, tempScreenshot.getAbsolutePath()
-        		, FileSystems.getDefault().getPath(suiteProp.screenshotsHome, name));
+        		, moveTo);
         
 		try {
-			Files.move(tempScreenshot.toPath(), 
-					FileSystems.getDefault().getPath(suiteProp.screenshotsHome, name), 
-					StandardCopyOption.REPLACE_EXISTING);
+			Files.move(tempScreenshot.toPath(), moveTo, 
+				StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

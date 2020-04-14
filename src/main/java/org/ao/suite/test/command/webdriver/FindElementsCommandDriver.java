@@ -20,7 +20,7 @@ public class FindElementsCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		List<WebElement> webElements = findElements(commandModel.getArgs()[0], suiteDriver);
+		List<WebElement> webElements = findElements(commandModel.getArgs().get(0), suiteDriver);
 		commandModel.setValue(webElements);
 			
 	}

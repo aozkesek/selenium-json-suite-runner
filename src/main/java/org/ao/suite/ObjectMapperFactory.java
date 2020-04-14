@@ -2,29 +2,30 @@ package org.ao.suite;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 @Component
-@Scope("singleton")
 public class ObjectMapperFactory {
 	
 	@Autowired
-	private SuiteProperty suiteProperty;
+	private SuiteProperties suiteProperties;
 	
 	@PostConstruct
 	public void init() {
-		if (suiteProperty == null)
-			throw new NullPointerException("SuiteProperty");
+		if (suiteProperties == null) {
+            throw new NullPointerException("suite-properties");
+        }
 	}
 	
 	public ObjectMapper getObjectMapper() {
-		if (suiteProperty != null && suiteProperty.format.equals("yaml"))
-			return new ObjectMapper(new YAMLFactory());
+        
+		if (suiteProperties.format.equals("yaml")) {
+            return new ObjectMapper(new YAMLFactory());
+        }
 		//return default one if someone call this method directly instead of by getBean
 		return new ObjectMapper();
 	}

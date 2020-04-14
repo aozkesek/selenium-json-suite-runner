@@ -17,7 +17,7 @@ public class SetCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		commandModel.setValue(commandModel.getArgs()[0]);
+		commandModel.setValue(commandModel.getArgs().get(0));
 	
 	}
 

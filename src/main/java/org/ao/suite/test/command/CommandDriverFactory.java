@@ -1,20 +1,30 @@
 package org.ao.suite.test.command;
 
-import org.ao.JSONRunnerMain;
+import org.ao.RunnerMain;
 import org.ao.suite.test.command.exception.CommandNotFoundException;
 import org.ao.suite.test.command.model.CommandModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CommandDriverFactory {
-		
-	public static ICommandDriver getCommandDriver(CommandModel commandModel) 
+
+	@Autowired
+	private ApplicationContext context;
+
+	public ICommandDriver getCommandDriver(CommandModel commandModel)
 			throws CommandNotFoundException {
 		
-		if (commandModel == null)
-			throw new IllegalArgumentException();
-		
-		ICommandDriver cd = (ICommandDriver)JSONRunnerMain.AppContext.getBean(commandModel.getCommand());
-		
-		return cd;
+		if (null == commandModel || null == commandModel.getCommand()) {
+			throw new IllegalArgumentException("command-model");
+		}
+
+		if (!context.containsBean(commandModel.getCommand())) {
+			throw new CommandNotFoundException(commandModel.getCommand());
+		}
+
+		return context.getBean(commandModel.getCommand(), ICommandDriver.class);
 	}
 	
 	

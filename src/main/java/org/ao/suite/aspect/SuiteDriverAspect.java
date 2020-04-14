@@ -13,45 +13,35 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class SuiteDriverAspect {
         
-        @Pointcut("execution(* org.ao.suite.SuiteDriver.RunTests(..))")
-        public void suiteRunTests() {}
+    @Pointcut("execution(* org.ao.suite.SuiteDriver.runTests(..))")
+    public void suiteRunTests() {}
 
-        @Before("suiteRunTests()")
-        public void reportSuiteRunTestsStart(JoinPoint jp) {
-                SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
-                
-                suiteDriver.openReportWriter();
-				
-		suiteDriver.getLogger()
-			.debug("BEFORE-ASPECT: Report output file {} is opened.", suiteDriver.SuiteId);
-				
-		suiteDriver.getReportWriter()
-			.printf("{ \"name\": \"%1$s\", \"tests\": [\n"
-				, suiteDriver.SuiteId);
-				
-        }
+    @Before("suiteRunTests()")
+    public void reportSuiteRunTestsStart(JoinPoint jp) {
         
-        @AfterReturning("suiteRunTests()")
-        public void reportSuiteRunTestsSuccessEnd(JoinPoint jp) {
-                SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
+        SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
+        
+        suiteDriver.openReport();
                 
-                suiteDriver.getReportWriter()
-                	.println("], \"isSuccessful\": true }");		
-		suiteDriver.getReportWriter().close();
-		
-		suiteDriver.getLogger()
-			.debug("AFTERRETURNING-ASPECT: Report output file {} is closed.", suiteDriver.SuiteId);
-        }
+        suiteDriver.report("{ \"name\": \"%1$s\", \"tests\": [\n", suiteDriver);
+                
+    }
+    
+    @AfterReturning("suiteRunTests()")
+    public void reportSuiteRunTestsSuccessEnd(JoinPoint jp) {
+        
+        SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
+            
+        suiteDriver.report("], \"isSuccessful\": true }");		
+        suiteDriver.closeReport();
+    }
 
-        @AfterThrowing("suiteRunTests()")
-        public void reportSuiteRunTestsFailureEnd(JoinPoint jp) {
-                SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
-                
-                suiteDriver.getReportWriter()
-                	.println("], \"isSuccessful\": false }");	              
-		suiteDriver.getReportWriter().close();
-		
-		suiteDriver.getLogger()
-			.debug("AFTERTHROWING-ASPECT: Report output file {} is closed.", suiteDriver.SuiteId);
-        }
+    @AfterThrowing("suiteRunTests()")
+    public void reportSuiteRunTestsFailureEnd(JoinPoint jp) {
+            
+        SuiteDriver suiteDriver = (SuiteDriver)jp.getTarget();
+            
+        suiteDriver.report("], \"isSuccessful\": false }");	              
+        suiteDriver.closeReport();
+    }
 }

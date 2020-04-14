@@ -19,11 +19,11 @@ public class GetAttributeCommandDriver extends AbstractCommandDriver {
 	public void execute(CommandModel commandModel, SuiteDriver suiteDriver) 
 			throws RuntimeException {
 		
-		if (commandModel.getArgs() == null || commandModel.getArgs().length < 2)
+		if (commandModel.getArgs() == null || commandModel.getArgs().size() < 2)
 			throw new CommandInvalidArgumentException(commandModel.getCommand());
 		
-		WebElement webElement = findElement(commandModel.getArgs()[0], suiteDriver);
-		commandModel.setValue(webElement.getAttribute(commandModel.getArgs()[1]));
+		WebElement webElement = findElement(commandModel.getArgs().get(0), suiteDriver);
+		commandModel.setValue(webElement.getAttribute(commandModel.getArgs().get(1)));
 	}
 
 }
