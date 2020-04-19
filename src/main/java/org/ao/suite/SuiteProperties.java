@@ -47,7 +47,7 @@ public class SuiteProperties {
         this.reportsPath = reportsPath;
     }
 
-    public void setParallel(boolean isParallel) {
+    public void setIsParallel(boolean isParallel) {
         this.isParallel = isParallel;
     }
 

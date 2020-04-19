@@ -3,12 +3,12 @@ suite:
     format: yaml
     
     path: ./suites
-    testsPath: ./tests
-    objectsPath: ./objects
-    reportsPath: ./reports
+    tests-path: ./tests
+    objects-path: ./objects
+    reports-path: ./reports
     
     isParallel: true
-    threadCount: 1    
+    thread-count: 2    
     
     driver: firefox
     timeout: 15000
