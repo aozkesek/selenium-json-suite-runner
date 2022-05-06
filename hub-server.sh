@@ -1,4 +1,4 @@
-SELENIUM_JAR=`ls ~/lib/selenium-server-standalone*.jar`
+SELENIUM_JAR=`ls $HOME/.local/lib/selenium-server-standalone*.jar`
 java -Dselenium.LOGGER=./logs/hub-server.log \
 	-Dselenium.LOGGER.level=ALL \
 	-jar $SELENIUM_JAR \

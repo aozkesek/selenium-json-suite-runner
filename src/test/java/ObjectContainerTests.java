@@ -1,4 +1,4 @@
-import org.ao.suite.ObjectContainer;
+import org.ao.ObjectContainer;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;

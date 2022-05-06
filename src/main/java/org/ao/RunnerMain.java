@@ -1,11 +1,10 @@
 package org.ao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import org.ao.suite.SuiteDriver;
-import org.ao.suite.SuiteProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,32 +46,27 @@ public class RunnerMain implements CommandLineRunner {
 			throw new IllegalArgumentException("suite->suites");
 		}
 
-        final List<Future<Boolean>> suitesReturn = new ArrayList<>();
+        final List<Future<Boolean>> suitesReturn = Collections.synchronizedList(new ArrayList<>());
         
-        logger.info("This run is parallel({}) and {} threads.", 
+        logger.info("This run is {}-parallel and has {} threads.",
             suiteProperties.isParallel, suiteProperties.threadCount);
 
 		if (suiteProperties.isParallel && suiteProperties.threadCount > 1) {
-
 			suiteProperties.suites.forEach(s -> {
                 for(int i = 0; i < suiteProperties.threadCount; i++) {
                     logger.info("Suite {} is being prepared...", s);
                     suitesReturn.add(
-                        executor.submit(contex.getBean(SuiteDriver.class, s))
-                        );
+                        executor.submit(
+								contex.getBean(SuiteDriver.class, s)));
                 }
             });
 		}
 		else {
-
             logger.info("Suite {} is being prepared...", suiteProperties.suites.get(0));
 			suitesReturn.add(
                 executor.submit(
-                    contex.getBean(SuiteDriver.class, suiteProperties.suites.get(0))
-                    )
-                );
+                    contex.getBean(
+							SuiteDriver.class, suiteProperties.suites.get(0))));
 		}
-
-
 	}
 }

@@ -6,25 +6,25 @@ arguments:
   : 10
 vars: null
 commands:
-- command: isEnabled
-  args:
-  - ${search_form_input_homepage}
-  value: ${isSearchFormEnabled}
-- command: isDisplayed
-  args:
-  - ${search_form_input_homepage}
-  value: ${isSearchFormDisplayed}
-- command: sendKeys
-  args:
-  - ${search_form_input_homepage}
-  value: ${queryWordEnter}
-- command: submit
-  args:
-  - ${search_form_input_homepage}
-- command: sleep
-  args:
-  - 3000
-- command: runTest
-  args:
-  - commons/check-results.yaml
-  value: searchFormInputCheck:=${search_form_input}
+  - command: isEnabled
+    args:
+    - ${search_form_input_homepage}
+    value: ${isSearchFormEnabled}
+  - command: isDisplayed
+    args:
+    - ${search_form_input_homepage}
+    value: ${isSearchFormDisplayed}
+  - command: sendKeys
+    args:
+    - ${search_form_input_homepage}
+    value: ${queryWordEnter}
+  - command: submit
+    args:
+    - ${search_form_input_homepage}
+  - command: sleep
+    args:
+    - 3000
+  - command: runTest
+    args:
+    - commons/check-results.yaml
+    value: searchFormInputCheck:=${search_form_input}
