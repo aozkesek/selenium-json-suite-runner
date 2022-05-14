@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class CommandDriverAspect {
         
-    @Pointcut("execution(* org.ao.suite.test.command.*.execute(..))")
+    @Pointcut("execution(* org.ao.command.*.execute(..))")
     public void commandExecute() {}
 
 	@Around("commandExecute() && args(commandModel, suiteDriver)")

@@ -6,13 +6,12 @@ plugins {
 jar {
 	manifest {
 		attributes(
-			"Main-Class": "org.ao.JSONRunnerMain"
+			"Main-Class": "org.ao.RunnerMain"
 		)
 	}
 }
 
 repositories {
-	mavenLocal()
 	mavenCentral()
 }
 

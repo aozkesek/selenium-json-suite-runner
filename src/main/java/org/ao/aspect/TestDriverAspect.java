@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class TestDriverAspect {
         
-    @Pointcut("execution(* org.ao.suite.test.TestDriver.run(..))")
+    @Pointcut("execution(* org.ao.TestDriver.run(..))")
     public void testRun() {}
 
     @Before("testRun()")

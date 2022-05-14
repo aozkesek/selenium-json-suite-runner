@@ -17,19 +17,18 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @SpringBootApplication
-@ComponentScan(basePackages="org.ao.suite")
+@ComponentScan(basePackages="org.ao")
 @PropertySource("classpath:application.yml")
 public class RunnerMain implements CommandLineRunner {
 
 	@Autowired
-	private ApplicationContext contex;
+	private ApplicationContext applicationContext;
 	@Autowired
 	private SuiteProperties suiteProperties;
     @Autowired
     private ThreadPoolTaskExecutor executor;
     
 	public static void main(String[] args) {
-
 		SpringApplication.run(RunnerMain.class, args);
 	}
 
@@ -46,27 +45,46 @@ public class RunnerMain implements CommandLineRunner {
 			throw new IllegalArgumentException("suite->suites");
 		}
 
-        final List<Future<Boolean>> suitesReturn = Collections.synchronizedList(new ArrayList<>());
+		int k = suiteProperties.suites.size() + 4;
+		if (suiteProperties.isParallel)
+				k *= suiteProperties.threadCount;
+
+		executor.setCorePoolSize(k);
+
+        final List<Future<Boolean>> taskReturns = Collections.synchronizedList(new ArrayList<>());
         
-        logger.info("This run is {}-parallel and has {} threads.",
-            suiteProperties.isParallel, suiteProperties.threadCount);
+        logger.info("This run is {} and has {} threads.",
+            suiteProperties.isParallel ? "parallel" : "", suiteProperties.threadCount);
 
 		if (suiteProperties.isParallel && suiteProperties.threadCount > 1) {
 			suiteProperties.suites.forEach(s -> {
                 for(int i = 0; i < suiteProperties.threadCount; i++) {
                     logger.info("Suite {} is being prepared...", s);
-                    suitesReturn.add(
-                        executor.submit(
-								contex.getBean(SuiteDriver.class, s)));
+					SuiteDriver task = applicationContext.getBean(SuiteDriver.class, s);
+					Future<Boolean> ret = executor.submit(task);
+                    taskReturns.add(ret);
                 }
             });
 		}
 		else {
             logger.info("Suite {} is being prepared...", suiteProperties.suites.get(0));
-			suitesReturn.add(
-                executor.submit(
-                    contex.getBean(
-							SuiteDriver.class, suiteProperties.suites.get(0))));
+			SuiteDriver task = applicationContext.getBean(SuiteDriver.class, suiteProperties.suites.get(0));
+			Future<Boolean> ret = executor.submit(task);
+			taskReturns.add(ret);
 		}
+
+		boolean allDone;
+		do {
+			allDone = true;
+			for (var ret : taskReturns) {
+				if (!ret.isDone()) {
+					allDone = false;
+					break;
+				}
+				Thread.yield();
+			}
+		} while (!allDone);
+
+		System.exit(0);
 	}
 }

@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,6 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.ao.model.Model;
@@ -42,6 +39,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Component
 /* in multi-thread environment, every suite has to use it's own driver */
 @Scope("prototype")
@@ -51,16 +50,15 @@ public class SuiteDriver implements Callable<Boolean> {
         ERROR, WARN, INFO, DEBUG
     }
 
-    private String suiteId;
-    private String suiteToRun;
+    private final String suiteId;
+    private final String suiteToRun;
 
     private RemoteWebDriver webDriver;
 
     private SuiteModel suite;
-    private ObjectModel object;
     private List<TestDriver> tests;
 
-    private static Logger logger = LoggerFactory.getLogger(SuiteDriver.class);
+    private static final Logger logger = LoggerFactory.getLogger(SuiteDriver.class);
 
     @Autowired
     private ApplicationContext context;
@@ -79,7 +77,7 @@ public class SuiteDriver implements Callable<Boolean> {
     }
 
     @PostConstruct
-    public void prepareSuit() throws CommandNotFoundException, IOException {
+    private void prepareSuit() throws CommandNotFoundException, IOException {
         loadSuite();
         loadSuiteObjects();
         loadSuiteTests();
@@ -116,7 +114,6 @@ public class SuiteDriver implements Callable<Boolean> {
     private void runTests() {
 
         tests.forEach(t -> {
-            // complience the as parallel
             Future<Boolean> ft = executor.submit(t);
             try {
                 ft.get();
@@ -131,7 +128,7 @@ public class SuiteDriver implements Callable<Boolean> {
         return null == s || s.isBlank() || s.isEmpty();
     }
 
-    public void initDriver() throws MalformedURLException {
+    private void initDriver() throws MalformedURLException {
 
         logInfo("A {} web-driver is being prepared for local or remote {}", suiteProperties.driver,
                 suiteProperties.remoteUrl);
@@ -153,10 +150,10 @@ public class SuiteDriver implements Callable<Boolean> {
         }
 
         webDriver.manage()
-            .timeouts()
-            .implicitlyWait(suiteProperties.timeout, TimeUnit.MILLISECONDS)
-            .pageLoadTimeout(suiteProperties.timeout, TimeUnit.MILLISECONDS)
-            .setScriptTimeout(suiteProperties.timeout, TimeUnit.MILLISECONDS);
+                .timeouts()
+                .implicitlyWait(Duration.ofMillis(suiteProperties.timeout))
+                .pageLoadTimeout(Duration.ofMillis(suiteProperties.timeout))
+                .scriptTimeout(Duration.ofMillis(suiteProperties.timeout));
 
     }
 
@@ -184,7 +181,7 @@ public class SuiteDriver implements Callable<Boolean> {
         Path objectPath = Path.of(suiteProperties.objectsPath, suite.getObjectRepository());
 
         logDebug("Objects {} are being loaded...", objectPath);
-        object = objectMapperFactory.getObjectMapper().readValue(objectPath.toFile(), ObjectModel.class);
+        ObjectModel object = objectMapperFactory.getObjectMapper().readValue(objectPath.toFile(), ObjectModel.class);
 
         // then put them into container, so others can access them
         object.getObjects().forEach(objectContainer::putVariable);
@@ -199,7 +196,7 @@ public class SuiteDriver implements Callable<Boolean> {
     }
 
     private void loadSuiteTests() throws CommandNotFoundException, IOException {
-        tests = new ArrayList<TestDriver>();
+        tests = new ArrayList<>();
 
         for (SuiteTestModel test : suite.getTests()) {
             tests.add(loadTest(test.getFileName(), test.getArguments()));
@@ -226,36 +223,27 @@ public class SuiteDriver implements Callable<Boolean> {
     private void log(Level level, String format, Object... args) {
         format = "[" + suiteId + "] " + format;
 
-        if (args != null && args.length > 0) {
-            for (int i = 0; i < args.length; i++) {
-                if (args[i] instanceof Model) {
-                    try {
-                        args[i] = objectMapperFactory
-                            .getObjectMapper()
-                            .writeValueAsString(args[i]);
-                    } catch (JsonProcessingException e) {
-                        logger.error("This {} could not translated by {}", args[i], e);
-                    }
-                } 
+        if (args == null)
+            return;
+
+        for (int i = 0; i < args.length; i++) {
+            if (!(args[i] instanceof Model))
+                continue;
+
+            try {
+                args[i] = objectMapperFactory
+                        .getObjectMapper()
+                        .writeValueAsString(args[i]);
+            } catch (JsonProcessingException e) {
+                logger.error("This {} could not translated by {}", args[i], e);
             }
         }
 
         switch (level) {
-            case DEBUG:
-                logger.debug(format, args);    
-                break;
-
-            case INFO:
-                logger.info(format, args);    
-                break;
-
-            case WARN:
-                logger.warn(format, args);    
-                break;
-
-            case ERROR:
-                logger.error(format, args);    
-                break;
+            case DEBUG -> logger.debug(format, args);
+            case INFO -> logger.info(format, args);
+            case WARN -> logger.warn(format, args);
+            case ERROR -> logger.error(format, args);
         }
         
     }
@@ -285,10 +273,6 @@ public class SuiteDriver implements Callable<Boolean> {
 	
 	private boolean isTestCommaNeeded = false;
 	private boolean isCommandCommaNeeded = false;
-        
-	public ObjectContainer getObjectContainer() {
-		return null;
-    }
     
     public void putVariable(String key, String value) {
         objectContainer.putVariable(key, value);

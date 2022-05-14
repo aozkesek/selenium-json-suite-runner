@@ -22,13 +22,12 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class TestDriver implements Callable<Boolean> {
 	
-    private Path testPath;
+    private final Path testPath;
+	private final SuiteDriver suiteDriver;
+    private final Map<String, String> args;
+    private final Map<CommandModel, ICommandDriver> commands = new LinkedHashMap<>();
 	private TestModel testModel;
-    private SuiteDriver suiteDriver;
-    private Map<String, String> args;
-    // commands must be in ordered
-	private Map<CommandModel, ICommandDriver> commands = new LinkedHashMap<>();
-	
+
 	@Autowired
 	private ObjectMapperFactory objectMapperFactory;
 	@Autowired
